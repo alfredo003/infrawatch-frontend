@@ -18,14 +18,14 @@ import {
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { useToast } from "@/hooks/use-toast"
-import DashboardPage from "../components/dashboard/page"
-import ServersPage from "../components/servers/page"
-import NetworkPage from "../components/network/page"
-import ApplicationsPage from "../components/applications/page"
-import ReportsPage from "../components/reports/page"
-import AlertsPage from "../components/alerts/page"
-import RegisterPage from "../components/register/page"
-import SystemsPage from "../components/systems/page"
+import DashboardPage from "@/components/panels/dashboard/page"
+import ServersPage from "@/components/panels/servers/page"
+import NetworkPage from "@/components/panels/network/page"
+import ApplicationsPage from "@/components/panels/applications/page"
+import ReportsPage from "@/components/panels/reports/page"
+import AlertsPage from "@/components/panels/alerts/page"
+import RegisterPage from "@/components/panels/register/page"
+import SystemsPage from "@/components/panels/systems/page"
 import { useAuth } from "@/hooks/use-auth"
 
 export default function InfraWatchDashboard() {
@@ -111,11 +111,10 @@ export default function InfraWatchDashboard() {
               <button
                 key={item.id}
                 onClick={() => setActiveSection(item.id)}
-                className={`w-full flex items-center gap-3 p-3 rounded transition-colors ${
-                  activeSection === item.id
+                className={`w-full flex items-center gap-3 p-3 rounded transition-colors ${activeSection === item.id
                     ? "bg-blue-600 text-white"
                     : "text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800"
-                }`}
+                  }`}
               >
                 <item.icon className="w-5 h-5 md:w-5 md:h-5 sm:w-6 sm:h-6" />
                 {!sidebarCollapsed && <span className="text-sm font-medium">{item.label}</span>}
