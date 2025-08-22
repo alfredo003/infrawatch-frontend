@@ -27,6 +27,7 @@ import AlertsPage from "@/components/panels/alerts/page";
 import RegisterPage from "@/components/panels/register/page";
 import SystemsPage from "@/components/panels/systems/page";
 import { useAuth } from "@/hooks/use-auth";
+import TopBarLocation from "@/components/ui/topbar-location";
 
 export default function InfraWatchDashboard() {
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -35,6 +36,18 @@ export default function InfraWatchDashboard() {
   const router = useRouter();
   const { signOut, user, isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
+
+  const menuItems = [
+    { id: "dashboard", icon: Monitor, label: "DASHBOARD" },
+    { id: "servers", icon: Server, label: "SERVIDORES" },
+    { id: "network", icon: Activity, label: "REDE" },
+    { id: "applications", icon: Target, label: "APLICAÇÕES" },
+    { id: "systems", icon: Settings, label: "SISTEMAS" },
+    { id: "integrations", icon: Settings, label: "INTEGRAÇÕES" },
+    { id: "alerts", icon: AlertTriangle, label: "ALERTAS" },
+    { id: "reports", icon: Shield, label: "RELATÓRIOS" },
+    { id: "register", icon: Shield, label: "REGISTRO" },
+  ];
 
   useEffect(() => {
     setMounted(true);
@@ -79,7 +92,7 @@ export default function InfraWatchDashboard() {
     <div className="flex h-screen bg-white dark:bg-black text-black dark:text-white transition-colors duration-300">
       {/* Sidebar */}
       <div
-        className={`${sidebarCollapsed ? "w-16" : "w-70"} bg-neutral-50 dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-700 transition-all duration-300 fixed md:relative z-50 md:z-auto h-full md:h-auto ${!sidebarCollapsed ? "md:block" : ""}`}
+        className={`w-70 bg-neutral-50 dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-700 transition-all duration-300 fixed md:relative z-50 md:z-auto h-full md:h-auto ${!sidebarCollapsed ? "md:block" : ""}`}
       >
         <div className="p-4">
           <div className="flex items-center justify-between mb-8">
@@ -104,16 +117,7 @@ export default function InfraWatchDashboard() {
           </div>
 
           <nav className="space-y-2">
-            {[
-              { id: "dashboard", icon: Monitor, label: "DASHBOARD" },
-              { id: "servers", icon: Server, label: "SERVIDORES" },
-              { id: "network", icon: Activity, label: "REDE" },
-              { id: "applications", icon: Target, label: "APLICAÇÕES" },
-              { id: "systems", icon: Settings, label: "SISTEMAS" },
-              { id: "alerts", icon: AlertTriangle, label: "ALERTAS" },
-              { id: "reports", icon: Shield, label: "RELATÓRIOS" },
-              { id: "register", icon: Shield, label: "REGISTRO" },
-            ].map((item) => (
+            {menuItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => setActiveSection(item.id)}
@@ -179,17 +183,12 @@ export default function InfraWatchDashboard() {
         <div className="h-16 bg-white dark:bg-neutral-800 border-b border-neutral-200 dark:border-neutral-700 flex items-center justify-between px-6">
           <div className="flex items-center gap-4">
             <div className="text-sm text-neutral-600 dark:text-neutral-400">
-              INFRAWATCH /{" "}
-              <span className="text-blue-600 font-medium">
-                {activeSection === "dashboard" && "DASHBOARD"}
-                {activeSection === "servers" && "SERVIDORES"}
-                {activeSection === "network" && "REDE"}
-                {activeSection === "applications" && "APLICAÇÕES"}
-                {activeSection === "alerts" && "ALERTAS"}
-                {activeSection === "reports" && "RELATÓRIOS"}
-                {activeSection === "register" && "REGISTROS"}
-                {activeSection === "systems" && "SISTEMAS"}
-              </span>
+              <TopBarLocation
+                location={
+                  menuItems.find((item) => item.id === activeSection)?.label ??
+                  "N/A"
+                }
+              />
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -240,6 +239,7 @@ export default function InfraWatchDashboard() {
           {activeSection === "network" && <NetworkPage />}
           {activeSection === "applications" && <ApplicationsPage />}
           {activeSection === "systems" && <SystemsPage />}
+          {activeSection === "integrations" && <SystemsPage />}
           {activeSection === "alerts" && <AlertsPage />}
           {activeSection === "reports" && <ReportsPage />}
           {activeSection === "register" && <RegisterPage />}
