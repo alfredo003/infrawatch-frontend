@@ -1,256 +1,225 @@
 "use client"
-import { useState, useEffect } from "react";
-import { Eye, EyeOff, User, Lock, Shield, Activity, Wifi, Server, Monitor, AlertTriangle } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { redirect } from 'next/navigation'
 
-export default function NetworkMonitoringLogin() {
-  const [formData, setFormData] = useState({
-    username: "",
-    password: ""
-  });
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState({});
-  const [focusedField, setFocusedField] = useState(null);
-  const [systemStatus, setSystemStatus] = useState({
-    servers: 'online',
-    network: 'online',
-    monitoring: 'active',
-    alerts: 3
-  });
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import {
+  ChevronRight,
+  Monitor,
+  Shield,
+  Target,
+  Bell,
+  RefreshCw,
+  LogOut,
+  Activity,
+  Server,
+  AlertTriangle,
+  Settings,
+} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { ThemeToggle } from "@/components/theme-toggle"
+import { useToast } from "@/hooks/use-toast"
+import DashboardPage from "./dashboard/page"
+import ServersPage from "./servers/page"
+import NetworkPage from "./network/page"
+import ApplicationsPage from "./applications/page"
+import ReportsPage from "./reports/page"
+import AlertsPage from "./alerts/page"
+import RegisterPage from "./register/page"
+import SystemsPage from "./systems/page"
+import { useAuth } from "@/hooks/use-auth"
 
-  // Simulate real-time status updates
+export default function InfraWatchDashboard() {
+  const [activeSection, setActiveSection] = useState("dashboard")
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const router = useRouter()
+  const { signOut, user, isAuthenticated, isLoading } = useAuth()
+  const { toast } = useToast()
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      setSystemStatus(prev => ({
-        ...prev,
-        alerts: Math.floor(Math.random() * 5) + 1
-      }));
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+    setMounted(true)
+  }, [])
 
-  const validateForm = () => {
-    const newErrors = {};
-    
-    if (!formData.username) {
-      newErrors.username = "Nome de usuário obrigatório";
-    } else if (formData.username.length < 3) {
-      newErrors.username = "Mínimo 3 caracteres";
+  // Redirecionar para login se não estiver autenticado
+  // useEffect(() => {
+  //   if (mounted && !isLoading && !isAuthenticated) {
+  //     router.push('/login')
+  //   }
+  // }, [mounted, isLoading, isAuthenticated, router])
+
+  const handleLogout = () => {
+    // Confirmar logout
+    if (confirm('Tem certeza que deseja sair do sistema?')) {
+      toast({
+        title: "Logout realizado",
+        description: "Você foi desconectado com sucesso.",
+        variant: "default",
+      })
+      signOut()
     }
-    
-    if (!formData.password) {
-      newErrors.password = "Senha obrigatória";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Mínimo 6 caracteres";
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  }
 
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: "" }));
-    }
-  };
-
-  const handleSubmit = () => {
-    if (!validateForm()) return;
-    
-    setIsLoading(true);
-    
-    setTimeout(() => {
-      setIsLoading(false);
-      redirect("/home");
-    }, 2000);
-  };
-
-  const StatusIndicator = ({ status, label, icon: Icon }) => {
-    const getStatusColor = (status) => {
-      switch(status) {
-        case 'online': 
-        case 'active': return 'text-emerald-400 bg-emerald-400/20';
-        case 'warning': return 'text-amber-400 bg-amber-400/20';
-        case 'offline': 
-        case 'error': return 'text-red-400 bg-red-400/20';
-        default: return 'text-gray-400 bg-gray-400/20';
-      }
-    };
-
+  if (!mounted || isLoading) {
     return (
-      <div className="flex items-center space-x-2">
-        <div className={`w-2 h-2 rounded-full ${getStatusColor(status)} animate-pulse`}></div>
-        <Icon className={`w-4 h-4 ${getStatusColor(status).split(' ')[0]}`} />
-        <span className="text-xs text-gray-300 font-mono">{label}</span>
-        <span className={`text-xs font-mono px-1.5 py-0.5 rounded ${getStatusColor(status)}`}>
-          {status.toUpperCase()}
-        </span>
+      <div className="flex h-screen bg-white dark:bg-black text-black dark:text-white">
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-blue-600 font-bold text-lg tracking-wider animate-pulse">CARREGANDO INFRAWATCH...</div>
+        </div>
       </div>
-    );
-  };
+    )
+  }
+
+  // Se não está autenticado, não renderizar nada (será redirecionado)
+  // if (!isAuthenticated) {
+  //   return null
+  // }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 flex items-center justify-center p-6 relative overflow-hidden">
-      {/* Technical Background Pattern */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-10">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `
-            linear-gradient(90deg, transparent 79px, rgba(255,255,255,0.03) 81px, rgba(255,255,255,0.03) 82px, transparent 84px),
-            linear-gradient(0deg, transparent 79px, rgba(255,255,255,0.03) 81px, rgba(255,255,255,0.03) 82px, transparent 84px)
-          `,
-          backgroundSize: '84px 84px'
-        }}></div>
-      </div>
-
-      {/* Floating Network Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-cyan-400 rounded-full animate-pulse opacity-30"
-            style={{
-              left: `${10 + (i * 12)}%`,
-              top: `${20 + (i * 8)}%`,
-              animationDelay: `${i * 0.5}s`,
-              animationDuration: `${2 + (i % 3)}s`,
-            }}
-          ></div>
-        ))}
-      </div>
-
-      <div className="w-full max-w-md relative z-10">
-
-        {/* Login Card */}
-        <div className="bg-slate-800/70 backdrop-blur-xl border border-slate-700/50  p-8 shadow-2xl relative overflow-hidden">
-          {/* Security indicator */}
-          <div className="absolute top-4 right-4 flex items-center space-x-1 text-xs text-emerald-400">
-            <Shield className="w-3 h-3" />
-            <span className="font-mono">SSL</span>
-          </div>
-          
-          <div className="space-y-6">
-            <div className="text-center mb-6">
-                      {/* Header with System Info */}
-        <div className="text-center">
-          <div className="relative inline-block">
-              <Image src="/infralogo.png" width={300} height={300} alt={""} />
-          </div>
-        </div>
-              <p className="text-xs text-gray-400 font-mono">
-                Autenticação requerida para prosseguir
-              </p>
+    <div className="flex h-screen bg-white dark:bg-black text-black dark:text-white transition-colors duration-300">
+      {/* Sidebar */}
+      <div
+        className={`${sidebarCollapsed ? "w-16" : "w-70"} bg-neutral-50 dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-700 transition-all duration-300 fixed md:relative z-50 md:z-auto h-full md:h-auto ${!sidebarCollapsed ? "md:block" : ""}`}
+      >
+        <div className="p-4">
+          <div className="flex items-center justify-between mb-8">
+            <div className={`${sidebarCollapsed ? "hidden" : "block"}`}>
+              <h1 className="text-blue-600 font-bold text-lg tracking-wider">INFRAWATCH</h1>
+              <p className="text-neutral-500 text-xs">Monitoramento de Infraestrutura v1.0</p>
             </div>
-
-            {/* Username Field */}
-            <div>
-              <label htmlFor="username" className="block text-xs font-mono uppercase tracking-wider text-gray-300 mb-2">
-                Usuário
-              </label>
-              <div className="relative">
-                <User className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 transition-colors ${
-                  focusedField === 'username' ? 'text-cyan-400' : 'text-gray-500'
-                }`} />
-                <input
-                  id="username"
-                  type="text"
-                  value={formData.username}
-                  onChange={(e) => handleInputChange('username', e.target.value)}
-                  onFocus={() => setFocusedField('username')}
-                  onBlur={() => setFocusedField(null)}
-                  className={`w-full pl-10 pr-4 py-3 bg-slate-900/50 border rounded-lg text-white font-mono text-sm placeholder-gray-500 transition-all duration-200 focus:outline-none focus:ring-2 ${
-                    errors.username 
-                      ? 'border-red-500 focus:ring-red-500/20 focus:border-red-400' 
-                      : focusedField === 'username'
-                        ? 'border-cyan-500 focus:ring-cyan-500/20'
-                        : 'border-slate-600 hover:border-slate-500'
-                  }`}
-                  placeholder="nome.usuario"
-                />
-              </div>
-              {errors.username && (
-                <p className="mt-2 text-xs text-red-400 font-mono">{errors.username}</p>
-              )}
-            </div>
-
-            {/* Password Field */}
-            <div>
-              <label htmlFor="password" className="block text-xs font-mono uppercase tracking-wider text-gray-300 mb-2">
-                Senha
-              </label>
-              <div className="relative">
-                <Lock className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 transition-colors ${
-                  focusedField === 'password' ? 'text-cyan-400' : 'text-gray-500'
-                }`} />
-                <input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  value={formData.password}
-                  onChange={(e) => handleInputChange('password', e.target.value)}
-                  onFocus={() => setFocusedField('password')}
-                  onBlur={() => setFocusedField(null)}
-                  className={`w-full pl-10 pr-12 py-3 bg-slate-900/50 border rounded-lg text-white font-mono text-sm placeholder-gray-500 transition-all duration-200 focus:outline-none focus:ring-2 ${
-                    errors.password 
-                      ? 'border-red-500 focus:ring-red-500/20 focus:border-red-400' 
-                      : focusedField === 'password'
-                        ? 'border-cyan-500 focus:ring-cyan-500/20'
-                        : 'border-slate-600 hover:border-slate-500'
-                  }`}
-                  placeholder="••••••••"
-                />
-                <button
-                  type="button"
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors duration-200"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
-              </div>
-              {errors.password && (
-                <p className="mt-2 text-xs text-red-400 font-mono">{errors.password}</p>
-              )}
-            </div>
-
-            {/* Security Notice */}
-            <div className="bg-slate-900/50 border border-slate-700/50 rounded-lg p-3">
-              <div className="flex items-start space-x-2">
-                <Shield className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
-                <div className="text-xs text-gray-400 font-mono leading-relaxed">
-                  <strong className="text-blue-400">SEGURANÇA:</strong> Esta sessão será monitorada e registrada conforme políticas de segurança.
-                </div>
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              onClick={handleSubmit}
-              disabled={isLoading}
-              className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-3 rounded-lg font-mono text-sm font-medium hover:from-blue-700 hover:to-cyan-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-blue-500/25 transform hover:scale-105"
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="text-neutral-400 hover:text-blue-600"
             >
-              {isLoading ? (
-                <div className="flex items-center justify-center">
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></div>
-                  AUTENTICANDO...
-                </div>
-              ) : (
-                'ACESSAR SISTEMA'
-              )}
-            </button>
+              <ChevronRight
+                className={`w-4 h-4 sm:w-5 sm:h-5 transition-transform ${sidebarCollapsed ? "" : "rotate-180"}`}
+              />
+            </Button>
+          </div>
 
+          <nav className="space-y-2">
+            {[
+              { id: "dashboard", icon: Monitor, label: "DASHBOARD" },
+              { id: "servers", icon: Server, label: "SERVIDORES" },
+              { id: "network", icon: Activity, label: "REDE" },
+              { id: "applications", icon: Target, label: "APLICAÇÕES" },
+              { id: "systems", icon: Settings, label: "SISTEMAS" },
+              { id: "alerts", icon: AlertTriangle, label: "ALERTAS" },
+              { id: "reports", icon: Shield, label: "RELATÓRIOS" },
+              { id: "register", icon: Shield, label: "REGISTRO" },
+            ].map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setActiveSection(item.id)}
+                className={`w-full flex items-center gap-3 p-3 rounded transition-colors ${
+                  activeSection === item.id
+                    ? "bg-blue-600 text-white"
+                    : "text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                }`}
+              >
+                <item.icon className="w-5 h-5 md:w-5 md:h-5 sm:w-6 sm:h-6" />
+                {!sidebarCollapsed && <span className="text-sm font-medium">{item.label}</span>}
+              </button>
+            ))}
+          </nav>
+
+          {!sidebarCollapsed && (
+            <div className="mt-8 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-xs text-green-700 dark:text-green-400 font-medium">SISTEMA OPERACIONAL</span>
+              </div>
+              <div className="text-xs text-neutral-600 dark:text-neutral-400">
+                <div>UPTIME: 99.8%</div>
+                <div>SERVIÇOS: 247 MONITORADOS</div>
+                <div>ALERTAS: 3 ATIVOS</div>
+              </div>
+            </div>
+          )}
+
+          {/* Logout Button */}
+          {!sidebarCollapsed && (
+            <div className="mt-4">
+              <Button
+                onClick={handleLogout}
+                variant="ghost"
+                className="w-full flex items-center gap-3 p-3 text-neutral-600 dark:text-neutral-400 hover:text-red-600 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+              >
+                <LogOut className="w-5 h-5" />
+                <span className="text-sm font-medium">SAIR</span>
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Mobile Overlay */}
+      {!sidebarCollapsed && (
+        <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setSidebarCollapsed(true)} />
+      )}
+
+      {/* Main Content */}
+      <div className={`flex-1 flex flex-col ${!sidebarCollapsed ? "md:ml-0" : ""}`}>
+        {/* Top Toolbar */}
+        <div className="h-16 bg-white dark:bg-neutral-800 border-b border-neutral-200 dark:border-neutral-700 flex items-center justify-between px-6">
+          <div className="flex items-center gap-4">
+            <div className="text-sm text-neutral-600 dark:text-neutral-400">
+              INFRAWATCH /{" "}
+              <span className="text-blue-600 font-medium">
+                {activeSection === "dashboard" && "DASHBOARD"}
+                {activeSection === "servers" && "SERVIDORES"}
+                {activeSection === "network" && "REDE"}
+                {activeSection === "applications" && "APLICAÇÕES"}
+                {activeSection === "alerts" && "ALERTAS"}
+                {activeSection === "reports" && "RELATÓRIOS"}
+                {activeSection === "register" && "REGISTROS"}
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            {/* User Info */}
+            {user && (
+              <div className="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-400">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span>{user.email}</span>
+              </div>
+            )}
+            <div className="text-xs text-neutral-500">ÚLTIMA ATUALIZAÇÃO: {new Date().toLocaleString("pt-BR")}</div>
+            <ThemeToggle />
+            <Button variant="ghost" size="icon" className="text-neutral-400 hover:text-blue-600 relative">
+              <Bell className="w-4 h-4" />
+              <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
+                3
+              </span>
+            </Button>
+            <Button variant="ghost" size="icon" className="text-neutral-400 hover:text-blue-600">
+              <RefreshCw className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleLogout}
+              className="text-neutral-400 hover:text-red-500"
+              title="Sair do sistema"
+            >
+              <LogOut className="w-4 h-4" />
+            </Button>
           </div>
         </div>
 
-        {/* System Footer */}
-        <div className="mt-6 text-center">
-          <div className="flex justify-center space-x-4 text-xs text-gray-500 font-mono">
-            <span>© 2024 InfraWatch | Direitos reservados por <Link href="https://rcsangola.co.ao/">rcsangola.co.ao</Link></span>
-             
-          </div>
+        {/* Dashboard Content */}
+        <div className="flex-1 overflow-auto bg-neutral-50 dark:bg-black">
+          {activeSection === "dashboard" && <DashboardPage />}
+          {activeSection === "servers" && <ServersPage />}
+          {activeSection === "network" && <NetworkPage />}
+          {activeSection === "applications" && <ApplicationsPage />}
+          {activeSection === "systems" && <SystemsPage />}
+          {activeSection === "alerts" && <AlertsPage />}
+          {activeSection === "reports" && <ReportsPage />}
+          {activeSection === "register" && <RegisterPage />}
         </div>
       </div>
     </div>
-  );
+  )
 }
