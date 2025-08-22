@@ -15,38 +15,31 @@ import {
   AlertTriangle,
   Settings,
 } from "lucide-react";
+import Panel from "@/components/panels";
+import { useAuth } from "@/hooks/use-auth";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { useToast } from "@/hooks/use-toast";
-import DashboardPage from "@/components/panels/dashboard/page";
-import ServersPage from "@/components/panels/servers/page";
-import NetworkPage from "@/components/panels/network/page";
-import ApplicationsPage from "@/components/panels/applications/page";
-import ReportsPage from "@/components/panels/reports/page";
-import AlertsPage from "@/components/panels/alerts/page";
-import RegisterPage from "@/components/panels/register/page";
-import SystemsPage from "@/components/panels/systems/page";
-import { useAuth } from "@/hooks/use-auth";
 import TopBarLocation from "@/components/ui/top-bar-location";
 
 export default function InfraWatchDashboard() {
-  const [activeSection, setActiveSection] = useState("dashboard");
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const router = useRouter();
-  const { signOut, user, isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
+  const [mounted, setMounted] = useState(false);
+  const [activeSection, setActiveSection] = useState(0);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const { signOut, user, isAuthenticated, isLoading } = useAuth();
 
   const menuItems = [
-    { id: "dashboard", icon: Monitor, label: "DASHBOARD" },
-    { id: "servers", icon: Server, label: "SERVIDORES" },
-    { id: "network", icon: Activity, label: "REDE" },
-    { id: "applications", icon: Target, label: "APLICAÇÕES" },
-    { id: "systems", icon: Settings, label: "SISTEMAS" },
-    { id: "integrations", icon: Settings, label: "INTEGRAÇÕES" },
-    { id: "alerts", icon: AlertTriangle, label: "ALERTAS" },
-    { id: "reports", icon: Shield, label: "RELATÓRIOS" },
-    { id: "register", icon: Shield, label: "REGISTRO" },
+    { id: 0, icon: Monitor, label: "DASHBOARD" },
+    { id: 1, icon: Server, label: "SERVIDORES" },
+    { id: 2, icon: Activity, label: "REDE" },
+    { id: 3, icon: Target, label: "APLICAÇÕES" },
+    { id: 4, icon: Settings, label: "SISTEMAS" },
+    { id: 5, icon: Settings, label: "INTEGRAÇÕES" },
+    { id: 6, icon: AlertTriangle, label: "ALERTAS" },
+    { id: 7, icon: Shield, label: "RELATÓRIOS" },
+    { id: 8, icon: Shield, label: "REGISTRO" },
   ];
 
   useEffect(() => {
@@ -71,6 +64,7 @@ export default function InfraWatchDashboard() {
     }
   };
 
+  // change it later to use SSR and extract the clients components
   if (!mounted || isLoading) {
     return (
       <div className="flex h-screen bg-white dark:bg-black text-black dark:text-white">
@@ -121,10 +115,11 @@ export default function InfraWatchDashboard() {
               <button
                 key={item.id}
                 onClick={() => setActiveSection(item.id)}
-                className={`w-full flex items-center gap-3 p-3 rounded transition-colors ${activeSection === item.id
-                  ? "bg-blue-600 text-white"
-                  : "text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800"
-                  }`}
+                className={`w-full flex items-center gap-3 p-3 rounded transition-colors ${
+                  activeSection === item.id
+                    ? "bg-blue-600 text-white"
+                    : "text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                }`}
               >
                 <item.icon className="w-5 h-5 md:w-5 md:h-5 sm:w-6 sm:h-6" />
                 {!sidebarCollapsed && (
@@ -233,15 +228,7 @@ export default function InfraWatchDashboard() {
 
         {/* Dashboard Content */}
         <div className="flex-1 overflow-auto bg-neutral-50 dark:bg-black">
-          {activeSection === "dashboard" && <DashboardPage />}
-          {activeSection === "servers" && <ServersPage />}
-          {activeSection === "network" && <NetworkPage />}
-          {activeSection === "applications" && <ApplicationsPage />}
-          {activeSection === "systems" && <SystemsPage />}
-          {activeSection === "integrations" && <SystemsPage />}
-          {activeSection === "alerts" && <AlertsPage />}
-          {activeSection === "reports" && <ReportsPage />}
-          {activeSection === "register" && <RegisterPage />}
+          <Panel active={activeSection} />
         </div>
       </div>
     </div>
