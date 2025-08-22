@@ -27,7 +27,7 @@ import AlertsPage from "@/components/panels/alerts/page";
 import RegisterPage from "@/components/panels/register/page";
 import SystemsPage from "@/components/panels/systems/page";
 import { useAuth } from "@/hooks/use-auth";
-import TopBarLocation from "@/components/ui/topbar-location";
+import TopBarLocation from "@/components/ui/top-bar-location";
 
 export default function InfraWatchDashboard() {
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -121,11 +121,10 @@ export default function InfraWatchDashboard() {
               <button
                 key={item.id}
                 onClick={() => setActiveSection(item.id)}
-                className={`w-full flex items-center gap-3 p-3 rounded transition-colors ${
-                  activeSection === item.id
-                    ? "bg-blue-600 text-white"
-                    : "text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800"
-                }`}
+                className={`w-full flex items-center gap-3 p-3 rounded transition-colors ${activeSection === item.id
+                  ? "bg-blue-600 text-white"
+                  : "text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                  }`}
               >
                 <item.icon className="w-5 h-5 md:w-5 md:h-5 sm:w-6 sm:h-6" />
                 {!sidebarCollapsed && (
