@@ -40,7 +40,6 @@ export default function InfraWatchDashboard() {
     setMounted(true)
   }, [])
 
-  // Redirecionar para login se não estiver autenticado
   // useEffect(() => {
   //   if (mounted && !isLoading && !isAuthenticated) {
   //     router.push('/login')
@@ -174,6 +173,7 @@ export default function InfraWatchDashboard() {
                 {activeSection === "alerts" && "ALERTAS"}
                 {activeSection === "reports" && "RELATÓRIOS"}
                 {activeSection === "register" && "REGISTROS"}
+                {activeSection === "systems" && "SISTEMAS"}
               </span>
             </div>
           </div>
