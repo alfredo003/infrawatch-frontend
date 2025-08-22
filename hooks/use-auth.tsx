@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { getAuthToken, getUser, logout, type User } from '@/lib/auth';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from "react";
+import { getAuthToken, getUser, logout, type User } from "@/lib/auth";
+import { useRouter } from "next/navigation";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -20,7 +20,7 @@ export function useAuth() {
         setUser(null);
         setIsAuthenticated(false);
       }
-      
+
       setIsLoading(false);
     };
 
@@ -31,13 +31,13 @@ export function useAuth() {
     logout();
     setUser(null);
     setIsAuthenticated(false);
-    router.push('/login');
+    router.push("/login");
   };
 
   return {
     user,
     isAuthenticated,
     isLoading,
-    signOut
+    signOut,
   };
 }

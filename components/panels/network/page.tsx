@@ -1,35 +1,70 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Wifi, Router, Globe, Activity, TrendingUp, TrendingDown } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Wifi,
+  Router,
+  Globe,
+  Activity,
+  TrendingUp,
+  TrendingDown,
+} from "lucide-react";
 
 export default function NetworkPage() {
   const networkDevices = [
-    { name: "ROUTER-PRINCIPAL", status: "online", latency: 12, bandwidth: 85, location: "Sala de Servidores" },
-    { name: "SWITCH-CORE-01", status: "online", latency: 8, bandwidth: 67, location: "Data Center" },
-    { name: "FIREWALL-DMZ", status: "warning", latency: 45, bandwidth: 92, location: "DMZ" },
-    { name: "AP-ESCRITORIO-01", status: "online", latency: 23, bandwidth: 34, location: "1º Andar" },
-  ]
+    {
+      name: "ROUTER-PRINCIPAL",
+      status: "online",
+      latency: 12,
+      bandwidth: 85,
+      location: "Sala de Servidores",
+    },
+    {
+      name: "SWITCH-CORE-01",
+      status: "online",
+      latency: 8,
+      bandwidth: 67,
+      location: "Data Center",
+    },
+    {
+      name: "FIREWALL-DMZ",
+      status: "warning",
+      latency: 45,
+      bandwidth: 92,
+      location: "DMZ",
+    },
+    {
+      name: "AP-ESCRITORIO-01",
+      status: "online",
+      latency: 23,
+      bandwidth: 34,
+      location: "1º Andar",
+    },
+  ];
 
   const getStatusColor = (status) => {
     switch (status) {
       case "online":
-        return "text-green-600 bg-green-100 dark:bg-green-900/20"
+        return "text-green-600 bg-green-100 dark:bg-green-900/20";
       case "warning":
-        return "text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20"
+        return "text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20";
       case "offline":
-        return "text-red-600 bg-red-100 dark:bg-red-900/20"
+        return "text-red-600 bg-red-100 dark:bg-red-900/20";
       default:
-        return "text-gray-600 bg-gray-100 dark:bg-gray-900/20"
+        return "text-gray-600 bg-gray-100 dark:bg-gray-900/20";
     }
-  }
+  };
 
   return (
     <div className="p-6 space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">Monitoramento de Rede</h1>
-        <p className="text-sm text-neutral-600 dark:text-neutral-400">Estado da infraestrutura de rede corporativa</p>
+        <h1 className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">
+          Monitoramento de Rede
+        </h1>
+        <p className="text-sm text-neutral-600 dark:text-neutral-400">
+          Estado da infraestrutura de rede corporativa
+        </p>
       </div>
 
       {/* Network Overview */}
@@ -38,7 +73,9 @@ export default function NetworkPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">DISPOSITIVOS ONLINE</p>
+                <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
+                  DISPOSITIVOS ONLINE
+                </p>
                 <p className="text-3xl font-bold text-green-600">24</p>
                 <p className="text-xs text-neutral-500">de 26 total</p>
               </div>
@@ -51,7 +88,9 @@ export default function NetworkPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">LATÊNCIA MÉDIA</p>
+                <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
+                  LATÊNCIA MÉDIA
+                </p>
                 <p className="text-3xl font-bold text-blue-600">18ms</p>
                 <div className="flex items-center gap-1">
                   <TrendingDown className="w-3 h-3 text-green-600" />
@@ -67,7 +106,9 @@ export default function NetworkPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">LARGURA DE BANDA</p>
+                <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
+                  LARGURA DE BANDA
+                </p>
                 <p className="text-3xl font-bold text-blue-600">67%</p>
                 <div className="flex items-center gap-1">
                   <TrendingUp className="w-3 h-3 text-yellow-600" />
@@ -83,7 +124,9 @@ export default function NetworkPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">CONECTIVIDADE</p>
+                <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
+                  CONECTIVIDADE
+                </p>
                 <p className="text-3xl font-bold text-green-600">99.9%</p>
                 <p className="text-xs text-neutral-500">uptime</p>
               </div>
@@ -110,21 +153,33 @@ export default function NetworkPage() {
                 <div className="flex items-center gap-3">
                   <Router className="w-5 h-5 text-neutral-600 dark:text-neutral-400" />
                   <div>
-                    <h3 className="font-medium text-neutral-800 dark:text-neutral-200">{device.name}</h3>
-                    <p className="text-sm text-neutral-600 dark:text-neutral-400">{device.location}</p>
+                    <h3 className="font-medium text-neutral-800 dark:text-neutral-200">
+                      {device.name}
+                    </h3>
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                      {device.location}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-6">
                   <div className="text-center">
-                    <p className="text-sm font-medium text-neutral-800 dark:text-neutral-200">{device.latency}ms</p>
+                    <p className="text-sm font-medium text-neutral-800 dark:text-neutral-200">
+                      {device.latency}ms
+                    </p>
                     <p className="text-xs text-neutral-500">Latência</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-medium text-neutral-800 dark:text-neutral-200">{device.bandwidth}%</p>
+                    <p className="text-sm font-medium text-neutral-800 dark:text-neutral-200">
+                      {device.bandwidth}%
+                    </p>
                     <p className="text-xs text-neutral-500">Uso</p>
                   </div>
                   <Badge className={getStatusColor(device.status)}>
-                    {device.status === "online" ? "Online" : device.status === "warning" ? "Aviso" : "Offline"}
+                    {device.status === "online"
+                      ? "Online"
+                      : device.status === "warning"
+                        ? "Aviso"
+                        : "Offline"}
                   </Badge>
                 </div>
               </div>
@@ -144,7 +199,10 @@ export default function NetworkPage() {
           <div className="h-64 relative">
             <div className="absolute inset-0 grid grid-cols-12 grid-rows-6 opacity-10">
               {Array.from({ length: 72 }).map((_, i) => (
-                <div key={i} className="border border-neutral-300 dark:border-neutral-600"></div>
+                <div
+                  key={i}
+                  className="border border-neutral-300 dark:border-neutral-600"
+                ></div>
               ))}
             </div>
             <svg className="absolute inset-0 w-full h-full">
@@ -167,5 +225,5 @@ export default function NetworkPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

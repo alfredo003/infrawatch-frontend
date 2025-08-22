@@ -1,113 +1,125 @@
-"use client"
+"use client";
 import { useState, useEffect } from "react";
-import { Eye, EyeOff, User, Lock, Shield, Activity, Wifi, Server, Monitor } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  User,
+  Lock,
+  Shield,
+  Activity,
+  Wifi,
+  Server,
+  Monitor,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from 'next/navigation';
-import { saveAuthData, type AuthData } from '@/lib/auth';
+import { useRouter } from "next/navigation";
+import { saveAuthData, type AuthData } from "@/lib/auth";
 import InlineError from "@/components/ui/inline-error";
 
 export default function NetworkMonitoringLogin() {
   const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
-    password: ""
+    password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<{email?: string; password?: string}>({});
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+    {},
+  );
   const [authError, setAuthError] = useState<string | null>(null);
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
-
   const validateForm = () => {
-    const newErrors: {email?: string; password?: string} = {};
-    
+    const newErrors: { email?: string; password?: string } = {};
+
     if (!formData.email) {
       newErrors.email = "Email obrigatório";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Email inválido";
     }
-    
+
     if (!formData.password) {
       newErrors.password = "Senha obrigatória";
     } else if (formData.password.length < 6) {
       newErrors.password = "Mínimo 6 caracteres";
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleInputChange = (field: keyof typeof formData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }));
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
     if (authError) setAuthError(null);
   };
 
   const handleSubmit = () => {
     if (!validateForm()) return;
-    
+
     setIsLoading(true);
     setAuthError(null);
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://infrawatch-backend.onrender.com/api';
-    fetch(API_URL + '/auth/signin', {
-      method: 'POST',
+    const API_URL =
+      process.env.NEXT_PUBLIC_API_URL ||
+      "https://infrawatch-backend.onrender.com/api";
+    fetch(API_URL + "/auth/signin", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData)
+      body: JSON.stringify(formData),
     })
-    .then(response => response.json())
-    .then((data) => {
-      console.log('Login response:', data);
-      if(data.error) {
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Login response:", data);
+        if (data.error) {
           setAuthError(data.error);
           setIsLoading(false);
           return;
-      } else if(data.token && data.user) {
-        
-        // Usar função utilitária para salvar dados de autenticação
-        saveAuthData({
-          token: data.token,
-          user: {
-            id: data.user.id,
-            email: data.user.email
-          }
-        });
-        
-        setIsLoading(false);
+        } else if (data.token && data.user) {
+          // Usar função utilitária para salvar dados de autenticação
+          saveAuthData({
+            token: data.token,
+            user: {
+              id: data.user.id,
+              email: data.user.email,
+            },
+          });
 
-        router.push("/");
-      } else {
-        console.log("Resposta inesperada:", data);
+          setIsLoading(false);
+
+          router.push("/");
+        } else {
+          console.log("Resposta inesperada:", data);
+          setIsLoading(false);
+        }
+      })
+      .catch((error) => {
+        const msg = error?.message ? error.message : String(error);
+        console.error("Login failed:", msg);
+        setAuthError("Erro de autenticação: " + msg);
         setIsLoading(false);
-      }
-      
-    })
-    .catch((error) => {
-      const msg = error?.message ? error.message : String(error);
-      console.error('Login failed:', msg);
-      setAuthError('Erro de autenticação: ' + msg);
-      setIsLoading(false);
-    });
+      });
   };
-
-  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 flex items-center justify-center p-6 relative overflow-hidden">
       {/* Technical Background Pattern */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-10">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `
             linear-gradient(90deg, transparent 79px, rgba(255,255,255,0.03) 81px, rgba(255,255,255,0.03) 82px, transparent 84px),
             linear-gradient(0deg, transparent 79px, rgba(255,255,255,0.03) 81px, rgba(255,255,255,0.03) 82px, transparent 84px)
           `,
-          backgroundSize: '84px 84px'
-        }}></div>
+            backgroundSize: "84px 84px",
+          }}
+        ></div>
       </div>
 
       {/* Floating Network Elements */}
@@ -117,8 +129,8 @@ export default function NetworkMonitoringLogin() {
             key={i}
             className="absolute w-1 h-1 bg-cyan-400 rounded-full animate-pulse opacity-30"
             style={{
-              left: `${10 + (i * 12)}%`,
-              top: `${20 + (i * 8)}%`,
+              left: `${10 + i * 12}%`,
+              top: `${20 + i * 8}%`,
               animationDelay: `${i * 0.5}s`,
               animationDuration: `${2 + (i % 3)}s`,
             }}
@@ -127,7 +139,6 @@ export default function NetworkMonitoringLogin() {
       </div>
 
       <div className="w-full max-w-md relative z-10">
-
         {/* Login Card */}
         <div className="bg-slate-800/70 backdrop-blur-xl border border-slate-700/50  p-8 shadow-2xl relative overflow-hidden">
           {/* Security indicator */}
@@ -135,15 +146,20 @@ export default function NetworkMonitoringLogin() {
             <Shield className="w-3 h-3" />
             <span className="font-mono">SSL</span>
           </div>
-          
+
           <div className="space-y-6">
             <div className="text-center mb-6">
-                      {/* Header with System Info */}
-        <div className="text-center">
-          <div className="relative inline-block">
-              <Image src="/infralogo.png" width={300} height={300} alt={""} />
-          </div>
-        </div>
+              {/* Header with System Info */}
+              <div className="text-center">
+                <div className="relative inline-block">
+                  <Image
+                    src="/infralogo.png"
+                    width={300}
+                    height={300}
+                    alt={""}
+                  />
+                </div>
+              </div>
               <p className="text-xs text-gray-400 font-mono">
                 Autenticação requerida para prosseguir
               </p>
@@ -151,57 +167,73 @@ export default function NetworkMonitoringLogin() {
 
             {/* email Field */}
             <div>
-              <label htmlFor="email" className="block text-xs font-mono uppercase tracking-wider text-gray-300 mb-2">
+              <label
+                htmlFor="email"
+                className="block text-xs font-mono uppercase tracking-wider text-gray-300 mb-2"
+              >
                 Email
               </label>
               <div className="relative">
-                <User className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 transition-colors ${
-                  focusedField === 'email' ? 'text-cyan-400' : 'text-gray-500'
-                }`} />
+                <User
+                  className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 transition-colors ${
+                    focusedField === "email" ? "text-cyan-400" : "text-gray-500"
+                  }`}
+                />
                 <input
                   id="email"
                   type="email"
                   value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  onFocus={() => setFocusedField('email')}
+                  onChange={(e) => handleInputChange("email", e.target.value)}
+                  onFocus={() => setFocusedField("email")}
                   onBlur={() => setFocusedField(null)}
                   className={`w-full pl-10 pr-4 py-3 bg-slate-900/50 border rounded-lg text-white font-mono text-sm placeholder-gray-500 transition-all duration-200 focus:outline-none focus:ring-2 ${
-                    errors.email 
-                      ? 'border-red-500 focus:ring-red-500/20 focus:border-red-400' 
-                      : focusedField === 'email'
-                        ? 'border-cyan-500 focus:ring-cyan-500/20'
-                        : 'border-slate-600 hover:border-slate-500'
+                    errors.email
+                      ? "border-red-500 focus:ring-red-500/20 focus:border-red-400"
+                      : focusedField === "email"
+                        ? "border-cyan-500 focus:ring-cyan-500/20"
+                        : "border-slate-600 hover:border-slate-500"
                   }`}
                   placeholder="seu-email@gmail.com"
                 />
               </div>
               {errors.email && (
-                <p className="mt-2 text-xs text-red-400 font-mono">{errors.email}</p>
+                <p className="mt-2 text-xs text-red-400 font-mono">
+                  {errors.email}
+                </p>
               )}
             </div>
 
             {/* Password Field */}
             <div>
-              <label htmlFor="password" className="block text-xs font-mono uppercase tracking-wider text-gray-300 mb-2">
+              <label
+                htmlFor="password"
+                className="block text-xs font-mono uppercase tracking-wider text-gray-300 mb-2"
+              >
                 Senha
               </label>
               <div className="relative">
-                <Lock className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 transition-colors ${
-                  focusedField === 'password' ? 'text-cyan-400' : 'text-gray-500'
-                }`} />
+                <Lock
+                  className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 transition-colors ${
+                    focusedField === "password"
+                      ? "text-cyan-400"
+                      : "text-gray-500"
+                  }`}
+                />
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
                   value={formData.password}
-                  onChange={(e) => handleInputChange('password', e.target.value)}
-                  onFocus={() => setFocusedField('password')}
+                  onChange={(e) =>
+                    handleInputChange("password", e.target.value)
+                  }
+                  onFocus={() => setFocusedField("password")}
                   onBlur={() => setFocusedField(null)}
                   className={`w-full pl-10 pr-12 py-3 bg-slate-900/50 border rounded-lg text-white font-mono text-sm placeholder-gray-500 transition-all duration-200 focus:outline-none focus:ring-2 ${
-                    errors.password 
-                      ? 'border-red-500 focus:ring-red-500/20 focus:border-red-400' 
-                      : focusedField === 'password'
-                        ? 'border-cyan-500 focus:ring-cyan-500/20'
-                        : 'border-slate-600 hover:border-slate-500'
+                    errors.password
+                      ? "border-red-500 focus:ring-red-500/20 focus:border-red-400"
+                      : focusedField === "password"
+                        ? "border-cyan-500 focus:ring-cyan-500/20"
+                        : "border-slate-600 hover:border-slate-500"
                   }`}
                   placeholder="••••••••"
                 />
@@ -210,11 +242,17 @@ export default function NetworkMonitoringLogin() {
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors duration-200"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
                 </button>
               </div>
               {errors.password && (
-                <p className="mt-2 text-xs text-red-400 font-mono">{errors.password}</p>
+                <p className="mt-2 text-xs text-red-400 font-mono">
+                  {errors.password}
+                </p>
               )}
             </div>
 
@@ -223,14 +261,14 @@ export default function NetworkMonitoringLogin() {
               <div className="flex items-start space-x-2">
                 <Shield className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
                 <div className="text-xs text-gray-400 font-mono leading-relaxed">
-                  <strong className="text-blue-400">SEGURANÇA:</strong> Esta sessão será monitorada e registrada conforme políticas de segurança.
+                  <strong className="text-blue-400">SEGURANÇA:</strong> Esta
+                  sessão será monitorada e registrada conforme políticas de
+                  segurança.
                 </div>
               </div>
             </div>
 
-            {authError && (
-              <InlineError message={authError} />
-            )}
+            {authError && <InlineError message={authError} />}
 
             {/* Submit Button */}
             <button
@@ -244,18 +282,19 @@ export default function NetworkMonitoringLogin() {
                   AUTENTICANDO...
                 </div>
               ) : (
-                'ACESSAR SISTEMA'
+                "ACESSAR SISTEMA"
               )}
             </button>
-
           </div>
         </div>
 
         {/* System Footer */}
         <div className="mt-6 text-center">
           <div className="flex justify-center space-x-4 text-xs text-gray-500 font-mono">
-            <span>© 2024 InfraWatch | Direitos reservados por <Link href="https://rcsangola.co.ao/">rcsangola.co.ao</Link></span>
-             
+            <span>
+              © 2024 InfraWatch | Direitos reservados por{" "}
+              <Link href="https://rcsangola.co.ao/">rcsangola.co.ao</Link>
+            </span>
           </div>
         </div>
       </div>
