@@ -1,50 +1,107 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { Server, Activity, AlertTriangle, CheckCircle, Clock, TrendingUp, TrendingDown, Wifi } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import {
+  Server,
+  Activity,
+  AlertTriangle,
+  CheckCircle,
+  Clock,
+  TrendingUp,
+  TrendingDown,
+  Wifi,
+} from "lucide-react";
 
 export default function DashboardPage() {
   const systemsOverview = [
-    { name: "ERP-PROD", status: "online", uptime: 99.8, lastCheck: "30s", type: "Servidor" },
-    { name: "WEB-SERVER-01", status: "online", uptime: 99.9, lastCheck: "15s", type: "Servidor Web" },
-    { name: "DB-CLUSTER", status: "warning", uptime: 98.5, lastCheck: "45s", type: "Base de Dados" },
-    { name: "BACKUP-SRV", status: "offline", uptime: 95.2, lastCheck: "5m", type: "Backup" },
-    { name: "KIOSKS-API", status: "online", uptime: 99.3, lastCheck: "20s", type: "API" },
-  ]
+    {
+      name: "ERP-PROD",
+      status: "online",
+      uptime: 99.8,
+      lastCheck: "30s",
+      type: "Servidor",
+    },
+    {
+      name: "WEB-SERVER-01",
+      status: "online",
+      uptime: 99.9,
+      lastCheck: "15s",
+      type: "Servidor Web",
+    },
+    {
+      name: "DB-CLUSTER",
+      status: "warning",
+      uptime: 98.5,
+      lastCheck: "45s",
+      type: "Base de Dados",
+    },
+    {
+      name: "BACKUP-SRV",
+      status: "offline",
+      uptime: 95.2,
+      lastCheck: "5m",
+      type: "Backup",
+    },
+    {
+      name: "KIOSKS-API",
+      status: "online",
+      uptime: 99.3,
+      lastCheck: "20s",
+      type: "API",
+    },
+  ];
 
   const recentAlerts = [
-    { id: 1, system: "DB-CLUSTER", message: "Alto uso de CPU detectado", severity: "warning", time: "2 min atrás" },
-    { id: 2, system: "BACKUP-SRV", message: "Servidor não responde", severity: "critical", time: "5 min atrás" },
-    { id: 3, system: "NETWORK-SW-01", message: "Latência elevada", severity: "warning", time: "8 min atrás" },
-  ]
+    {
+      id: 1,
+      system: "DB-CLUSTER",
+      message: "Alto uso de CPU detectado",
+      severity: "warning",
+      time: "2 min atrás",
+    },
+    {
+      id: 2,
+      system: "BACKUP-SRV",
+      message: "Servidor não responde",
+      severity: "critical",
+      time: "5 min atrás",
+    },
+    {
+      id: 3,
+      system: "NETWORK-SW-01",
+      message: "Latência elevada",
+      severity: "warning",
+      time: "8 min atrás",
+    },
+  ];
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "online":
-        return "text-green-600 bg-green-100 dark:bg-green-900/20"
+        return "text-green-600 bg-green-100 dark:bg-green-900/20";
       case "warning":
-        return "text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20"
+        return "text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20";
       case "offline":
-        return "text-red-600 bg-red-100 dark:bg-red-900/20"
+        return "text-red-600 bg-red-100 dark:bg-red-900/20";
       default:
-        return "text-gray-600 bg-gray-100 dark:bg-gray-900/20"
+        return "text-gray-600 bg-gray-100 dark:bg-gray-900/20";
     }
-  }
+  };
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
       case "critical":
-        return "text-red-600 bg-red-100 dark:bg-red-900/20"
+        return "text-red-600 bg-red-100 dark:bg-red-900/20";
       case "warning":
-        return "text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20"
+        return "text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20";
       case "info":
-        return "text-blue-600 bg-blue-100 dark:bg-blue-900/20"
+        return "text-blue-600 bg-blue-100 dark:bg-blue-900/20";
       default:
-        return "text-gray-600 bg-gray-100 dark:bg-gray-900/20"
+        return "text-gray-600 bg-gray-100 dark:bg-gray-900/20";
     }
-  }
+  };
 
   return (
     <div className="p-6 space-y-6">
@@ -54,7 +111,9 @@ export default function DashboardPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">SISTEMAS ONLINE</p>
+                <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
+                  SISTEMAS ONLINE
+                </p>
                 <p className="text-3xl font-bold text-green-600">243</p>
                 <p className="text-xs text-neutral-500">de 247 total</p>
               </div>
@@ -67,7 +126,9 @@ export default function DashboardPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">ALERTAS ATIVOS</p>
+                <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
+                  ALERTAS ATIVOS
+                </p>
                 <p className="text-3xl font-bold text-red-600">4</p>
                 <p className="text-xs text-neutral-500">2 críticos</p>
               </div>
@@ -80,11 +141,15 @@ export default function DashboardPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">UPTIME MÉDIO</p>
+                <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
+                  UPTIME MÉDIO
+                </p>
                 <p className="text-3xl font-bold text-blue-600">99.2%</p>
                 <div className="flex items-center gap-1">
                   <TrendingUp className="w-3 h-3 text-green-600" />
-                  <p className="text-xs text-green-600">+0.3% vs mês anterior</p>
+                  <p className="text-xs text-green-600">
+                    +0.3% vs mês anterior
+                  </p>
                 </div>
               </div>
               <Activity className="w-8 h-8 text-blue-600" />
@@ -96,7 +161,9 @@ export default function DashboardPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">TEMPO RESPOSTA</p>
+                <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
+                  TEMPO RESPOSTA
+                </p>
                 <p className="text-3xl font-bold text-blue-600">245ms</p>
                 <div className="flex items-center gap-1">
                   <TrendingDown className="w-3 h-3 text-green-600" />
@@ -127,21 +194,35 @@ export default function DashboardPage() {
                   <div className="flex items-center gap-3">
                     <Server className="w-5 h-5 text-neutral-600 dark:text-neutral-400" />
                     <div>
-                      <h3 className="font-medium text-neutral-800 dark:text-neutral-200">{system.name}</h3>
-                      <p className="text-sm text-neutral-600 dark:text-neutral-400">{system.type}</p>
+                      <h3 className="font-medium text-neutral-800 dark:text-neutral-200">
+                        {system.name}
+                      </h3>
+                      <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                        {system.type}
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="text-right">
-                      <p className="text-sm font-medium text-neutral-800 dark:text-neutral-200">{system.uptime}%</p>
+                      <p className="text-sm font-medium text-neutral-800 dark:text-neutral-200">
+                        {system.uptime}%
+                      </p>
                       <p className="text-xs text-neutral-500">Uptime</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm text-neutral-600 dark:text-neutral-400">{system.lastCheck}</p>
-                      <p className="text-xs text-neutral-500">Última verificação</p>
+                      <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                        {system.lastCheck}
+                      </p>
+                      <p className="text-xs text-neutral-500">
+                        Última verificação
+                      </p>
                     </div>
                     <Badge className={getStatusColor(system.status)}>
-                      {system.status === "online" ? "Online" : system.status === "warning" ? "Aviso" : "Offline"}
+                      {system.status === "online"
+                        ? "Online"
+                        : system.status === "warning"
+                          ? "Aviso"
+                          : "Offline"}
                     </Badge>
                   </div>
                 </div>
@@ -160,15 +241,28 @@ export default function DashboardPage() {
           <CardContent>
             <div className="space-y-4">
               {recentAlerts.map((alert) => (
-                <div key={alert.id} className="border-l-4 border-l-red-500 pl-4 py-2">
+                <div
+                  key={alert.id}
+                  className="border-l-4 border-l-red-500 pl-4 py-2"
+                >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h4 className="font-medium text-neutral-800 dark:text-neutral-200">{alert.system}</h4>
-                      <p className="text-sm text-neutral-600 dark:text-neutral-400">{alert.message}</p>
-                      <p className="text-xs text-neutral-500 mt-1">{alert.time}</p>
+                      <h4 className="font-medium text-neutral-800 dark:text-neutral-200">
+                        {alert.system}
+                      </h4>
+                      <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                        {alert.message}
+                      </p>
+                      <p className="text-xs text-neutral-500 mt-1">
+                        {alert.time}
+                      </p>
                     </div>
                     <Badge className={getSeverityColor(alert.severity)}>
-                      {alert.severity === "critical" ? "Crítico" : alert.severity === "warning" ? "Aviso" : "Info"}
+                      {alert.severity === "critical"
+                        ? "Crítico"
+                        : alert.severity === "warning"
+                          ? "Aviso"
+                          : "Info"}
                     </Badge>
                   </div>
                 </div>
@@ -190,7 +284,10 @@ export default function DashboardPage() {
             {/* Chart Grid */}
             <div className="absolute inset-0 grid grid-cols-12 grid-rows-6 opacity-10">
               {Array.from({ length: 72 }).map((_, i) => (
-                <div key={i} className="border border-neutral-300 dark:border-neutral-600"></div>
+                <div
+                  key={i}
+                  className="border border-neutral-300 dark:border-neutral-600"
+                ></div>
               ))}
             </div>
 
@@ -215,11 +312,15 @@ export default function DashboardPage() {
             <div className="absolute top-4 right-4 space-y-2">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-blue-600 rounded"></div>
-                <span className="text-xs text-neutral-600 dark:text-neutral-400">CPU Médio</span>
+                <span className="text-xs text-neutral-600 dark:text-neutral-400">
+                  CPU Médio
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-1 bg-green-600 rounded"></div>
-                <span className="text-xs text-neutral-600 dark:text-neutral-400">Memória Média</span>
+                <span className="text-xs text-neutral-600 dark:text-neutral-400">
+                  Memória Média
+                </span>
               </div>
             </div>
 
@@ -249,28 +350,42 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-700">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold text-neutral-800 dark:text-neutral-200">SLA Mensal</CardTitle>
+            <CardTitle className="text-lg font-semibold text-neutral-800 dark:text-neutral-200">
+              SLA Mensal
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div>
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm text-neutral-600 dark:text-neutral-400">ERP-PROD</span>
-                  <span className="text-sm font-medium text-green-600">99.8%</span>
+                  <span className="text-sm text-neutral-600 dark:text-neutral-400">
+                    ERP-PROD
+                  </span>
+                  <span className="text-sm font-medium text-green-600">
+                    99.8%
+                  </span>
                 </div>
                 <Progress value={99.8} className="h-2" />
               </div>
               <div>
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm text-neutral-600 dark:text-neutral-400">KIOSKS-API</span>
-                  <span className="text-sm font-medium text-green-600">99.3%</span>
+                  <span className="text-sm text-neutral-600 dark:text-neutral-400">
+                    KIOSKS-API
+                  </span>
+                  <span className="text-sm font-medium text-green-600">
+                    99.3%
+                  </span>
                 </div>
                 <Progress value={99.3} className="h-2" />
               </div>
               <div>
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm text-neutral-600 dark:text-neutral-400">WEB-SERVER</span>
-                  <span className="text-sm font-medium text-green-600">99.9%</span>
+                  <span className="text-sm text-neutral-600 dark:text-neutral-400">
+                    WEB-SERVER
+                  </span>
+                  <span className="text-sm font-medium text-green-600">
+                    99.9%
+                  </span>
                 </div>
                 <Progress value={99.9} className="h-2" />
               </div>
@@ -287,20 +402,36 @@ export default function DashboardPage() {
           <CardContent>
             <div className="space-y-3">
               <div className="flex justify-between items-center">
-                <span className="text-sm text-neutral-600 dark:text-neutral-400">Hardware</span>
-                <span className="text-sm font-medium text-neutral-800 dark:text-neutral-200">2</span>
+                <span className="text-sm text-neutral-600 dark:text-neutral-400">
+                  Hardware
+                </span>
+                <span className="text-sm font-medium text-neutral-800 dark:text-neutral-200">
+                  2
+                </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-neutral-600 dark:text-neutral-400">Rede</span>
-                <span className="text-sm font-medium text-neutral-800 dark:text-neutral-200">5</span>
+                <span className="text-sm text-neutral-600 dark:text-neutral-400">
+                  Rede
+                </span>
+                <span className="text-sm font-medium text-neutral-800 dark:text-neutral-200">
+                  5
+                </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-neutral-600 dark:text-neutral-400">Software</span>
-                <span className="text-sm font-medium text-neutral-800 dark:text-neutral-200">3</span>
+                <span className="text-sm text-neutral-600 dark:text-neutral-400">
+                  Software
+                </span>
+                <span className="text-sm font-medium text-neutral-800 dark:text-neutral-200">
+                  3
+                </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-neutral-600 dark:text-neutral-400">Base de Dados</span>
-                <span className="text-sm font-medium text-neutral-800 dark:text-neutral-200">1</span>
+                <span className="text-sm text-neutral-600 dark:text-neutral-400">
+                  Base de Dados
+                </span>
+                <span className="text-sm font-medium text-neutral-800 dark:text-neutral-200">
+                  1
+                </span>
               </div>
             </div>
           </CardContent>
@@ -317,28 +448,40 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Wifi className="w-4 h-4 text-green-600" />
-                  <span className="text-sm text-neutral-600 dark:text-neutral-400">Internet Principal</span>
+                  <span className="text-sm text-neutral-600 dark:text-neutral-400">
+                    Internet Principal
+                  </span>
                 </div>
-                <Badge className="text-green-600 bg-green-100 dark:bg-green-900/20">Online</Badge>
+                <Badge className="text-green-600 bg-green-100 dark:bg-green-900/20">
+                  Online
+                </Badge>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Wifi className="w-4 h-4 text-green-600" />
-                  <span className="text-sm text-neutral-600 dark:text-neutral-400">Backup ISP</span>
+                  <span className="text-sm text-neutral-600 dark:text-neutral-400">
+                    Backup ISP
+                  </span>
                 </div>
-                <Badge className="text-green-600 bg-green-100 dark:bg-green-900/20">Standby</Badge>
+                <Badge className="text-green-600 bg-green-100 dark:bg-green-900/20">
+                  Standby
+                </Badge>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Wifi className="w-4 h-4 text-yellow-600" />
-                  <span className="text-sm text-neutral-600 dark:text-neutral-400">VPN Corporativa</span>
+                  <span className="text-sm text-neutral-600 dark:text-neutral-400">
+                    VPN Corporativa
+                  </span>
                 </div>
-                <Badge className="text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20">Lenta</Badge>
+                <Badge className="text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20">
+                  Lenta
+                </Badge>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
     </div>
-  )
+  );
 }

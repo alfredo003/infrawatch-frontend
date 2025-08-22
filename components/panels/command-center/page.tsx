@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function CommandCenterPage() {
   return (
@@ -10,20 +10,28 @@ export default function CommandCenterPage() {
         {/* Agent Status Overview */}
         <Card className="lg:col-span-4 bg-white dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-neutral-700 dark:text-neutral-300 tracking-wider">ALOCAÇÃO DE AGENTES</CardTitle>
+            <CardTitle className="text-sm font-medium text-neutral-700 dark:text-neutral-300 tracking-wider">
+              ALOCAÇÃO DE AGENTES
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-3 gap-4 mb-6">
               <div className="text-center">
-                <div className="text-2xl font-bold text-black dark:text-white font-mono">190</div>
+                <div className="text-2xl font-bold text-black dark:text-white font-mono">
+                  190
+                </div>
                 <div className="text-xs text-neutral-500">Campo Ativo</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-black dark:text-white font-mono">990</div>
+                <div className="text-2xl font-bold text-black dark:text-white font-mono">
+                  990
+                </div>
                 <div className="text-xs text-neutral-500">Infiltrados</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-black dark:text-white font-mono">290</div>
+                <div className="text-2xl font-bold text-black dark:text-white font-mono">
+                  290
+                </div>
                 <div className="text-xs text-neutral-500">Treinamento</div>
               </div>
             </div>
@@ -31,9 +39,17 @@ export default function CommandCenterPage() {
             <div className="space-y-2">
               {[
                 { id: "G-078W", name: "ESPÍRITO VINGATIVO", status: "active" },
-                { id: "G-079X", name: "SENTINELA OBSIDIANA", status: "standby" },
+                {
+                  id: "G-079X",
+                  name: "SENTINELA OBSIDIANA",
+                  status: "standby",
+                },
                 { id: "G-080Y", name: "FÚRIA FANTASMA", status: "active" },
-                { id: "G-081Z", name: "VINGADOR MALDITO", status: "compromised" },
+                {
+                  id: "G-081Z",
+                  name: "VINGADOR MALDITO",
+                  status: "compromised",
+                },
               ].map((agent) => (
                 <div
                   key={agent.id}
@@ -50,8 +66,12 @@ export default function CommandCenterPage() {
                       }`}
                     ></div>
                     <div>
-                      <div className="text-xs text-black dark:text-white font-mono">{agent.id}</div>
-                      <div className="text-xs text-neutral-500">{agent.name}</div>
+                      <div className="text-xs text-black dark:text-white font-mono">
+                        {agent.id}
+                      </div>
+                      <div className="text-xs text-neutral-500">
+                        {agent.name}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -63,7 +83,9 @@ export default function CommandCenterPage() {
         {/* Activity Log */}
         <Card className="lg:col-span-4 bg-white dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-neutral-700 dark:text-neutral-300 tracking-wider">REGISTRO DE ATIVIDADES</CardTitle>
+            <CardTitle className="text-sm font-medium text-neutral-700 dark:text-neutral-300 tracking-wider">
+              REGISTRO DE ATIVIDADES
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3 max-h-80 overflow-y-auto">
@@ -110,12 +132,21 @@ export default function CommandCenterPage() {
                 >
                   <div className="text-neutral-500 font-mono">{log.time}</div>
                   <div className="text-black dark:text-white">
-                    Agente <span className="text-orange-500 font-mono">{log.agent}</span> {log.action}{" "}
-                    <span className="text-black dark:text-white font-mono">{log.location}</span>
+                    Agente{" "}
+                    <span className="text-orange-500 font-mono">
+                      {log.agent}
+                    </span>{" "}
+                    {log.action}{" "}
+                    <span className="text-black dark:text-white font-mono">
+                      {log.location}
+                    </span>
                     {log.target && (
                       <span>
                         {" "}
-                        com agente <span className="text-orange-500 font-mono">{log.target}</span>
+                        com agente{" "}
+                        <span className="text-orange-500 font-mono">
+                          {log.target}
+                        </span>
                       </span>
                     )}
                   </div>
@@ -151,11 +182,19 @@ export default function CommandCenterPage() {
               <div className="flex justify-between">
                 <span># 2025-06-17 14:23 UTC</span>
               </div>
-              <div className="text-black dark:text-white">{"> [AGT:gh0stfire] ::: INIT >> ^^^ carregando canal seguro"}</div>
-              <div className="text-orange-500">{"> CH#2 | 1231.9082464.500...xR3"}</div>
-              <div className="text-black dark:text-white">{"> CHAVE BLOQUEADA"}</div>
+              <div className="text-black dark:text-white">
+                {"> [AGT:gh0stfire] ::: INIT >> ^^^ carregando canal seguro"}
+              </div>
+              <div className="text-orange-500">
+                {"> CH#2 | 1231.9082464.500...xR3"}
+              </div>
+              <div className="text-black dark:text-white">
+                {"> CHAVE BLOQUEADA"}
+              </div>
               <div className="text-neutral-400">
-                {'> MSG >> "...substituição de missão iniciada... aguardando autorização do nó delta"'}
+                {
+                  '> MSG >> "...substituição de missão iniciada... aguardando autorização do nó delta"'
+                }
               </div>
             </div>
           </CardContent>
@@ -173,7 +212,10 @@ export default function CommandCenterPage() {
               {/* Chart Grid */}
               <div className="absolute inset-0 grid grid-cols-8 grid-rows-6 opacity-20">
                 {Array.from({ length: 48 }).map((_, i) => (
-                  <div key={i} className="border border-neutral-400 dark:border-neutral-700"></div>
+                  <div
+                    key={i}
+                    className="border border-neutral-400 dark:border-neutral-700"
+                  ></div>
                 ))}
               </div>
 
@@ -215,27 +257,37 @@ export default function CommandCenterPage() {
         {/* Mission Information */}
         <Card className="lg:col-span-4 bg-white dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-neutral-700 dark:text-neutral-300 tracking-wider">INFORMAÇÕES DE MISSÃO</CardTitle>
+            <CardTitle className="text-sm font-medium text-neutral-700 dark:text-neutral-300 tracking-wider">
+              INFORMAÇÕES DE MISSÃO
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-2 h-2 bg-orange-500 dark:bg-white rounded-full"></div>
-                  <span className="text-xs text-black dark:text-white font-medium">Missões Bem-sucedidas</span>
+                  <span className="text-xs text-black dark:text-white font-medium">
+                    Missões Bem-sucedidas
+                  </span>
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between text-xs">
                     <span className="text-neutral-400">Missão Alto Risco</span>
-                    <span className="text-black dark:text-white font-bold font-mono">190</span>
+                    <span className="text-black dark:text-white font-bold font-mono">
+                      190
+                    </span>
                   </div>
                   <div className="flex justify-between text-xs">
                     <span className="text-neutral-400">Missão Médio Risco</span>
-                    <span className="text-black dark:text-white font-bold font-mono">426</span>
+                    <span className="text-black dark:text-white font-bold font-mono">
+                      426
+                    </span>
                   </div>
                   <div className="flex justify-between text-xs">
                     <span className="text-neutral-400">Missão Baixo Risco</span>
-                    <span className="text-black dark:text-white font-bold font-mono">920</span>
+                    <span className="text-black dark:text-white font-bold font-mono">
+                      920
+                    </span>
                   </div>
                 </div>
               </div>
@@ -243,20 +295,28 @@ export default function CommandCenterPage() {
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                  <span className="text-xs text-red-500 font-medium">Missões Falhadas</span>
+                  <span className="text-xs text-red-500 font-medium">
+                    Missões Falhadas
+                  </span>
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between text-xs">
                     <span className="text-neutral-400">Missão Alto Risco</span>
-                    <span className="text-black dark:text-white font-bold font-mono">12</span>
+                    <span className="text-black dark:text-white font-bold font-mono">
+                      12
+                    </span>
                   </div>
                   <div className="flex justify-between text-xs">
                     <span className="text-neutral-400">Missão Médio Risco</span>
-                    <span className="text-black dark:text-white font-bold font-mono">8</span>
+                    <span className="text-black dark:text-white font-bold font-mono">
+                      8
+                    </span>
                   </div>
                   <div className="flex justify-between text-xs">
                     <span className="text-neutral-400">Missão Baixo Risco</span>
-                    <span className="text-black dark:text-white font-bold font-mono">3</span>
+                    <span className="text-black dark:text-white font-bold font-mono">
+                      3
+                    </span>
                   </div>
                 </div>
               </div>
@@ -265,5 +325,5 @@ export default function CommandCenterPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

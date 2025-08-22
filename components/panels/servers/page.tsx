@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { Search, Filter, Server, Cpu, HardDrive, Activity } from "lucide-react"
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Search, Filter, Server, Cpu, HardDrive, Activity } from "lucide-react";
 
 export default function ServersPage() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedServer, setSelectedServer] = useState(null)
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedServer, setSelectedServer] = useState(null);
 
   const servers = [
     {
@@ -61,40 +61,47 @@ export default function ServersPage() {
       lastCheck: "5m atrás",
       type: "Servidor de Backup",
     },
-  ]
+  ];
 
   const getStatusColor = (status) => {
     switch (status) {
       case "online":
-        return "text-green-600 bg-green-100 dark:bg-green-900/20"
+        return "text-green-600 bg-green-100 dark:bg-green-900/20";
       case "warning":
-        return "text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20"
+        return "text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20";
       case "offline":
-        return "text-red-600 bg-red-100 dark:bg-red-900/20"
+        return "text-red-600 bg-red-100 dark:bg-red-900/20";
       default:
-        return "text-gray-600 bg-gray-100 dark:bg-gray-900/20"
+        return "text-gray-600 bg-gray-100 dark:bg-gray-900/20";
     }
-  }
+  };
 
   const filteredServers = servers.filter(
     (server) =>
       server.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       server.type.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+  );
 
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">Monitoramento de Servidores</h1>
+          <h1 className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">
+            Monitoramento de Servidores
+          </h1>
           <p className="text-sm text-neutral-600 dark:text-neutral-400">
             Gestão e monitoramento de servidores corporativos
           </p>
         </div>
         <div className="flex gap-2">
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white">Adicionar Servidor</Button>
-          <Button variant="outline" className="border-neutral-300 dark:border-neutral-600 bg-transparent">
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+            Adicionar Servidor
+          </Button>
+          <Button
+            variant="outline"
+            className="border-neutral-300 dark:border-neutral-600 bg-transparent"
+          >
             <Filter className="w-4 h-4 mr-2" />
             Filtrar
           </Button>
@@ -121,7 +128,9 @@ export default function ServersPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-neutral-600 dark:text-neutral-400 tracking-wider">SERVIDORES ONLINE</p>
+                <p className="text-xs text-neutral-600 dark:text-neutral-400 tracking-wider">
+                  SERVIDORES ONLINE
+                </p>
                 <p className="text-2xl font-bold text-green-600 font-mono">3</p>
               </div>
               <Server className="w-8 h-8 text-green-600" />
@@ -133,8 +142,12 @@ export default function ServersPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-neutral-600 dark:text-neutral-400 tracking-wider">COM AVISOS</p>
-                <p className="text-2xl font-bold text-yellow-600 font-mono">1</p>
+                <p className="text-xs text-neutral-600 dark:text-neutral-400 tracking-wider">
+                  COM AVISOS
+                </p>
+                <p className="text-2xl font-bold text-yellow-600 font-mono">
+                  1
+                </p>
               </div>
               <Activity className="w-8 h-8 text-yellow-600" />
             </div>
@@ -145,7 +158,9 @@ export default function ServersPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-neutral-600 dark:text-neutral-400 tracking-wider">OFFLINE</p>
+                <p className="text-xs text-neutral-600 dark:text-neutral-400 tracking-wider">
+                  OFFLINE
+                </p>
                 <p className="text-2xl font-bold text-red-600 font-mono">1</p>
               </div>
               <Server className="w-8 h-8 text-red-600" />
@@ -170,11 +185,17 @@ export default function ServersPage() {
                     <CardTitle className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
                       {server.name}
                     </CardTitle>
-                    <p className="text-sm text-neutral-600 dark:text-neutral-400">{server.type}</p>
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                      {server.type}
+                    </p>
                   </div>
                 </div>
                 <Badge className={getStatusColor(server.status)}>
-                  {server.status === "online" ? "Online" : server.status === "warning" ? "Aviso" : "Offline"}
+                  {server.status === "online"
+                    ? "Online"
+                    : server.status === "warning"
+                      ? "Aviso"
+                      : "Offline"}
                 </Badge>
               </div>
             </CardHeader>
@@ -183,41 +204,63 @@ export default function ServersPage() {
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     <Cpu className="w-3 h-3 text-neutral-400" />
-                    <span className="text-neutral-600 dark:text-neutral-400">CPU</span>
+                    <span className="text-neutral-600 dark:text-neutral-400">
+                      CPU
+                    </span>
                   </div>
-                  <div className="text-neutral-800 dark:text-neutral-200 font-mono">{server.cpu}%</div>
+                  <div className="text-neutral-800 dark:text-neutral-200 font-mono">
+                    {server.cpu}%
+                  </div>
                   <Progress value={server.cpu} className="h-1 mt-1" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     <Activity className="w-3 h-3 text-neutral-400" />
-                    <span className="text-neutral-600 dark:text-neutral-400">Memória</span>
+                    <span className="text-neutral-600 dark:text-neutral-400">
+                      Memória
+                    </span>
                   </div>
-                  <div className="text-neutral-800 dark:text-neutral-200 font-mono">{server.memory}%</div>
+                  <div className="text-neutral-800 dark:text-neutral-200 font-mono">
+                    {server.memory}%
+                  </div>
                   <Progress value={server.memory} className="h-1 mt-1" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     <HardDrive className="w-3 h-3 text-neutral-400" />
-                    <span className="text-neutral-600 dark:text-neutral-400">Disco</span>
+                    <span className="text-neutral-600 dark:text-neutral-400">
+                      Disco
+                    </span>
                   </div>
-                  <div className="text-neutral-800 dark:text-neutral-200 font-mono">{server.storage}%</div>
+                  <div className="text-neutral-800 dark:text-neutral-200 font-mono">
+                    {server.storage}%
+                  </div>
                   <Progress value={server.storage} className="h-1 mt-1" />
                 </div>
               </div>
 
               <div className="flex justify-between items-center text-sm">
                 <div>
-                  <span className="text-neutral-600 dark:text-neutral-400">Uptime: </span>
-                  <span className="text-neutral-800 dark:text-neutral-200 font-mono">{server.uptime}%</span>
+                  <span className="text-neutral-600 dark:text-neutral-400">
+                    Uptime:{" "}
+                  </span>
+                  <span className="text-neutral-800 dark:text-neutral-200 font-mono">
+                    {server.uptime}%
+                  </span>
                 </div>
                 <div>
-                  <span className="text-neutral-600 dark:text-neutral-400">Última verificação: </span>
-                  <span className="text-neutral-800 dark:text-neutral-200">{server.lastCheck}</span>
+                  <span className="text-neutral-600 dark:text-neutral-400">
+                    Última verificação:{" "}
+                  </span>
+                  <span className="text-neutral-800 dark:text-neutral-200">
+                    {server.lastCheck}
+                  </span>
                 </div>
               </div>
 
-              <div className="text-sm text-neutral-600 dark:text-neutral-400">📍 {server.location}</div>
+              <div className="text-sm text-neutral-600 dark:text-neutral-400">
+                📍 {server.location}
+              </div>
             </CardContent>
           </Card>
         ))}
@@ -247,7 +290,9 @@ export default function ServersPage() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-1">STATUS</p>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-1">
+                    STATUS
+                  </p>
                   <Badge className={getStatusColor(selectedServer.status)}>
                     {selectedServer.status === "online"
                       ? "Online"
@@ -257,24 +302,44 @@ export default function ServersPage() {
                   </Badge>
                 </div>
                 <div>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-1">LOCALIZAÇÃO</p>
-                  <p className="text-sm text-neutral-800 dark:text-neutral-200">{selectedServer.location}</p>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-1">
+                    LOCALIZAÇÃO
+                  </p>
+                  <p className="text-sm text-neutral-800 dark:text-neutral-200">
+                    {selectedServer.location}
+                  </p>
                 </div>
                 <div>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-1">UPTIME</p>
-                  <p className="text-sm text-neutral-800 dark:text-neutral-200 font-mono">{selectedServer.uptime}%</p>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-1">
+                    UPTIME
+                  </p>
+                  <p className="text-sm text-neutral-800 dark:text-neutral-200 font-mono">
+                    {selectedServer.uptime}%
+                  </p>
                 </div>
                 <div>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-1">ÚLTIMA VERIFICAÇÃO</p>
-                  <p className="text-sm text-neutral-800 dark:text-neutral-200">{selectedServer.lastCheck}</p>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-1">
+                    ÚLTIMA VERIFICAÇÃO
+                  </p>
+                  <p className="text-sm text-neutral-800 dark:text-neutral-200">
+                    {selectedServer.lastCheck}
+                  </p>
                 </div>
               </div>
               <div className="flex gap-2 pt-4">
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white">Ver Logs</Button>
-                <Button variant="outline" className="border-neutral-300 dark:border-neutral-600 bg-transparent">
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                  Ver Logs
+                </Button>
+                <Button
+                  variant="outline"
+                  className="border-neutral-300 dark:border-neutral-600 bg-transparent"
+                >
                   Reiniciar
                 </Button>
-                <Button variant="outline" className="border-neutral-300 dark:border-neutral-600 bg-transparent">
+                <Button
+                  variant="outline"
+                  className="border-neutral-300 dark:border-neutral-600 bg-transparent"
+                >
                   Configurar
                 </Button>
               </div>
@@ -283,5 +348,5 @@ export default function ServersPage() {
         </div>
       )}
     </div>
-  )
+  );
 }

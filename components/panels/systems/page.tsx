@@ -1,30 +1,54 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Plus, Settings, Monitor, Server, Network, Globe, Database, Shield, AlertTriangle, Edit, Trash2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Textarea } from "@/components/ui/textarea"
-import { useToast } from "@/hooks/use-toast"
+import { useState } from "react";
+import {
+  Plus,
+  Settings,
+  Monitor,
+  Server,
+  Network,
+  Globe,
+  Database,
+  Shield,
+  AlertTriangle,
+  Edit,
+  Trash2,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 
 interface System {
-  id: string
-  name: string
-  id_type: string
-  connection_type: string
-  status: string
-  criticality_level: number
-  check_interval: number
-  owner_user_id: string
-  target: string
-  company_id: string
-  createdAt: string
+  id: string;
+  name: string;
+  id_type: string;
+  connection_type: string;
+  status: string;
+  criticality_level: number;
+  check_interval: number;
+  owner_user_id: string;
+  target: string;
+  company_id: string;
+  createdAt: string;
 }
 
 const SYSTEM_TYPES = [
@@ -36,7 +60,7 @@ const SYSTEM_TYPES = [
   { value: "monitoring", label: "Sistema de Monitoramento" },
   { value: "backup", label: "Sistema de Backup" },
   { value: "security", label: "Sistema de Segurança" },
-]
+];
 
 const CONNECTION_TYPES = [
   { value: "ping", label: "Ping" },
@@ -47,14 +71,14 @@ const CONNECTION_TYPES = [
   { value: "http", label: "HTTP/HTTPS" },
   { value: "ssh", label: "SSH" },
   { value: "database", label: "Database Connection" },
-]
+];
 
 const STATUS_OPTIONS = [
   { value: "funcionando", label: "Funcionando", color: "green" },
   { value: "manutencao", label: "Em Manutenção", color: "yellow" },
   { value: "down", label: "Fora do Ar", color: "red" },
   { value: "alerta", label: "Em Alerta", color: "orange" },
-]
+];
 
 export default function SystemsPage() {
   const [systems, setSystems] = useState<System[]>([
@@ -69,12 +93,12 @@ export default function SystemsPage() {
       owner_user_id: "user-123",
       target: "https://www.example.com",
       company_id: "company-1",
-      createdAt: "2024-01-15"
+      createdAt: "2024-01-15",
     },
     {
       id: "2",
       name: "Banco de Dados MySQL",
-      id_type: "database", 
+      id_type: "database",
       connection_type: "database",
       status: "funcionando",
       criticality_level: 5,
@@ -82,12 +106,12 @@ export default function SystemsPage() {
       owner_user_id: "user-456",
       target: "mysql://db.example.com:3306",
       company_id: "company-1",
-      createdAt: "2024-01-10"
-    }
-  ])
+      createdAt: "2024-01-10",
+    },
+  ]);
 
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [editingSystem, setEditingSystem] = useState<System | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingSystem, setEditingSystem] = useState<System | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     id_type: "",
@@ -97,10 +121,10 @@ export default function SystemsPage() {
     check_interval: 60,
     owner_user_id: "",
     target: "",
-    company_id: ""
-  })
+    company_id: "",
+  });
 
-  const { toast } = useToast()
+  const { toast } = useToast();
 
   const resetForm = () => {
     setFormData({
@@ -112,14 +136,14 @@ export default function SystemsPage() {
       check_interval: 60,
       owner_user_id: "",
       target: "",
-      company_id: ""
-    })
-    setEditingSystem(null)
-  }
+      company_id: "",
+    });
+    setEditingSystem(null);
+  };
 
   const openModal = (system?: System) => {
     if (system) {
-      setEditingSystem(system)
+      setEditingSystem(system);
       setFormData({
         name: system.name,
         id_type: system.id_type,
@@ -129,69 +153,74 @@ export default function SystemsPage() {
         check_interval: system.check_interval,
         owner_user_id: system.owner_user_id,
         target: system.target,
-        company_id: system.company_id
-      })
+        company_id: system.company_id,
+      });
     } else {
-      resetForm()
+      resetForm();
     }
-    setIsModalOpen(true)
-  }
+    setIsModalOpen(true);
+  };
 
   const closeModal = () => {
-    setIsModalOpen(false)
-    resetForm()
-  }
+    setIsModalOpen(false);
+    resetForm();
+  };
 
   const handleSubmit = () => {
-    if (!formData.name || !formData.id_type || !formData.connection_type || !formData.target) {
+    if (
+      !formData.name ||
+      !formData.id_type ||
+      !formData.connection_type ||
+      !formData.target
+    ) {
       toast({
         title: "Erro",
         description: "Preencha todos os campos obrigatórios",
-        variant: "destructive"
-      })
-      return
+        variant: "destructive",
+      });
+      return;
     }
 
     if (editingSystem) {
-      setSystems(prev => prev.map(system => 
-        system.id === editingSystem.id 
-          ? { ...system, ...formData }
-          : system
-      ))
+      setSystems((prev) =>
+        prev.map((system) =>
+          system.id === editingSystem.id ? { ...system, ...formData } : system,
+        ),
+      );
       toast({
         title: "Sistema atualizado",
-        description: "O sistema foi atualizado com sucesso"
-      })
+        description: "O sistema foi atualizado com sucesso",
+      });
     } else {
       const newSystem: System = {
         id: Date.now().toString(),
         ...formData,
-        createdAt: new Date().toISOString().split('T')[0]
-      }
-      setSystems(prev => [...prev, newSystem])
+        createdAt: new Date().toISOString().split("T")[0],
+      };
+      setSystems((prev) => [...prev, newSystem]);
       toast({
         title: "Sistema cadastrado",
-        description: "O novo sistema foi cadastrado com sucesso"
-      })
+        description: "O novo sistema foi cadastrado com sucesso",
+      });
     }
 
-    closeModal()
-  }
+    closeModal();
+  };
 
   const handleDelete = (systemId: string) => {
     if (confirm("Tem certeza que deseja excluir este sistema?")) {
-      setSystems(prev => prev.filter(system => system.id !== systemId))
+      setSystems((prev) => prev.filter((system) => system.id !== systemId));
       toast({
         title: "Sistema excluído",
-        description: "O sistema foi excluído com sucesso"
-      })
+        description: "O sistema foi excluído com sucesso",
+      });
     }
-  }
+  };
 
   const getStatusColor = (status: string) => {
-    const statusOption = STATUS_OPTIONS.find(opt => opt.value === status)
-    return statusOption?.color || "gray"
-  }
+    const statusOption = STATUS_OPTIONS.find((opt) => opt.value === status);
+    return statusOption?.color || "gray";
+  };
 
   return (
     <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white p-6">
@@ -199,27 +228,32 @@ export default function SystemsPage() {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-blue-600 dark:text-blue-400">SISTEMAS</h1>
+            <h1 className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+              SISTEMAS
+            </h1>
             <p className="text-neutral-600 dark:text-neutral-400 mt-2">
               Gerencie os diferentes tipos de sistemas monitorados
             </p>
           </div>
-          
+
           <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
             <DialogTrigger asChild>
-              <Button onClick={() => openModal()} className="bg-blue-600 hover:bg-blue-700">
+              <Button
+                onClick={() => openModal()}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
                 <Plus className="w-4 h-4 mr-2" />
                 Novo Sistema
               </Button>
             </DialogTrigger>
-            
+
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>
                   {editingSystem ? "Editar Sistema" : "Cadastrar Novo Sistema"}
                 </DialogTitle>
               </DialogHeader>
-              
+
               <div className="space-y-6 py-4">
                 {/* Nome do Sistema */}
                 <div className="space-y-2">
@@ -227,7 +261,9 @@ export default function SystemsPage() {
                   <Input
                     id="name"
                     value={formData.name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, name: e.target.value }))
+                    }
                     placeholder="Ex: Servidor Web Principal"
                   />
                 </div>
@@ -235,7 +271,12 @@ export default function SystemsPage() {
                 {/* Tipo do Sistema */}
                 <div className="space-y-2">
                   <Label>Tipo do Sistema *</Label>
-                  <Select value={formData.id_type} onValueChange={(value) => setFormData(prev => ({ ...prev, id_type: value }))}>
+                  <Select
+                    value={formData.id_type}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({ ...prev, id_type: value }))
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione o tipo" />
                     </SelectTrigger>
@@ -252,7 +293,15 @@ export default function SystemsPage() {
                 {/* Tipo de Conexão */}
                 <div className="space-y-2">
                   <Label>Tipo de Conexão *</Label>
-                  <Select value={formData.connection_type} onValueChange={(value) => setFormData(prev => ({ ...prev, connection_type: value }))}>
+                  <Select
+                    value={formData.connection_type}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        connection_type: value,
+                      }))
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione o tipo de conexão" />
                     </SelectTrigger>
@@ -272,7 +321,12 @@ export default function SystemsPage() {
                   <Input
                     id="target"
                     value={formData.target}
-                    onChange={(e) => setFormData(prev => ({ ...prev, target: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        target: e.target.value,
+                      }))
+                    }
                     placeholder="Ex: https://api.example.com ou 192.168.1.100"
                   />
                 </div>
@@ -280,7 +334,12 @@ export default function SystemsPage() {
                 {/* Status */}
                 <div className="space-y-2">
                   <Label>Status</Label>
-                  <Select value={formData.status} onValueChange={(value) => setFormData(prev => ({ ...prev, status: value }))}>
+                  <Select
+                    value={formData.status}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({ ...prev, status: value }))
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -296,26 +355,40 @@ export default function SystemsPage() {
 
                 {/* Nível de Criticidade */}
                 <div className="space-y-2">
-                  <Label htmlFor="criticality">Nível de Criticidade (1-5)</Label>
+                  <Label htmlFor="criticality">
+                    Nível de Criticidade (1-5)
+                  </Label>
                   <Input
                     id="criticality"
                     type="number"
                     min="1"
                     max="5"
                     value={formData.criticality_level}
-                    onChange={(e) => setFormData(prev => ({ ...prev, criticality_level: parseInt(e.target.value) || 1 }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        criticality_level: parseInt(e.target.value) || 1,
+                      }))
+                    }
                   />
                 </div>
 
                 {/* Intervalo de Checagem */}
                 <div className="space-y-2">
-                  <Label htmlFor="interval">Intervalo de Checagem (segundos)</Label>
+                  <Label htmlFor="interval">
+                    Intervalo de Checagem (segundos)
+                  </Label>
                   <Input
                     id="interval"
                     type="number"
                     min="30"
                     value={formData.check_interval}
-                    onChange={(e) => setFormData(prev => ({ ...prev, check_interval: parseInt(e.target.value) || 60 }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        check_interval: parseInt(e.target.value) || 60,
+                      }))
+                    }
                   />
                 </div>
 
@@ -325,7 +398,12 @@ export default function SystemsPage() {
                   <Input
                     id="owner"
                     value={formData.owner_user_id}
-                    onChange={(e) => setFormData(prev => ({ ...prev, owner_user_id: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        owner_user_id: e.target.value,
+                      }))
+                    }
                     placeholder="UUID do usuário responsável"
                   />
                 </div>
@@ -336,17 +414,29 @@ export default function SystemsPage() {
                   <Input
                     id="company"
                     value={formData.company_id}
-                    onChange={(e) => setFormData(prev => ({ ...prev, company_id: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        company_id: e.target.value,
+                      }))
+                    }
                     placeholder="ID da empresa proprietária"
                   />
                 </div>
 
                 {/* Botões */}
                 <div className="flex gap-3 pt-4">
-                  <Button onClick={handleSubmit} className="flex-1 bg-blue-600 hover:bg-blue-700">
+                  <Button
+                    onClick={handleSubmit}
+                    className="flex-1 bg-blue-600 hover:bg-blue-700"
+                  >
                     {editingSystem ? "Atualizar" : "Cadastrar"}
                   </Button>
-                  <Button onClick={closeModal} variant="outline" className="flex-1">
+                  <Button
+                    onClick={closeModal}
+                    variant="outline"
+                    className="flex-1"
+                  >
                     Cancelar
                   </Button>
                 </div>
@@ -361,8 +451,12 @@ export default function SystemsPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Total de Sistemas</p>
-                  <p className="text-2xl font-bold text-blue-600">{systems.length}</p>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                    Total de Sistemas
+                  </p>
+                  <p className="text-2xl font-bold text-blue-600">
+                    {systems.length}
+                  </p>
                 </div>
                 <Settings className="w-8 h-8 text-blue-600" />
               </div>
@@ -373,9 +467,11 @@ export default function SystemsPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Funcionando</p>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                    Funcionando
+                  </p>
                   <p className="text-2xl font-bold text-green-600">
-                    {systems.filter(s => s.status === "funcionando").length}
+                    {systems.filter((s) => s.status === "funcionando").length}
                   </p>
                 </div>
                 <Monitor className="w-8 h-8 text-green-600" />
@@ -387,9 +483,15 @@ export default function SystemsPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Com Problemas</p>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                    Com Problemas
+                  </p>
                   <p className="text-2xl font-bold text-red-600">
-                    {systems.filter(s => s.status === "down" || s.status === "alerta").length}
+                    {
+                      systems.filter(
+                        (s) => s.status === "down" || s.status === "alerta",
+                      ).length
+                    }
                   </p>
                 </div>
                 <AlertTriangle className="w-8 h-8 text-red-600" />
@@ -401,9 +503,11 @@ export default function SystemsPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Críticos (Nível 5)</p>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                    Críticos (Nível 5)
+                  </p>
                   <p className="text-2xl font-bold text-purple-600">
-                    {systems.filter(s => s.criticality_level === 5).length}
+                    {systems.filter((s) => s.criticality_level === 5).length}
                   </p>
                 </div>
                 <Shield className="w-8 h-8 text-purple-600" />
@@ -415,12 +519,19 @@ export default function SystemsPage() {
         {/* Lista de Sistemas */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {systems.map((system) => {
-            const systemType = SYSTEM_TYPES.find(type => type.value === system.id_type)
-            const connectionType = CONNECTION_TYPES.find(type => type.value === system.connection_type)
-            const statusColor = getStatusColor(system.status)
-            
+            const systemType = SYSTEM_TYPES.find(
+              (type) => type.value === system.id_type,
+            );
+            const connectionType = CONNECTION_TYPES.find(
+              (type) => type.value === system.connection_type,
+            );
+            const statusColor = getStatusColor(system.status);
+
             return (
-              <Card key={system.id} className="hover:shadow-lg transition-shadow">
+              <Card
+                key={system.id}
+                className="hover:shadow-lg transition-shadow"
+              >
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
@@ -432,29 +543,40 @@ export default function SystemsPage() {
                         </p>
                       </div>
                     </div>
-                    <Badge 
-                      variant="outline" 
+                    <Badge
+                      variant="outline"
                       className={`${
-                        statusColor === 'green' ? 'border-green-500 text-green-600' :
-                        statusColor === 'red' ? 'border-red-500 text-red-600' :
-                        statusColor === 'yellow' ? 'border-yellow-500 text-yellow-600' :
-                        statusColor === 'orange' ? 'border-orange-500 text-orange-600' :
-                        'border-gray-500 text-gray-600'
+                        statusColor === "green"
+                          ? "border-green-500 text-green-600"
+                          : statusColor === "red"
+                            ? "border-red-500 text-red-600"
+                            : statusColor === "yellow"
+                              ? "border-yellow-500 text-yellow-600"
+                              : statusColor === "orange"
+                                ? "border-orange-500 text-orange-600"
+                                : "border-gray-500 text-gray-600"
                       }`}
                     >
-                      {STATUS_OPTIONS.find(opt => opt.value === system.status)?.label || system.status}
+                      {STATUS_OPTIONS.find((opt) => opt.value === system.status)
+                        ?.label || system.status}
                     </Badge>
                   </div>
                 </CardHeader>
-                
+
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div>
-                      <span className="text-neutral-600 dark:text-neutral-400">Conexão:</span>
-                      <p className="font-medium">{connectionType?.label || system.connection_type}</p>
+                      <span className="text-neutral-600 dark:text-neutral-400">
+                        Conexão:
+                      </span>
+                      <p className="font-medium">
+                        {connectionType?.label || system.connection_type}
+                      </p>
                     </div>
                     <div>
-                      <span className="text-neutral-600 dark:text-neutral-400">Criticidade:</span>
+                      <span className="text-neutral-600 dark:text-neutral-400">
+                        Criticidade:
+                      </span>
                       <p className="font-medium">
                         Nível {system.criticality_level}
                         {system.criticality_level === 5 && " 🔴"}
@@ -464,24 +586,27 @@ export default function SystemsPage() {
                       </p>
                     </div>
                   </div>
-                  
+
                   <div>
-                    <span className="text-xs text-neutral-600 dark:text-neutral-400">Target:</span>
+                    <span className="text-xs text-neutral-600 dark:text-neutral-400">
+                      Target:
+                    </span>
                     <p className="text-sm font-mono bg-neutral-100 dark:bg-neutral-800 p-2 rounded mt-1 truncate">
                       {system.target}
                     </p>
                   </div>
-                  
+
                   <div className="text-xs text-neutral-500">
                     <p>Intervalo: {system.check_interval}s</p>
                     <p>Responsável: {system.owner_user_id || "Não definido"}</p>
                   </div>
-                  
+
                   <div className="flex items-center justify-between pt-2 border-t">
                     <p className="text-xs text-neutral-500">
-                      Criado em: {new Date(system.createdAt).toLocaleDateString("pt-BR")}
+                      Criado em:{" "}
+                      {new Date(system.createdAt).toLocaleDateString("pt-BR")}
                     </p>
-                    
+
                     <div className="flex gap-2">
                       <Button
                         size="sm"
@@ -502,7 +627,7 @@ export default function SystemsPage() {
                   </div>
                 </CardContent>
               </Card>
-            )
+            );
           })}
         </div>
 
@@ -515,7 +640,10 @@ export default function SystemsPage() {
             <p className="text-neutral-500 mb-4">
               Comece cadastrando seu primeiro sistema para monitoramento
             </p>
-            <Button onClick={() => openModal()} className="bg-blue-600 hover:bg-blue-700">
+            <Button
+              onClick={() => openModal()}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
               <Plus className="w-4 h-4 mr-2" />
               Cadastrar Sistema
             </Button>
@@ -523,5 +651,5 @@ export default function SystemsPage() {
         )}
       </div>
     </div>
-  )
+  );
 }
