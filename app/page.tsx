@@ -39,8 +39,7 @@ export default function InfraWatchDashboard() {
     { id: 5, icon: Settings, label: "INTEGRAÇÕES" },
     { id: 6, icon: AlertTriangle, label: "ALERTAS" },
     { id: 7, icon: Shield, label: "RELATÓRIOS" },
-    { id: 8, icon: Shield, label: "PERFIS" },
-    { id: 9, icon: Shield, label: "REGISTRO" },
+    { id: 8, icon: Shield, label: "PERFIS & PERMISSÕES" },
   ];
 
   useEffect(() => {

@@ -20,7 +20,6 @@ export default function Panel({ active }: { active: number }) {
     <AlertsPage />,
     <ReportsPage />,
 	 <ProfilesPage />,
-	 <RegisterPage />
   ];
 
   return menuItems[active];
