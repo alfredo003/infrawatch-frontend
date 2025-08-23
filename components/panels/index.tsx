@@ -3,11 +3,11 @@ import ServersPage from "@/components/panels/servers/page";
 import NetworkPage from "@/components/panels/network/page";
 import ReportsPage from "@/components/panels/reports/page";
 import SystemsPage from "@/components/panels/systems/page";
-import RegisterPage from "@/components/panels/register/page";
 import DashboardPage from "@/components/panels/dashboard/page";
 import IntegrationsPage from "@/components/panels/integrations/page";
 import ApplicationsPage from "@/components/panels/applications/page";
 import ProfilesPage from "./profile/page";
+import RegisterPage from "./register/page";
 
 export default function Panel({ active }: { active: number }) {
   const menuItems = [
@@ -19,8 +19,8 @@ export default function Panel({ active }: { active: number }) {
     <IntegrationsPage />,
     <AlertsPage />,
     <ReportsPage />,
-    <RegisterPage />,
-	 <ProfilesPage />
+	 <ProfilesPage />,
+	 <RegisterPage />
   ];
 
   return menuItems[active];

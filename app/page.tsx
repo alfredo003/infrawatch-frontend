@@ -39,20 +39,20 @@ export default function InfraWatchDashboard() {
     { id: 5, icon: Settings, label: "INTEGRAÇÕES" },
     { id: 6, icon: AlertTriangle, label: "ALERTAS" },
     { id: 7, icon: Shield, label: "RELATÓRIOS" },
-    { id: 8, icon: Shield, label: "REGISTRO" },
-    { id: 9, icon: Shield, label: "PERFIS" },
+    { id: 8, icon: Shield, label: "PERFIS" },
+    { id: 9, icon: Shield, label: "REGISTRO" },
   ];
 
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  // useEffect(() => {
-  //   if (mounted && !isLoading && !isAuthenticated) {
-  //     router.push('/login')
-  //   }
-  // }, [mounted, isLoading, isAuthenticated, router])
-
+/*
+   useEffect(() => {
+     if (mounted && !isLoading && !isAuthenticated) {
+       router.push('/login')
+     }
+   }, [mounted, isLoading, isAuthenticated, router])
+*/
   const handleLogout = () => {
     // Confirmar logout
     if (confirm("Tem certeza que deseja sair do sistema?")) {

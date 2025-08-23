@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { useToast } from "@/hooks/use-toast"
 import {
   Shield,
   Users,
@@ -38,6 +39,7 @@ interface Profile {
   id: string
   name: string
   description: string
+  email: string
   userCount: number
   permissions: string[]
   isSystem: boolean
@@ -45,11 +47,22 @@ interface Profile {
 }
 
 export default function ProfilesPage() {
+  const { toast } = useToast()
   const [selectedProfile, setSelectedProfile] = useState<Profile | null>(null)
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false)
+  const [editingProfile, setEditingProfile] = useState<Profile | null>(null)
+  const [editProfile, setEditProfile] = useState({
+    name: "",
+    description: "",
+    email: "",
+    permissions: [] as string[],
+  })
   const [newProfile, setNewProfile] = useState({
     name: "",
     description: "",
+    email: "",
     permissions: [] as string[],
   })
 
@@ -133,6 +146,7 @@ export default function ProfilesPage() {
       id: "admin",
       name: "Administrador",
       description: "Acesso completo ao sistema com todas as permissões",
+      email: "admin@infrawatch.com",
       userCount: 3,
       permissions: permissions.map((p) => p.id),
       isSystem: true,
@@ -142,6 +156,7 @@ export default function ProfilesPage() {
       id: "operator",
       name: "Operador",
       description: "Monitora alertas e pode reagir a incidentes",
+      email: "operator@infrawatch.com",
       userCount: 28,
       permissions: ["dashboards.view", "alerts.manage", "reports.view"],
       isSystem: true,
@@ -151,6 +166,7 @@ export default function ProfilesPage() {
       id: "viewer",
       name: "Visualizador",
       description: "Acesso somente leitura aos dashboards e relatórios",
+      email: "viewer@infrawatch.com",
       userCount: 16,
       permissions: ["dashboards.view", "reports.view"],
       isSystem: true,
@@ -160,6 +176,7 @@ export default function ProfilesPage() {
       id: "manager",
       name: "Gestor",
       description: "Perfil personalizado para gestores de equipe",
+      email: "manager@infrawatch.com",
       userCount: 5,
       permissions: ["dashboards.view", "dashboards.edit", "reports.view", "reports.export", "users.edit"],
       isSystem: false,
@@ -180,12 +197,53 @@ export default function ProfilesPage() {
 
   const handleCreateProfile = () => {
     console.log("Creating profile:", newProfile)
+    toast({
+      title: "Perfil criado com sucesso!",
+      description: `O perfil "${newProfile.name}" foi criado e está disponível para uso.`,
+      duration: 5000,
+    })
     setIsCreateDialogOpen(false)
-    setNewProfile({ name: "", description: "", permissions: [] })
+    setNewProfile({ name: "", description: "", email: "", permissions: [] })
   }
 
   const handlePermissionToggle = (permissionId: string) => {
     setNewProfile((prev) => ({
+      ...prev,
+      permissions: prev.permissions.includes(permissionId)
+        ? prev.permissions.filter((id) => id !== permissionId)
+        : [...prev.permissions, permissionId],
+    }))
+  }
+
+  const handleEditProfile = (profile: Profile) => {
+    setEditingProfile(profile)
+    setEditProfile({
+      name: profile.name,
+      description: profile.description,
+      email: profile.email,
+      permissions: [...profile.permissions],
+    })
+    setIsEditDialogOpen(true)
+  }
+
+  const handleViewProfile = (profile: Profile) => {
+    setSelectedProfile(profile)
+    setIsViewDialogOpen(true)
+  }
+
+  const handleSaveEditedProfile = () => {
+    console.log("Saving edited profile:", editProfile)
+    toast({
+      title: "Perfil atualizado com sucesso!",
+      description: `O perfil "${editProfile.name}" foi atualizado.`,
+      duration: 5000,
+    })
+    setIsEditDialogOpen(false)
+    setEditingProfile(null)
+  }
+
+  const handleEditPermissionToggle = (permissionId: string) => {
+    setEditProfile((prev) => ({
       ...prev,
       permissions: prev.permissions.includes(permissionId)
         ? prev.permissions.filter((id) => id !== permissionId)
@@ -221,7 +279,7 @@ export default function ProfilesPage() {
                 <DialogTitle className="text-foreground">Criar Novo Perfil</DialogTitle>
               </DialogHeader>
               <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label className="text-foreground text-sm font-medium uppercase tracking-wide">
                       NOME DO PERFIL
@@ -230,6 +288,16 @@ export default function ProfilesPage() {
                       value={newProfile.name}
                       onChange={(e) => setNewProfile((prev) => ({ ...prev, name: e.target.value }))}
                       placeholder="Ex: Supervisor"
+                      className="bg-background border-border text-foreground hover-blue"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-foreground text-sm font-medium uppercase tracking-wide">EMAIL</Label>
+                    <Input
+                      type="email"
+                      value={newProfile.email}
+                      onChange={(e) => setNewProfile((prev) => ({ ...prev, email: e.target.value }))}
+                      placeholder="email@infrawatch.com"
                       className="bg-background border-border text-foreground hover-blue"
                     />
                   </div>
@@ -353,6 +421,229 @@ export default function ProfilesPage() {
         </Card>
       </div>
 
+      {/* Edit Profile Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="bg-card border-border max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-foreground">Editar Perfil: {editingProfile?.name}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label className="text-foreground text-sm font-medium uppercase tracking-wide">NOME DO PERFIL</Label>
+                <Input
+                  value={editProfile.name}
+                  onChange={(e) => setEditProfile((prev) => ({ ...prev, name: e.target.value }))}
+                  placeholder="Ex: Supervisor"
+                  className="bg-background border-border text-foreground hover-blue"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-foreground text-sm font-medium uppercase tracking-wide">EMAIL</Label>
+                <Input
+                  type="email"
+                  value={editProfile.email}
+                  onChange={(e) => setEditProfile((prev) => ({ ...prev, email: e.target.value }))}
+                  placeholder="email@infrawatch.com"
+                  className="bg-background border-border text-foreground hover-blue"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-foreground text-sm font-medium uppercase tracking-wide">DESCRIÇÃO</Label>
+                <Input
+                  value={editProfile.description}
+                  onChange={(e) => setEditProfile((prev) => ({ ...prev, description: e.target.value }))}
+                  placeholder="Descrição do perfil..."
+                  className="bg-background border-border text-foreground hover-blue"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <Label className="text-foreground text-sm font-medium uppercase tracking-wide">PERMISSÕES</Label>
+              {Object.entries(getPermissionsByCategory()).map(([category, categoryPermissions]) => (
+                <Card key={category} className="bg-muted/50 border-border">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm font-medium text-foreground uppercase tracking-wide">
+                      {category}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {categoryPermissions.map((permission) => (
+                      <div key={permission.id} className="flex items-start space-x-3">
+                        <Checkbox
+                          id={`edit-${permission.id}`}
+                          checked={editProfile.permissions.includes(permission.id)}
+                          onCheckedChange={() => handleEditPermissionToggle(permission.id)}
+                          className="mt-1"
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            {permission.icon}
+                            <Label
+                              htmlFor={`edit-${permission.id}`}
+                              className="text-sm font-medium text-foreground cursor-pointer"
+                            >
+                              {permission.name}
+                            </Label>
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-1">{permission.description}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setIsEditDialogOpen(false)}
+                className="border-border text-foreground hover:bg-accent hover-blue"
+              >
+                Cancelar
+              </Button>
+              <Button
+                onClick={handleSaveEditedProfile}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground hover-blue-bg"
+              >
+                Salvar Alterações
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* View Profile Dialog */}
+      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+        <DialogContent className="bg-card border-border max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-foreground flex items-center gap-3">
+              <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center">
+                <Shield className="w-4 h-4 text-primary" />
+              </div>
+              {selectedProfile?.name}
+              {selectedProfile?.isSystem && <Badge className="bg-primary/20 text-primary text-xs">SISTEMA</Badge>}
+            </DialogTitle>
+          </DialogHeader>
+          {selectedProfile && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card className="bg-muted/50 border-border">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm font-medium text-foreground uppercase tracking-wide">
+                      INFORMAÇÕES GERAIS
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div>
+                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">NOME</Label>
+                      <p className="text-sm font-medium text-foreground">{selectedProfile.name}</p>
+                    </div>
+                    <div>
+                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">EMAIL</Label>
+                      <p className="text-sm font-medium text-foreground">{selectedProfile.email}</p>
+                    </div>
+                    <div>
+                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">DESCRIÇÃO</Label>
+                      <p className="text-sm font-medium text-foreground">{selectedProfile.description}</p>
+                    </div>
+                    <div>
+                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">USUÁRIOS</Label>
+                      <p className="text-sm font-medium text-foreground">{selectedProfile.userCount} usuários ativos</p>
+                    </div>
+                    <div>
+                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">CRIADO EM</Label>
+                      <p className="text-sm text-foreground">
+                        {new Date(selectedProfile.createdAt).toLocaleDateString("pt-BR")}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-muted/50 border-border">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm font-medium text-foreground uppercase tracking-wide">
+                      ESTATÍSTICAS
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground uppercase tracking-wide">PERMISSÕES</span>
+                      <Badge className="bg-primary/20 text-primary text-xs">{selectedProfile.permissions.length}</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground uppercase tracking-wide">TIPO</span>
+                      <Badge
+                        className={
+                          selectedProfile.isSystem ? "bg-primary/20 text-primary" : "bg-green-500/20 text-green-500"
+                        }
+                      >
+                        {selectedProfile.isSystem ? "SISTEMA" : "PERSONALIZADO"}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground uppercase tracking-wide">STATUS</span>
+                      <Badge className="bg-green-500/20 text-green-500">ATIVO</Badge>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <Card className="bg-muted/50 border-border">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm font-medium text-foreground uppercase tracking-wide">
+                    PERMISSÕES DETALHADAS ({selectedProfile.permissions.length})
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {Object.entries(getPermissionsByCategory()).map(([category, categoryPermissions]) => {
+                      const categoryPerms = categoryPermissions.filter((p) =>
+                        selectedProfile.permissions.includes(p.id),
+                      )
+                      if (categoryPerms.length === 0) return null
+
+                      return (
+                        <div key={category}>
+                          <Label className="text-xs text-muted-foreground uppercase tracking-wide mb-2 block">
+                            {category}
+                          </Label>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            {categoryPerms.map((permission) => (
+                              <div
+                                key={permission.id}
+                                className="flex items-center gap-2 p-2 bg-background/50 rounded border border-border"
+                              >
+                                {permission.icon}
+                                <div>
+                                  <p className="text-sm font-medium text-foreground">{permission.name}</p>
+                                  <p className="text-xs text-muted-foreground">{permission.description}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="flex justify-end">
+                <Button
+                  onClick={() => setIsViewDialogOpen(false)}
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground hover-blue-bg"
+                >
+                  Fechar
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
       {/* Profiles List */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {profiles.map((profile) => (
@@ -409,14 +700,19 @@ export default function ProfilesPage() {
                     <Button
                       size="sm"
                       variant="ghost"
-                      onClick={() => setSelectedProfile(profile)}
+                      onClick={() => handleViewProfile(profile)}
                       className="h-8 w-8 p-0 hover:bg-primary/20 hover-blue"
                     >
                       <Eye className="w-4 h-4" />
                     </Button>
                     {!profile.isSystem && (
                       <>
-                        <Button size="sm" variant="ghost" className="h-8 w-8 p-0 hover:bg-primary/20 hover-blue">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => handleEditProfile(profile)}
+                          className="h-8 w-8 p-0 hover:bg-primary/20 hover-blue"
+                        >
                           <Edit className="w-4 h-4" />
                         </Button>
                         <Button

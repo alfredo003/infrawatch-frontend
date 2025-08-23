@@ -242,7 +242,6 @@ export default function CommandCenterPage() {
                 <span>500</span>
                 <span>400</span>
                 <span>300</span>
-                <span>200</span>
               </div>
 
               {/* X-axis labels */}
