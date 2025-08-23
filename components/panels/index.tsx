@@ -7,6 +7,7 @@ import RegisterPage from "@/components/panels/register/page";
 import DashboardPage from "@/components/panels/dashboard/page";
 import IntegrationsPage from "@/components/panels/integrations/page";
 import ApplicationsPage from "@/components/panels/applications/page";
+import ProfilesPage from "./profile/page";
 
 export default function Panel({ active }: { active: number }) {
   const menuItems = [
@@ -19,6 +20,7 @@ export default function Panel({ active }: { active: number }) {
     <AlertsPage />,
     <ReportsPage />,
     <RegisterPage />,
+	 <ProfilesPage />
   ];
 
   return menuItems[active];
