@@ -8,8 +8,8 @@ import "./globals.css";
 const geistMono = GeistMono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Painel de Operações Táticas",
-  description: "Sistema de comando e controle tático",
+  title: "InfraWatch - Sistema de Monitoramento",
+  description: " Sistema de Monitoramento",
   generator: "v0.app",
 };
 

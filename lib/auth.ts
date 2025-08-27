@@ -1,4 +1,11 @@
-// Funções utilitárias para autenticação
+import { z } from "zod";
+
+ 
+const UserSchema = z.object({
+  id: z.string().min(1, "ID do usuário inválido"),
+  email: z.string().email("Email do usuário inválido"),
+});
+
 export interface User {
   id: string;
   email: string;
@@ -9,16 +16,17 @@ export interface AuthData {
   user: User;
 }
 
-// Salvar dados de autenticação
+ 
 export const saveAuthData = (authData: AuthData) => {
-  localStorage.setItem("authToken", authData.token);
-  localStorage.setItem("user", JSON.stringify(authData.user));
-
-  // Também salvar nos cookies para o middleware
-  document.cookie = `authToken=${authData.token}; path=/; max-age=${7 * 24 * 60 * 60}`; // 7 dias
+  if (typeof window !== "undefined") {
+    localStorage.setItem("authToken", authData.token);
+    localStorage.setItem("user", JSON.stringify(authData.user));
+    document.cookie = `authToken=${authData.token}; path=/; max-age=${
+      7 * 24 * 60 * 60
+    }; Secure; SameSite=Strict`;
+  }
 };
 
-// Recuperar token
 export const getAuthToken = (): string | null => {
   if (typeof window !== "undefined") {
     return localStorage.getItem("authToken");
@@ -26,31 +34,46 @@ export const getAuthToken = (): string | null => {
   return null;
 };
 
-// Recuperar dados do usuário
+export const getAuthTokenFromCookie = (cookies: string): string | null => {
+  const cookie = cookies
+    .split(";")
+    .find((c) => c.trim().startsWith("authToken="));
+  return cookie ? cookie.split("=")[1] : null;
+};
+
 export const getUser = (): User | null => {
   if (typeof window !== "undefined") {
     const userData = localStorage.getItem("user");
-    return userData ? JSON.parse(userData) : null;
+    if (!userData) return null;
+    try {
+      const parsed = JSON.parse(userData);
+      const validated = UserSchema.safeParse(parsed);
+      if (validated.success) {
+        return validated.data;
+      }
+      console.error("Dados do usuário inválidos:", validated.error);
+      return null;
+    } catch (error) {
+      console.error("Erro ao parsear dados do usuário:", error);
+      return null;
+    }
   }
   return null;
 };
 
-// Verificar se está autenticado
 export const isAuthenticated = (): boolean => {
   return !!getAuthToken();
 };
 
-// Fazer logout
 export const logout = () => {
-  localStorage.removeItem("authToken");
-  localStorage.removeItem("user");
-
-  // Remover cookie
-  document.cookie =
-    "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
+    document.cookie =
+      "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; Secure; SameSite=Strict";
+  }
 };
 
-// Configurar cabeçalho de autorização para fetch
 export const getAuthHeaders = () => {
   const token = getAuthToken();
   return {

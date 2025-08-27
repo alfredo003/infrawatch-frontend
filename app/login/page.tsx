@@ -1,56 +1,28 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Eye,
   EyeOff,
   User,
   Lock,
   Shield,
-  Activity,
-  Wifi,
-  Server,
-  Monitor,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { saveAuthData, type AuthData } from "@/lib/auth";
 import InlineError from "@/components/ui/inline-error";
+import { validateForm, signIn, type FormData, type FormErrors } from "@/services/authService";
 
 export default function NetworkMonitoringLogin() {
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [formData, setFormData] = useState<FormData>({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
-    {},
-  );
+  const [errors, setErrors] = useState<FormErrors>({});
   const [authError, setAuthError] = useState<string | null>(null);
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
-  const validateForm = () => {
-    const newErrors: { email?: string; password?: string } = {};
-
-    if (!formData.email) {
-      newErrors.email = "Email obrigatório";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email inválido";
-    }
-
-    if (!formData.password) {
-      newErrors.password = "Senha obrigatória";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Mínimo 6 caracteres";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleInputChange = (field: keyof typeof formData, value: string) => {
+  const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
@@ -59,51 +31,11 @@ export default function NetworkMonitoringLogin() {
   };
 
   const handleSubmit = () => {
-    if (!validateForm()) return;
-
-    setIsLoading(true);
-    setAuthError(null);
-    const API_URL =
-      process.env.NEXT_PUBLIC_API_URL ||
-      "https://infrawatch-backend.onrender.com/api";
-    fetch(API_URL + "/auth/signin", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Login response:", data);
-        if (data.error) {
-          setAuthError(data.error);
-          setIsLoading(false);
-          return;
-        } else if (data.token && data.user) {
-          // Usar função utilitária para salvar dados de autenticação
-          saveAuthData({
-            token: data.token,
-            user: {
-              id: data.user.id,
-              email: data.user.email,
-            },
-          });
-
-          setIsLoading(false);
-
-          router.push("/");
-        } else {
-          console.log("Resposta inesperada:", data);
-          setIsLoading(false);
-        }
-      })
-      .catch((error) => {
-        const msg = error?.message ? error.message : String(error);
-        console.error("Login failed:", msg);
-        setAuthError("Erro de autenticação: " + msg);
-        setIsLoading(false);
-      });
+    const newErrors = validateForm(formData);
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length === 0) {
+      signIn(formData, setIsLoading, setAuthError, router);
+    }
   };
 
   return (
@@ -140,7 +72,7 @@ export default function NetworkMonitoringLogin() {
 
       <div className="w-full max-w-md relative z-10">
         {/* Login Card */}
-        <div className="bg-slate-800/70 backdrop-blur-xl border border-slate-700/50  p-8 shadow-2xl relative overflow-hidden">
+        <div className="bg-slate-800/70 backdrop-blur-xl border border-slate-700/50 p-8 shadow-2xl relative overflow-hidden">
           {/* Security indicator */}
           <div className="absolute top-4 right-4 flex items-center space-x-1 text-xs text-emerald-400">
             <Shield className="w-3 h-3" />
@@ -156,7 +88,7 @@ export default function NetworkMonitoringLogin() {
                     src="/infralogo.png"
                     width={300}
                     height={300}
-                    alt={""}
+                    alt=""
                   />
                 </div>
               </div>
@@ -165,7 +97,7 @@ export default function NetworkMonitoringLogin() {
               </p>
             </div>
 
-            {/* email Field */}
+            {/* Email Field */}
             <div>
               <label
                 htmlFor="email"
@@ -193,7 +125,7 @@ export default function NetworkMonitoringLogin() {
                         ? "border-cyan-500 focus:ring-cyan-500/20"
                         : "border-slate-600 hover:border-slate-500"
                   }`}
-                  placeholder="seu-email@gmail.com"
+                  placeholder="email@exemplo.com"
                 />
               </div>
               {errors.email && (
@@ -223,9 +155,7 @@ export default function NetworkMonitoringLogin() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   value={formData.password}
-                  onChange={(e) =>
-                    handleInputChange("password", e.target.value)
-                  }
+                  onChange={(e) => handleInputChange("password", e.target.value)}
                   onFocus={() => setFocusedField("password")}
                   onBlur={() => setFocusedField(null)}
                   className={`w-full pl-10 pr-12 py-3 bg-slate-900/50 border rounded-lg text-white font-mono text-sm placeholder-gray-500 transition-all duration-200 focus:outline-none focus:ring-2 ${
@@ -274,7 +204,7 @@ export default function NetworkMonitoringLogin() {
             <button
               onClick={handleSubmit}
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-3 rounded-lg font-mono text-sm font-medium hover:from-blue-700 hover:to-cyan-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-blue-500/25 transform hover:scale-105"
+              className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-3  font-mono text-sm font-medium hover:from-blue-700 hover:to-cyan-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-blue-500/25 transform hover:scale-105"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center">
