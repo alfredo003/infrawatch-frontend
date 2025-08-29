@@ -35,12 +35,10 @@ export default function DashboardLayout({
         <div className="p-4">
           <div className="flex items-center justify-between mb-8">
             <div className={`${sidebarCollapsed ? "hidden" : "block"}`}>
-              
-                 <img src="/letter-logo.png" alt="" />
-               
-              <p className="text-neutral-500 text-xs uppercase">
-                 <small>servidor v1.0</small> 
-              </p>
+                <img src="/letter-logo.png" alt="" />
+                <p className="text-neutral-500 text-xs uppercase">
+                  <small>servidor v1.0</small> 
+                </p>
             </div>
             <Button
               variant="ghost"
@@ -84,7 +82,7 @@ export default function DashboardLayout({
                 </span>
               </div>
               <div className="text-xs text-neutral-600 dark:text-neutral-400">
-                <div>UPTIME: 99.8%</div>
+                <div>SLA: 99.8%</div>
                 <div>SERVIÇOS: 247 MONITORADOS</div>
                 <div>ALERTAS: 3 ATIVOS</div>
               </div>
