@@ -68,9 +68,12 @@ export const isAuthenticated = (): boolean => {
 export const logout = () => {
   if (typeof window !== "undefined") {
     localStorage.removeItem("authToken");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("expires_in");
     localStorage.removeItem("user");
     document.cookie =
       "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; Secure; SameSite=Strict";
+    console.log("Logout executado: localStorage e cookies limpos");
   }
 };
 

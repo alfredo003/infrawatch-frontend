@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Eye,
   EyeOff,
@@ -12,6 +12,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import InlineError from "@/components/ui/inline-error";
 import { validateForm, signIn, type FormData, type FormErrors } from "@/services/authService";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 export default function NetworkMonitoringLogin() {
   const router = useRouter();
@@ -21,7 +22,9 @@ export default function NetworkMonitoringLogin() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [authError, setAuthError] = useState<string | null>(null);
   const [focusedField, setFocusedField] = useState<string | null>(null);
-
+  const [token, setToken] = useState<string | null>(null);
+  const captchaRef = useRef<HCaptcha>(null);
+  
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
@@ -33,6 +36,7 @@ export default function NetworkMonitoringLogin() {
   const handleSubmit = () => {
     const newErrors = validateForm(formData);
     setErrors(newErrors);
+    
     if (Object.keys(newErrors).length === 0) {
       signIn(formData, setIsLoading, setAuthError, router);
     }
@@ -199,8 +203,13 @@ export default function NetworkMonitoringLogin() {
             </div>
 
             {authError && <InlineError message={authError} />}
-
-            {/* Submit Button */}
+         <HCaptcha
+              sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITEKEY!}
+              onVerify={(token) => setToken(token)}
+              ref={captchaRef}
+               languageOverride="pt"
+            />
+               {/* Submit Button */}
             <button
               onClick={handleSubmit}
               disabled={isLoading}

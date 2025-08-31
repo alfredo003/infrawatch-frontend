@@ -1,18 +1,25 @@
-import axios from 'axios';
- 
+import axios from "axios";
+import { refreshToken } from "../services/authService";
+
+const API_URL =  "http://localhost:2000/api";
+
 const api = axios.create({
-  baseURL: "http://localhost:2000/api",  
+  baseURL: API_URL,
 });
 
- 
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('authToken');
+api.interceptors.request.use(async (config) => {
+  let token = localStorage.getItem("authToken");
+  const expiresIn = localStorage.getItem("expires_in");
+
+  if (expiresIn && Date.now() > Number(expiresIn)) {
+    token = await refreshToken();
+  }
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
   return config;
-}, (error) => {
-  return Promise.reject(error);
 });
 
 export default api;

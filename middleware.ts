@@ -45,9 +45,8 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // Se está logado e tenta acessar login, redirecionar para dashboard
-  if (isPublicRoute && tokenValidation.success && path === "/login") {
-    console.log(`Usuário autenticado redirecionado de /login para /dashboard`);
+ 
+  if (isPublicRoute && tokenValidation.success && path === "/login") { 
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 

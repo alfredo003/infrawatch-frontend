@@ -1,7 +1,6 @@
 import axios from "axios";
 import { z } from "zod";
-import { saveAuthData, type AuthData } from "@/lib/auth";
-
+import { saveAuthData  } from "@/lib/auth";
  
 const FormSchema = z.object({
   email: z
@@ -48,34 +47,51 @@ export const signIn = async (
   setIsLoading(true);
   setAuthError(null);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:2000/api";
- 
+  const API_URL = "http://localhost:2000/api";
+
   try {
     const response = await axios.post(API_URL + "/auth/signin", formData);
-
-    console.log(response);
-    if (response.data.error) {
-      setAuthError(response.data.error);
-      setIsLoading(false);
-      return;
-    } else if (response.data.token && response.data.user) {
-      saveAuthData({
-        token: response.data.token,
+  
+    if (response.data.access_token && response.data.refresh_token) {
+      localStorage.setItem("refresh_token", response.data.refresh_token);
+      localStorage.setItem("expires_in", String(Date.now() + response.data.expires_in * 1000));
+ 
+       saveAuthData({
+        token: response.data.access_token,
         user: {
           id: response.data.user.id,
-          email: response.data.user.email,
-        },
-      });
+          email: response.data.user.email}
+        })
+
       setIsLoading(false);
-      router.push("/");
+  
+       router.push("/");
     } else {
-      console.log("Resposta inesperada:", response.data);
+      setAuthError("Resposta inesperada do servidor");
       setIsLoading(false);
     }
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
-    console.log("Login failed:", msg);
-    setAuthError("Erro de autenticação: " + msg);
+    setAuthError("Erro de autenticação: Credenciais inválidas");
     setIsLoading(false);
+  }
+};
+
+export const refreshToken = async (): Promise<string | null> => {
+  const API_URL = "http://localhost:2000/api";
+  const refresh_token = localStorage.getItem("refresh_token");
+
+  if (!refresh_token) return null;
+
+  try {
+    const response = await axios.post(API_URL + "/auth/refresh", { refresh_token });
+    localStorage.setItem("authToken", response.data.access_token);
+    localStorage.setItem("refresh_token", response.data.refresh_token);
+    localStorage.setItem("expires_in", String(Date.now() + response.data.expires_in * 1000));
+
+    return response.data.access_token;
+  } catch (err) {
+    console.error("Erro ao refrescar token", err);
+    return null;
   }
 };
