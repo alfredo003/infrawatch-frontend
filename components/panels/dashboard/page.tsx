@@ -1,106 +1,38 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge"; 
+ 
 import {
-  Server,
   Activity,
   AlertTriangle,
   CheckCircle,
   Clock,
   TrendingUp,
   TrendingDown,
-  Wifi,
 } from "lucide-react";
+import ListSystems from "./listSystem";
+import useSWR from "swr";
+import { listAllSystemsCritical, SystemData } from "@/services/systemService";
+import ListAlertRecent from "./listAlertRecent";
+import { AlertData, listAllAlerts } from "@/services/alertService";
 
 export default function DashboardPage() {
-  const systemsOverview = [
-    {
-      name: "ERP-PROD",
-      status: "online",
-      uptime: 99.8,
-      lastCheck: "30s",
-      type: "Servidor",
-    },
-    {
-      name: "WEB-SERVER-01",
-      status: "online",
-      uptime: 99.9,
-      lastCheck: "15s",
-      type: "Servidor Web",
-    },
-    {
-      name: "DB-CLUSTER",
-      status: "warning",
-      uptime: 98.5,
-      lastCheck: "45s",
-      type: "Base de Dados",
-    },
-    {
-      name: "BACKUP-SRV",
-      status: "offline",
-      uptime: 95.2,
-      lastCheck: "5m",
-      type: "Backup",
-    },
-    {
-      name: "KIOSKS-API",
-      status: "online",
-      uptime: 99.3,
-      lastCheck: "20s",
-      type: "API",
-    },
-  ];
+  
+   const { data: systems, error: systemsError, isLoading: systemsLoading, mutate: reloadSystems } =
+    useSWR<SystemData[]>("systems", listAllSystemsCritical, {
+      dedupingInterval: 60000,  
+      revalidateOnFocus: false,
+    })
 
-  const recentAlerts = [
-    {
-      id: 1,
-      system: "DB-CLUSTER",
-      message: "Alto uso de CPU detectado",
-      severity: "warning",
-      time: "2 min atrás",
-    },
-    {
-      id: 2,
-      system: "BACKUP-SRV",
-      message: "Servidor não responde",
-      severity: "critical",
-      time: "5 min atrás",
-    },
-    {
-      id: 3,
-      system: "NETWORK-SW-01",
-      message: "Latência elevada",
-      severity: "warning",
-      time: "8 min atrás",
-    },
-  ];
+    const { data: alerts, error: alertsError, isLoading: alertsLoading, mutate: reloadAlerts } =
+      useSWR<AlertData[]>("alerts", listAllAlerts, {
+      dedupingInterval: 60000,  
+      revalidateOnFocus: false,
+    })
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "online":
-        return "text-green-600 bg-green-100 dark:bg-green-900/20";
-      case "warning":
-        return "text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20";
-      case "offline":
-        return "text-red-600 bg-red-100 dark:bg-red-900/20";
-      default:
-        return "text-gray-600 bg-gray-100 dark:bg-gray-900/20";
-    }
-  };
+  if (alertsError || systemsError ) return <div>Erro ao carregar dados</div>
+  if (alertsLoading || systemsLoading) return <div>Carregando...</div>
 
-  const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case "critical":
-        return "text-red-600 bg-red-100 dark:bg-red-900/20";
-      case "warning":
-        return "text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20";
-      case "info":
-        return "text-blue-600 bg-blue-100 dark:bg-blue-900/20";
-      default:
-        return "text-gray-600 bg-gray-100 dark:bg-gray-900/20";
-    }
-  };
 
   return (
     <div className="p-6 space-y-6">
@@ -256,51 +188,7 @@ export default function DashboardPage() {
               Estado dos Sistemas Críticos
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {systemsOverview.map((system, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between p-4 bg-neutral-50 dark:bg-neutral-800 rounded-lg"
-                >
-                  <div className="flex items-center gap-3">
-                    <Server className="w-5 h-5 text-neutral-600 dark:text-neutral-400" />
-                    <div>
-                      <h3 className="font-medium text-neutral-800 dark:text-neutral-200">
-                        {system.name}
-                      </h3>
-                      <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                        {system.type}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <div className="text-right">
-                      <p className="text-sm font-medium text-neutral-800 dark:text-neutral-200">
-                        {system.uptime}%
-                      </p>
-                      <p className="text-xs text-neutral-500">Uptime</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                        {system.lastCheck}
-                      </p>
-                      <p className="text-xs text-neutral-500">
-                        Última verificação
-                      </p>
-                    </div>
-                    <Badge className={getStatusColor(system.status)}>
-                      {system.status === "online"
-                        ? "Online"
-                        : system.status === "warning"
-                          ? "Aviso"
-                          : "Offline"}
-                    </Badge>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
+          <ListSystems Systems={systems} loading={systemsLoading} onSystemReload={reloadSystems} />
         </Card>
 
         {/* Recent Alerts */}
@@ -310,37 +198,7 @@ export default function DashboardPage() {
               Alertas Recentes
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentAlerts.map((alert) => (
-                <div
-                  key={alert.id}
-                  className="border-l-4 border-l-red-500 pl-4 py-2"
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <h4 className="font-medium text-neutral-800 dark:text-neutral-200">
-                        {alert.system}
-                      </h4>
-                      <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                        {alert.message}
-                      </p>
-                      <p className="text-xs text-neutral-500 mt-1">
-                        {alert.time}
-                      </p>
-                    </div>
-                    <Badge className={getSeverityColor(alert.severity)}>
-                      {alert.severity === "critical"
-                        ? "Crítico"
-                        : alert.severity === "warning"
-                          ? "Aviso"
-                          : "Info"}
-                    </Badge>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
+         <ListAlertRecent alerts={alerts} loading={alertsLoading} onSystemReload={reloadAlerts} />
         </Card>
       </div>
 

@@ -65,8 +65,33 @@ export const listAllSystems = async (): Promise<SystemData[]> => {
     throw error
   }
 }
+export const listAllSystemsCritical = async (): Promise<SystemData[]> => {
+  try {
+    const systemsRes = await api.get("/systems")
+    const systems: SystemData[] = systemsRes.data.data
 
-  export const listAllTypeSystems = async () => {
+    const typesRes = await api.get("/systems/type/all")
+    const types = typesRes.data.data
+
+    
+    const criticalSystems = systems.filter(s => s.criticality_level === 'critical')
+
+    const systemsWithTypeName = criticalSystems.map((s) => {
+      const type = types.find((t: any) => t.id === s.id_type)
+      return {
+        ...s,
+        typeName: type ? type.name : s.id_type,
+      }
+    })
+
+    return systemsWithTypeName
+  } catch (error) {
+    console.error("Erro ao buscar sistemas críticos:", error)
+    throw error
+  }
+}
+
+export const listAllTypeSystems = async () => {
     try {
       const response = await api.get('/systems/type/all');
       return response.data.data;
@@ -74,10 +99,9 @@ export const listAllSystems = async (): Promise<SystemData[]> => {
       console.error('Erro ao buscar tipo sistemas:', error);
       throw error;
     }
-  };
-
-  
-  export const deleteSystem = async (
+};
+ 
+export const deleteSystem = async (
     id: string | undefined,
     setIsLoading: (loading: boolean) => void 
   ) => {

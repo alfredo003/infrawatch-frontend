@@ -30,16 +30,16 @@ export default function SystemsPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const [isSystemCreateDialogOpen, setIsSystemCreateDialogOpen] = useState(false)
 
-  // ✅ SWR substitui useEffect + estados manuais
+ 
   const { data: systems, error: systemsError, isLoading: systemsLoading, mutate: reloadSystems } =
     useSWR<SystemData[]>("systems", listAllSystems, {
-      dedupingInterval: 60000, // 1 min de cache
+      dedupingInterval: 60000,  
       revalidateOnFocus: false,
     })
 
   const { data: typeSystems, error: typesError, isLoading: typesLoading } =
     useSWR<{ name: string }[]>("typeSystems", listAllTypeSystems, {
-      dedupingInterval: 300000, // 5 min
+      dedupingInterval: 300000,  
       revalidateOnFocus: false,
     })
 

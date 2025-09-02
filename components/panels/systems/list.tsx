@@ -25,7 +25,7 @@ import { KeyedMutator } from "swr";
 interface ListProps {
   paginatedSystems: SystemData[];
   loading?: boolean;
-  onSystemReload: KeyedMutator<SystemData[]>; // ✅ mutate é passado aqui
+  onSystemReload: KeyedMutator<SystemData[]>; 
 }
 
 export default function ListSystems({
