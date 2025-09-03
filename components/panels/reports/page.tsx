@@ -35,11 +35,23 @@ import {
   Search,
   RefreshCw,
 } from "lucide-react";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import dynamic from "next/dynamic";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import html2canvas from "html2canvas";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 // Dynamic import para evitar problemas de SSR
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+
+// Extensão do tipo jsPDF para incluir autoTable
+declare module "jspdf" {
+  interface jsPDF {
+    autoTable: typeof autoTable;
+  }
+}
 
 export default function ReportsPage() {
   // Estados para filtros e configurações
@@ -50,6 +62,9 @@ export default function ReportsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedSeverity, setSelectedSeverity] = useState("all");
+  
+  // Ref para capturar elementos no PDF
+  const reportRef = useRef<HTMLDivElement>(null);
 
   // Dados mais ricos e realistas
   const services = [
@@ -367,13 +382,569 @@ export default function ReportsPage() {
 
   const handleExport = async (format: string) => {
     setIsGenerating(true);
-    // Simular geração do relatório
-    await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // Aqui você implementaria a lógica real de exportação
-    console.log(`Exportando relatório em formato ${format}`);
+    try {
+      if (format === 'pdf') {
+        console.log('Chamando generatePDFReport...');
+        await generatePDFReport();
+        alert('✅ Relatório PDF gerado com sucesso!');
+      } else if (format === 'pdf-complete') {
+        console.log('Chamando generateCompletePDFReport...');
+        await generateCompletePDFReport();
+        alert('✅ Relatório PDF completo gerado com sucesso!');
+      } else if (format === 'csv') {
+        generateCSVReport();
+        alert('✅ Relatório CSV exportado com sucesso!');
+      } else if (format === 'incidents-csv') {
+        generateIncidentsCSV();
+        alert('✅ Relatório de incidentes CSV exportado com sucesso!');
+      }
+    } catch (error) {
+      console.error('Erro detalhado ao gerar relatório:', error);
+      console.error('Stack trace:', error instanceof Error ? error.stack : 'Stack não disponível');
+      alert(`❌ Erro ao gerar relatório: ${error instanceof Error ? error.message : 'Erro desconhecido'}. Tente novamente.`);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const generatePDFReport = async () => {
+    console.log('Iniciando geração do PDF básico...');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    let yPosition = 20;
+
+    // Header do relatório
+    pdf.setFontSize(20);
+    pdf.setTextColor(31, 41, 55);
+    pdf.text('RELATÓRIO EXECUTIVO DE INFRAESTRUTURA', pageWidth / 2, yPosition, { align: 'center' });
     
-    setIsGenerating(false);
+    yPosition += 10;
+    pdf.setFontSize(12);
+    pdf.setTextColor(107, 114, 128);
+    pdf.text(`Gerado em: ${format(new Date(), 'dd/MM/yyyy HH:mm', { locale: ptBR })}`, pageWidth / 2, yPosition, { align: 'center' });
+    pdf.text(`Período: ${timeRange === '7d' ? 'Últimos 7 dias' : timeRange === '30d' ? 'Últimos 30 dias' : 'Período personalizado'}`, pageWidth / 2, yPosition + 5, { align: 'center' });
+
+    yPosition += 20;
+
+    // Linha separadora
+    pdf.setDrawColor(229, 231, 235);
+    pdf.line(20, yPosition, pageWidth - 20, yPosition);
+    yPosition += 15;
+
+    // Métricas principais
+    pdf.setFontSize(16);
+    pdf.setTextColor(31, 41, 55);
+    pdf.text('RESUMO EXECUTIVO', 20, yPosition);
+    yPosition += 10;
+
+    // Grid de métricas
+    const metricsData = [
+      ['Métrica', 'Valor', 'Status'],
+      ['Disponibilidade Geral', `${overallMetrics.availability}%`, overallMetrics.availability >= 99 ? 'Excelente' : 'Atenção'],
+      ['SLA Médio Global', `${overallMetrics.averageSLA}%`, overallMetrics.averageSLA >= 99 ? 'Conforme' : 'Abaixo'],
+      ['Total de Incidentes', `${overallMetrics.totalIncidents}`, overallMetrics.totalIncidents <= 3 ? 'Baixo' : 'Alto'],
+      ['MTTR Médio', `${overallMetrics.averageMTTR} min`, overallMetrics.averageMTTR <= 30 ? 'Bom' : 'Melhorar'],
+      ['Serviços Operacionais', `${overallMetrics.operationalServices}/${overallMetrics.totalServices}`, overallMetrics.operationalServices === overallMetrics.totalServices ? 'Todos OK' : 'Atenção'],
+      ['Downtime Total', `${overallMetrics.totalDowntime}h`, overallMetrics.totalDowntime <= 5 ? 'Baixo' : 'Alto']
+    ];
+
+    autoTable(pdf, {
+      head: [metricsData[0]],
+      body: metricsData.slice(1),
+      startY: yPosition,
+      theme: 'grid',
+      headStyles: { 
+        fillColor: [59, 130, 246], 
+        textColor: 255,
+        fontSize: 10,
+        fontStyle: 'bold'
+      },
+      bodyStyles: { 
+        fontSize: 9,
+        textColor: [55, 65, 81]
+      },
+      alternateRowStyles: { 
+        fillColor: [248, 250, 252] 
+      },
+      margin: { left: 20, right: 20 },
+      columnStyles: {
+        0: { cellWidth: 60 },
+        1: { cellWidth: 40, halign: 'center' },
+        2: { cellWidth: 40, halign: 'center' }
+      }
+    });
+
+    yPosition = (pdf as any).lastAutoTable.finalY + 20;
+
+    // Nova página se necessário
+    if (yPosition > pageHeight - 60) {
+      pdf.addPage();
+      yPosition = 20;
+    }
+
+    // Detalhes dos serviços
+    pdf.setFontSize(16);
+    pdf.setTextColor(31, 41, 55);
+    pdf.text('DETALHAMENTO POR SERVIÇO', 20, yPosition);
+    yPosition += 10;
+
+    const servicesData = [
+      ['Serviço', 'Tipo', 'Disponibilidade', 'SLA Target', 'SLA Atual', 'Status', 'MTTR', 'Incidentes']
+    ];
+
+    filteredServices.forEach(service => {
+      servicesData.push([
+        service.name,
+        service.type,
+        `${service.availability}%`,
+        `${service.slaTarget}%`,
+        `${service.slaActual}%`,
+        service.status === 'operational' ? 'Operacional' : service.status === 'degraded' ? 'Degradado' : 'Falha',
+        `${service.mttr}min`,
+        service.incidents.toString()
+      ]);
+    });
+
+    autoTable(pdf, {
+      head: [servicesData[0]],
+      body: servicesData.slice(1),
+      startY: yPosition,
+      theme: 'striped',
+      headStyles: { 
+        fillColor: [16, 185, 129], 
+        textColor: 255,
+        fontSize: 8,
+        fontStyle: 'bold'
+      },
+      bodyStyles: { 
+        fontSize: 7,
+        textColor: [55, 65, 81]
+      },
+      margin: { left: 20, right: 20 },
+      columnStyles: {
+        0: { cellWidth: 25 },
+        1: { cellWidth: 20 },
+        2: { cellWidth: 18, halign: 'center' },
+        3: { cellWidth: 15, halign: 'center' },
+        4: { cellWidth: 15, halign: 'center' },
+        5: { cellWidth: 20, halign: 'center' },
+        6: { cellWidth: 15, halign: 'center' },
+        7: { cellWidth: 15, halign: 'center' }
+      }
+    });
+
+    yPosition = (pdf as any).lastAutoTable.finalY + 20;
+
+    // Nova página para incidentes se necessário
+    if (yPosition > pageHeight - 100) {
+      pdf.addPage();
+      yPosition = 20;
+    }
+
+    // Histórico de incidentes
+    if (filteredIncidents.length > 0) {
+      pdf.setFontSize(16);
+      pdf.setTextColor(31, 41, 55);
+      pdf.text('HISTÓRICO DE INCIDENTES', 20, yPosition);
+      yPosition += 10;
+
+      const incidentsData = [
+        ['ID', 'Serviço', 'Título', 'Severidade', 'Status', 'Duração', 'Impacto']
+      ];
+
+      filteredIncidents.forEach(incident => {
+        incidentsData.push([
+          incident.id,
+          incident.service,
+          incident.title.length > 30 ? incident.title.substring(0, 30) + '...' : incident.title,
+          incident.severity,
+          incident.status,
+          formatDuration(incident.duration),
+          incident.impact.length > 25 ? incident.impact.substring(0, 25) + '...' : incident.impact
+        ]);
+      });
+
+      autoTable(pdf, {
+        head: [incidentsData[0]],
+        body: incidentsData.slice(1),
+        startY: yPosition,
+        theme: 'striped',
+        headStyles: { 
+          fillColor: [239, 68, 68], 
+          textColor: 255,
+          fontSize: 8,
+          fontStyle: 'bold'
+        },
+        bodyStyles: { 
+          fontSize: 7,
+          textColor: [55, 65, 81]
+        },
+        margin: { left: 20, right: 20 },
+        columnStyles: {
+          0: { cellWidth: 20 },
+          1: { cellWidth: 25 },
+          2: { cellWidth: 35 },
+          3: { cellWidth: 20, halign: 'center' },
+          4: { cellWidth: 20, halign: 'center' },
+          5: { cellWidth: 20, halign: 'center' },
+          6: { cellWidth: 30 }
+        }
+      });
+    }
+
+    // Rodapé em todas as páginas
+    const totalPages = pdf.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+      pdf.setPage(i);
+      pdf.setFontSize(8);
+      pdf.setTextColor(107, 114, 128);
+      pdf.text(`InfraWatch Report - Página ${i} de ${totalPages}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+      pdf.text('Documento confidencial - Uso interno apenas', 20, pageHeight - 10);
+    }
+
+    // Salvar o PDF
+    const fileName = `infrawatch-report-${format(new Date(), 'yyyy-MM-dd-HHmm')}.pdf`;
+    pdf.save(fileName);
+  };
+
+  const generateCompletePDFReport = async () => {
+    console.log('Iniciando geração do PDF completo...');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    let yPosition = 20;
+
+    // Header do relatório
+    pdf.setFontSize(24);
+    pdf.setTextColor(31, 41, 55);
+    pdf.text('RELATÓRIO EXECUTIVO COMPLETO', pageWidth / 2, yPosition, { align: 'center' });
+    
+    yPosition += 8;
+    pdf.setFontSize(14);
+    pdf.setTextColor(59, 130, 246);
+    pdf.text('InfraWatch - Sistema de Monitoramento Empresarial', pageWidth / 2, yPosition, { align: 'center' });
+    
+    yPosition += 10;
+    pdf.setFontSize(10);
+    pdf.setTextColor(107, 114, 128);
+    pdf.text(`Relatório gerado em: ${format(new Date(), 'dd/MM/yyyy HH:mm', { locale: ptBR })}`, pageWidth / 2, yPosition, { align: 'center' });
+    pdf.text(`Período de análise: ${timeRange === '7d' ? 'Últimos 7 dias' : timeRange === '30d' ? 'Últimos 30 dias' : 'Período personalizado'}`, pageWidth / 2, yPosition + 4, { align: 'center' });
+
+    yPosition += 15;
+
+    // Capturar gráficos se existirem
+    if (reportRef.current) {
+      try {
+        // Capturar os gráficos
+        const chartElements = reportRef.current.querySelectorAll('.apexcharts-canvas');
+        
+        for (let i = 0; i < Math.min(chartElements.length, 2); i++) {
+          const chartElement = chartElements[i] as HTMLElement;
+          if (chartElement) {
+            yPosition += 10;
+            
+            // Adicionar título do gráfico
+            pdf.setFontSize(14);
+            pdf.setTextColor(31, 41, 55);
+            const chartTitle = i === 0 ? 'Disponibilidade por Serviço' : i === 1 ? 'Conformidade SLA' : 'Tendência de Incidentes';
+            pdf.text(chartTitle, 20, yPosition);
+            yPosition += 10;
+            
+            // Capturar o gráfico
+            const canvas = await html2canvas(chartElement, {
+              scale: 2,
+              useCORS: true,
+              backgroundColor: '#ffffff'
+            });
+            
+            const imgData = canvas.toDataURL('image/png');
+            const imgWidth = pageWidth - 40;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            
+            // Verificar se precisa de nova página
+            if (yPosition + imgHeight > pageHeight - 20) {
+              pdf.addPage();
+              yPosition = 20;
+            }
+            
+            pdf.addImage(imgData, 'PNG', 20, yPosition, imgWidth, imgHeight);
+            yPosition += imgHeight + 15;
+          }
+        }
+      } catch (error) {
+        console.warn('Erro ao capturar gráficos:', error);
+      }
+    }
+
+    // Nova página para as tabelas
+    pdf.addPage();
+    yPosition = 20;
+
+    // Resumo executivo detalhado
+    pdf.setFontSize(18);
+    pdf.setTextColor(31, 41, 55);
+    pdf.text('RESUMO EXECUTIVO DETALHADO', 20, yPosition);
+    yPosition += 15;
+
+    // Análise de performance
+    pdf.setFontSize(12);
+    pdf.setTextColor(55, 65, 81);
+    const analysis = [
+      `• Disponibilidade geral da infraestrutura: ${overallMetrics.availability}%`,
+      `• ${overallMetrics.operationalServices} de ${overallMetrics.totalServices} serviços estão operacionais`,
+      `• SLA médio global: ${overallMetrics.averageSLA}% (Meta: 99.0%)`,
+      `• Total de ${overallMetrics.totalIncidents} incidentes registrados no período`,
+      `• ${overallMetrics.criticalIncidents} incidentes críticos requerem atenção`,
+      `• MTTR médio: ${overallMetrics.averageMTTR} minutos`,
+      `• Downtime total acumulado: ${overallMetrics.totalDowntime} horas`
+    ];
+
+    analysis.forEach(line => {
+      pdf.text(line, 20, yPosition);
+      yPosition += 6;
+    });
+
+    yPosition += 10;
+
+    // Recomendações
+    pdf.setFontSize(14);
+    pdf.setTextColor(31, 41, 55);
+    pdf.text('RECOMENDAÇÕES ESTRATÉGICAS', 20, yPosition);
+    yPosition += 10;
+
+    pdf.setFontSize(10);
+    pdf.setTextColor(55, 65, 81);
+    const recommendations = [
+      '1. Implementar monitoramento proativo para serviços com SLA abaixo da meta',
+      '2. Investigar causas raiz dos incidentes recorrentes',
+      '3. Otimizar processos de recovery para reduzir MTTR',
+      '4. Considerar redundância para serviços críticos com maior downtime',
+      '5. Estabelecer alertas antecipados para degradação de performance'
+    ];
+
+    recommendations.forEach(rec => {
+      pdf.text(rec, 20, yPosition);
+      yPosition += 6;
+    });
+
+    yPosition += 15;
+
+    // Continuar com as tabelas existentes...
+    // Métricas principais (usando a mesma lógica da função anterior)
+    const metricsData = [
+      ['Métrica', 'Valor Atual', 'Meta', 'Status', 'Tendência'],
+      ['Disponibilidade Geral', `${overallMetrics.availability}%`, '≥99%', overallMetrics.availability >= 99 ? 'Conforme' : 'Atenção', '↗'],
+      ['SLA Médio Global', `${overallMetrics.averageSLA}%`, '≥99%', overallMetrics.averageSLA >= 99 ? 'Conforme' : 'Revisar', '→'],
+      ['Total de Incidentes', `${overallMetrics.totalIncidents}`, '≤5', overallMetrics.totalIncidents <= 5 ? 'Bom' : 'Alto', '↘'],
+      ['MTTR Médio', `${overallMetrics.averageMTTR}min`, '≤30min', overallMetrics.averageMTTR <= 30 ? 'Excelente' : 'Melhorar', '↗'],
+      ['Downtime Total', `${overallMetrics.totalDowntime}h`, '≤8h', overallMetrics.totalDowntime <= 8 ? 'Baixo' : 'Alto', '↘']
+    ];
+
+    autoTable(pdf, {
+      head: [metricsData[0]],
+      body: metricsData.slice(1),
+      startY: yPosition,
+      theme: 'grid',
+      headStyles: { 
+        fillColor: [99, 102, 241], 
+        textColor: 255,
+        fontSize: 9,
+        fontStyle: 'bold'
+      },
+      bodyStyles: { 
+        fontSize: 8,
+        textColor: [55, 65, 81]
+      },
+      alternateRowStyles: { 
+        fillColor: [248, 250, 252] 
+      },
+      margin: { left: 20, right: 20 }
+    });
+
+    // Nova página para detalhes dos serviços
+    pdf.addPage();
+    yPosition = 20;
+
+    // Detalhes dos serviços (usando a mesma lógica melhorada)
+    pdf.setFontSize(16);
+    pdf.setTextColor(31, 41, 55);
+    pdf.text('ANÁLISE DETALHADA POR SERVIÇO', 20, yPosition);
+    yPosition += 15;
+
+    const servicesData = [
+      ['Serviço', 'Tipo', 'Criticidade', 'Disponib.', 'SLA', 'Status', 'MTTR', 'Incidentes', 'Performance']
+    ];
+
+    filteredServices.forEach(service => {
+      const performance = service.availability >= 99.5 ? 'Excelente' : 
+                         service.availability >= 99 ? 'Bom' : 
+                         service.availability >= 98 ? 'Razoável' : 'Crítico';
+      
+      servicesData.push([
+        service.name.length > 15 ? service.name.substring(0, 15) + '...' : service.name,
+        service.type.length > 12 ? service.type.substring(0, 12) + '...' : service.type,
+        service.category,
+        `${service.availability}%`,
+        `${service.slaActual}%`,
+        service.status === 'operational' ? 'OK' : service.status === 'degraded' ? 'DEG' : 'ERR',
+        `${service.mttr}m`,
+        service.incidents.toString(),
+        performance
+      ]);
+    });
+
+    autoTable(pdf, {
+      head: [servicesData[0]],
+      body: servicesData.slice(1),
+      startY: yPosition,
+      theme: 'striped',
+      headStyles: { 
+        fillColor: [16, 185, 129], 
+        textColor: 255,
+        fontSize: 8,
+        fontStyle: 'bold'
+      },
+      bodyStyles: { 
+        fontSize: 7,
+        textColor: [55, 65, 81]
+      },
+      margin: { left: 20, right: 20 },
+      columnStyles: {
+        0: { cellWidth: 20 },
+        1: { cellWidth: 18 },
+        2: { cellWidth: 15 },
+        3: { cellWidth: 15, halign: 'center' },
+        4: { cellWidth: 12, halign: 'center' },
+        5: { cellWidth: 12, halign: 'center' },
+        6: { cellWidth: 12, halign: 'center' },
+        7: { cellWidth: 12, halign: 'center' },
+        8: { cellWidth: 18, halign: 'center' }
+      }
+    });
+
+    // Se houver incidentes, adicionar página de incidentes
+    if (filteredIncidents.length > 0) {
+      pdf.addPage();
+      yPosition = 20;
+
+      pdf.setFontSize(16);
+      pdf.setTextColor(31, 41, 55);
+      pdf.text('REGISTRO COMPLETO DE INCIDENTES', 20, yPosition);
+      yPosition += 15;
+
+      filteredIncidents.forEach((incident, index) => {
+        if (yPosition > pageHeight - 50) {
+          pdf.addPage();
+          yPosition = 20;
+        }
+
+        // Box para cada incidente
+        pdf.setDrawColor(229, 231, 235);
+        pdf.setFillColor(249, 250, 251);
+        pdf.roundedRect(20, yPosition, pageWidth - 40, 25, 2, 2, 'FD');
+
+        pdf.setFontSize(11);
+        pdf.setTextColor(220, 38, 38);
+        pdf.text(`${incident.id} - ${incident.severity}`, 25, yPosition + 6);
+
+        pdf.setFontSize(10);
+        pdf.setTextColor(31, 41, 55);
+        pdf.text(incident.title.length > 50 ? incident.title.substring(0, 50) + '...' : incident.title, 25, yPosition + 12);
+
+        pdf.setFontSize(8);
+        pdf.setTextColor(107, 114, 128);
+        pdf.text(`Serviço: ${incident.service} | Duração: ${formatDuration(incident.duration)} | Status: ${incident.status}`, 25, yPosition + 18);
+        pdf.text(`Causa: ${incident.rootCause.length > 60 ? incident.rootCause.substring(0, 60) + '...' : incident.rootCause}`, 25, yPosition + 22);
+
+        yPosition += 30;
+      });
+    }
+
+    // Rodapé em todas as páginas
+    const totalPages = pdf.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+      pdf.setPage(i);
+      pdf.setFontSize(8);
+      pdf.setTextColor(107, 114, 128);
+      pdf.text(`InfraWatch Executive Report - Página ${i} de ${totalPages}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+      pdf.text('© 2025 InfraWatch - Relatório Confidencial', 20, pageHeight - 10);
+      pdf.text(`Gerado em ${format(new Date(), 'dd/MM/yyyy HH:mm')}`, pageWidth - 60, pageHeight - 10);
+    }
+
+    // Salvar o PDF completo
+    const fileName = `infrawatch-complete-report-${format(new Date(), 'yyyy-MM-dd-HHmm')}.pdf`;
+    pdf.save(fileName);
+  };
+
+  const generateCSVReport = () => {
+    const csvData = [
+      ['Serviço', 'Tipo', 'Categoria', 'Disponibilidade', 'SLA Target', 'SLA Atual', 'MTTR', 'MTBF', 'Incidentes', 'Downtime', 'Tempo Resposta', 'Throughput', 'Taxa Erro', 'Status']
+    ];
+
+    filteredServices.forEach(service => {
+      csvData.push([
+        service.name,
+        service.type,
+        service.category,
+        service.availability.toString(),
+        service.slaTarget.toString(),
+        service.slaActual.toString(),
+        service.mttr.toString(),
+        service.mtbf.toString(),
+        service.incidents.toString(),
+        service.downtime.toString(),
+        service.responseTime.toString(),
+        service.throughput.toString(),
+        service.errorRate.toString(),
+        service.status
+      ]);
+    });
+
+    const csvContent = csvData.map(row => row.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `infrawatch-services-${format(new Date(), 'yyyy-MM-dd-HHmm')}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const generateIncidentsCSV = () => {
+    const csvData = [
+      ['ID', 'Serviço', 'Título', 'Severidade', 'Status', 'Início', 'Fim', 'Duração', 'Impacto', 'Causa Raiz', 'Responsável']
+    ];
+
+    filteredIncidents.forEach(incident => {
+      csvData.push([
+        incident.id,
+        incident.service,
+        incident.title,
+        incident.severity,
+        incident.status,
+        incident.startTime,
+        incident.endTime || '',
+        incident.duration.toString(),
+        incident.impact,
+        incident.rootCause,
+        incident.assignee
+      ]);
+    });
+
+    const csvContent = csvData.map(row => row.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `infrawatch-incidents-${format(new Date(), 'yyyy-MM-dd-HHmm')}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const filteredServices = services.filter(service => {
@@ -391,7 +962,7 @@ export default function ReportsPage() {
   });
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6" ref={reportRef}>
       {/* Header com controles avançados */}
       <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
         <div>
@@ -442,26 +1013,37 @@ export default function ReportsPage() {
             </SelectContent>
           </Select>
 
-          <Button
-            onClick={() => window.location.reload()}
-            variant="outline"
-            size="sm"
-          >
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Atualizar
-          </Button>
-
+          
           <Button
             onClick={() => handleExport('pdf')}
             disabled={isGenerating}
-            className="bg-blue-600 hover:bg-blue-700"
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg transition-all duration-200 disabled:opacity-50"
+          >
+            {isGenerating ? (
+              <>
+                <Clock className="w-4 h-4 mr-2 animate-spin" />
+                Gerando PDF...
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4 mr-2" />
+                Exportar PDF
+              </>
+            )}
+          </Button>
+
+          <Button
+            onClick={() => handleExport('pdf-complete')}
+            disabled={isGenerating}
+            variant="outline"
+            className="border-blue-200 text-blue-700 hover:bg-blue-50 hover:border-blue-300 transition-all duration-200"
           >
             {isGenerating ? (
               <Clock className="w-4 h-4 mr-2 animate-spin" />
             ) : (
-              <Download className="w-4 h-4 mr-2" />
+              <FileText className="w-4 h-4 mr-2" />
             )}
-            Exportar PDF
+            PDF Completo
           </Button>
         </div>
       </div>
