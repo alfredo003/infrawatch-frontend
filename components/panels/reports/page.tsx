@@ -1,4 +1,8 @@
 "use client";
+import { MetricCard } from "./MetricCard";
+import { ServiceCard } from "./ServiceCard";
+import { IncidentCard } from "./IncidentCard";
+import { AnalyticsCard } from "./AnalyticsCard";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -43,10 +47,8 @@ import html2canvas from "html2canvas";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
-// Dynamic import para evitar problemas de SSR
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-// Extensão do tipo jsPDF para incluir autoTable
 declare module "jspdf" {
   interface jsPDF {
     autoTable: typeof autoTable;
@@ -54,7 +56,7 @@ declare module "jspdf" {
 }
 
 export default function ReportsPage() {
-  // Estados para filtros e configurações
+  
   const [selectedTab, setSelectedTab] = useState("overview");
   const [timeRange, setTimeRange] = useState("7d");
   const [selectedService, setSelectedService] = useState("all");
@@ -63,10 +65,10 @@ export default function ReportsPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedSeverity, setSelectedSeverity] = useState("all");
   
-  // Ref para capturar elementos no PDF
+  
   const reportRef = useRef<HTMLDivElement>(null);
 
-  // Dados mais ricos e realistas
+  
   const services = [
     {
       id: "erp-prod",
@@ -79,7 +81,7 @@ export default function ReportsPage() {
       mttr: 12,
       mtbf: 720,
       incidents: 1,
-      downtime: 144, // minutos
+      downtime: 144, 
       responseTime: 245,
       throughput: 1250,
       errorRate: 0.02,
@@ -202,7 +204,7 @@ export default function ReportsPage() {
     },
   ];
 
-  // Funções utilitárias
+  
   const getSeverityColor = (severity: string) => {
     switch (severity.toLowerCase()) {
       case "critical": return "text-red-600 bg-red-100 dark:bg-red-900/20";
@@ -246,7 +248,7 @@ export default function ReportsPage() {
     return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
   };
 
-  // Métricas calculadas
+  
   const overallMetrics = useMemo(() => {
     const totalServices = services.length;
     const operationalServices = services.filter(s => s.status === "operational").length;
@@ -263,12 +265,12 @@ export default function ReportsPage() {
       totalIncidents,
       criticalIncidents,
       averageMTTR: Number(averageMTTR.toFixed(1)),
-      totalDowntime: Number((totalDowntime / 60).toFixed(1)), // em horas
+      totalDowntime: Number((totalDowntime / 60).toFixed(1)), 
       availability: Number(((operationalServices / totalServices) * 100).toFixed(1)),
     };
   }, [services, incidents]);
 
-  // Dados para gráficos
+  
   const availabilityChartData = {
     series: [{
       name: "Disponibilidade",
@@ -344,7 +346,7 @@ export default function ReportsPage() {
   const incidentTrendData = {
     series: [{
       name: "Incidentes",
-      data: [8, 12, 6, 15, 9, 5, 3] // Últimas 7 semanas
+      data: [8, 12, 6, 15, 9, 5, 3] 
     }],
     options: {
       chart: {
@@ -387,22 +389,22 @@ export default function ReportsPage() {
       if (format === 'pdf') {
         console.log('Chamando generatePDFReport...');
         await generatePDFReport();
-        alert('✅ Relatório PDF gerado com sucesso!');
+        alert('Relatório PDF gerado com sucesso!');
       } else if (format === 'pdf-complete') {
         console.log('Chamando generateCompletePDFReport...');
         await generateCompletePDFReport();
-        alert('✅ Relatório PDF completo gerado com sucesso!');
+        alert('Relatório PDF completo gerado com sucesso!');
       } else if (format === 'csv') {
         generateCSVReport();
-        alert('✅ Relatório CSV exportado com sucesso!');
+        alert('Relatório CSV exportado com sucesso!');
       } else if (format === 'incidents-csv') {
         generateIncidentsCSV();
-        alert('✅ Relatório de incidentes CSV exportado com sucesso!');
+        alert('Relatório de incidentes CSV exportado com sucesso!');
       }
     } catch (error) {
       console.error('Erro detalhado ao gerar relatório:', error);
       console.error('Stack trace:', error instanceof Error ? error.stack : 'Stack não disponível');
-      alert(`❌ Erro ao gerar relatório: ${error instanceof Error ? error.message : 'Erro desconhecido'}. Tente novamente.`);
+      alert(`Erro ao gerar relatório: ${error instanceof Error ? error.message : 'Erro desconhecido'}. Tente novamente.`);
     } finally {
       setIsGenerating(false);
     }
@@ -415,7 +417,7 @@ export default function ReportsPage() {
     const pageHeight = pdf.internal.pageSize.getHeight();
     let yPosition = 20;
 
-    // Header do relatório
+    
     pdf.setFontSize(20);
     pdf.setTextColor(31, 41, 55);
     pdf.text('RELATÓRIO EXECUTIVO DE INFRAESTRUTURA', pageWidth / 2, yPosition, { align: 'center' });
@@ -428,18 +430,18 @@ export default function ReportsPage() {
 
     yPosition += 20;
 
-    // Linha separadora
+    
     pdf.setDrawColor(229, 231, 235);
     pdf.line(20, yPosition, pageWidth - 20, yPosition);
     yPosition += 15;
 
-    // Métricas principais
+    
     pdf.setFontSize(16);
     pdf.setTextColor(31, 41, 55);
     pdf.text('RESUMO EXECUTIVO', 20, yPosition);
     yPosition += 10;
 
-    // Grid de métricas
+    
     const metricsData = [
       ['Métrica', 'Valor', 'Status'],
       ['Disponibilidade Geral', `${overallMetrics.availability}%`, overallMetrics.availability >= 99 ? 'Excelente' : 'Atenção'],
@@ -478,13 +480,13 @@ export default function ReportsPage() {
 
     yPosition = (pdf as any).lastAutoTable.finalY + 20;
 
-    // Nova página se necessário
+    
     if (yPosition > pageHeight - 60) {
       pdf.addPage();
       yPosition = 20;
     }
 
-    // Detalhes dos serviços
+    
     pdf.setFontSize(16);
     pdf.setTextColor(31, 41, 55);
     pdf.text('DETALHAMENTO POR SERVIÇO', 20, yPosition);
@@ -537,13 +539,13 @@ export default function ReportsPage() {
 
     yPosition = (pdf as any).lastAutoTable.finalY + 20;
 
-    // Nova página para incidentes se necessário
+    
     if (yPosition > pageHeight - 100) {
       pdf.addPage();
       yPosition = 20;
     }
 
-    // Histórico de incidentes
+    
     if (filteredIncidents.length > 0) {
       pdf.setFontSize(16);
       pdf.setTextColor(31, 41, 55);
@@ -594,7 +596,7 @@ export default function ReportsPage() {
       });
     }
 
-    // Rodapé em todas as páginas
+    
     const totalPages = pdf.getNumberOfPages();
     for (let i = 1; i <= totalPages; i++) {
       pdf.setPage(i);
@@ -604,7 +606,7 @@ export default function ReportsPage() {
       pdf.text('Documento confidencial - Uso interno apenas', 20, pageHeight - 10);
     }
 
-    // Salvar o PDF
+    
     const fileName = `infrawatch-report-${format(new Date(), 'yyyy-MM-dd-HHmm')}.pdf`;
     pdf.save(fileName);
   };
@@ -616,7 +618,7 @@ export default function ReportsPage() {
     const pageHeight = pdf.internal.pageSize.getHeight();
     let yPosition = 20;
 
-    // Header do relatório
+    
     pdf.setFontSize(24);
     pdf.setTextColor(31, 41, 55);
     pdf.text('RELATÓRIO EXECUTIVO COMPLETO', pageWidth / 2, yPosition, { align: 'center' });
@@ -634,10 +636,10 @@ export default function ReportsPage() {
 
     yPosition += 15;
 
-    // Capturar gráficos se existirem
+    
     if (reportRef.current) {
       try {
-        // Capturar os gráficos
+        
         const chartElements = reportRef.current.querySelectorAll('.apexcharts-canvas');
         
         for (let i = 0; i < Math.min(chartElements.length, 2); i++) {
@@ -645,14 +647,14 @@ export default function ReportsPage() {
           if (chartElement) {
             yPosition += 10;
             
-            // Adicionar título do gráfico
+            
             pdf.setFontSize(14);
             pdf.setTextColor(31, 41, 55);
             const chartTitle = i === 0 ? 'Disponibilidade por Serviço' : i === 1 ? 'Conformidade SLA' : 'Tendência de Incidentes';
             pdf.text(chartTitle, 20, yPosition);
             yPosition += 10;
             
-            // Capturar o gráfico
+            
             const canvas = await html2canvas(chartElement, {
               scale: 2,
               useCORS: true,
@@ -663,7 +665,7 @@ export default function ReportsPage() {
             const imgWidth = pageWidth - 40;
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
             
-            // Verificar se precisa de nova página
+            
             if (yPosition + imgHeight > pageHeight - 20) {
               pdf.addPage();
               yPosition = 20;
@@ -678,17 +680,17 @@ export default function ReportsPage() {
       }
     }
 
-    // Nova página para as tabelas
+    
     pdf.addPage();
     yPosition = 20;
 
-    // Resumo executivo detalhado
+    
     pdf.setFontSize(18);
     pdf.setTextColor(31, 41, 55);
     pdf.text('RESUMO EXECUTIVO DETALHADO', 20, yPosition);
     yPosition += 15;
 
-    // Análise de performance
+    
     pdf.setFontSize(12);
     pdf.setTextColor(55, 65, 81);
     const analysis = [
@@ -708,7 +710,7 @@ export default function ReportsPage() {
 
     yPosition += 10;
 
-    // Recomendações
+    
     pdf.setFontSize(14);
     pdf.setTextColor(31, 41, 55);
     pdf.text('RECOMENDAÇÕES ESTRATÉGICAS', 20, yPosition);
@@ -731,8 +733,8 @@ export default function ReportsPage() {
 
     yPosition += 15;
 
-    // Continuar com as tabelas existentes...
-    // Métricas principais (usando a mesma lógica da função anterior)
+    
+    
     const metricsData = [
       ['Métrica', 'Valor Atual', 'Meta', 'Status', 'Tendência'],
       ['Disponibilidade Geral', `${overallMetrics.availability}%`, '≥99%', overallMetrics.availability >= 99 ? 'Conforme' : 'Atenção', '↗'],
@@ -763,11 +765,11 @@ export default function ReportsPage() {
       margin: { left: 20, right: 20 }
     });
 
-    // Nova página para detalhes dos serviços
+    
     pdf.addPage();
     yPosition = 20;
 
-    // Detalhes dos serviços (usando a mesma lógica melhorada)
+    
     pdf.setFontSize(16);
     pdf.setTextColor(31, 41, 55);
     pdf.text('ANÁLISE DETALHADA POR SERVIÇO', 20, yPosition);
@@ -824,7 +826,7 @@ export default function ReportsPage() {
       }
     });
 
-    // Se houver incidentes, adicionar página de incidentes
+    
     if (filteredIncidents.length > 0) {
       pdf.addPage();
       yPosition = 20;
@@ -840,7 +842,7 @@ export default function ReportsPage() {
           yPosition = 20;
         }
 
-        // Box para cada incidente
+        
         pdf.setDrawColor(229, 231, 235);
         pdf.setFillColor(249, 250, 251);
         pdf.roundedRect(20, yPosition, pageWidth - 40, 25, 2, 2, 'FD');
@@ -862,7 +864,7 @@ export default function ReportsPage() {
       });
     }
 
-    // Rodapé em todas as páginas
+    
     const totalPages = pdf.getNumberOfPages();
     for (let i = 1; i <= totalPages; i++) {
       pdf.setPage(i);
@@ -873,7 +875,7 @@ export default function ReportsPage() {
       pdf.text(`Gerado em ${format(new Date(), 'dd/MM/yyyy HH:mm')}`, pageWidth - 60, pageHeight - 10);
     }
 
-    // Salvar o PDF completo
+    
     const fileName = `infrawatch-complete-report-${format(new Date(), 'yyyy-MM-dd-HHmm')}.pdf`;
     pdf.save(fileName);
   };
@@ -1050,93 +1052,42 @@ export default function ReportsPage() {
 
       {/* Métricas principais */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-700">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-green-700 dark:text-green-300">
-                  DISPONIBILIDADE GERAL
-                </p>
-                <p className="text-3xl font-bold text-green-800 dark:text-green-200">
-                  {overallMetrics.availability}%
-                </p>
-                <div className="flex items-center gap-1 mt-1">
-                  <CheckCircle className="w-3 h-3 text-green-600" />
-                  <p className="text-xs text-green-600">
-                    {overallMetrics.operationalServices} de {overallMetrics.totalServices} serviços
-                  </p>
-                </div>
-              </div>
-              <Shield className="w-8 h-8 text-green-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 border-blue-200 dark:border-blue-700">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                  SLA MÉDIO GLOBAL
-                </p>
-                <p className="text-3xl font-bold text-blue-800 dark:text-blue-200">
-                  {overallMetrics.averageSLA}%
-                </p>
-                <div className="flex items-center gap-1 mt-1">
-                  <Target className="w-3 h-3 text-blue-600" />
-                  <p className="text-xs text-blue-600">
-                    Meta: 99.0%
-                  </p>
-                </div>
-              </div>
-              <BarChart3 className="w-8 h-8 text-blue-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 border-yellow-200 dark:border-yellow-700">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-yellow-700 dark:text-yellow-300">
-                  INCIDENTES (30D)
-                </p>
-                <p className="text-3xl font-bold text-yellow-800 dark:text-yellow-200">
-                  {overallMetrics.totalIncidents}
-                </p>
-                <div className="flex items-center gap-1 mt-1">
-                  <AlertTriangle className="w-3 h-3 text-red-600" />
-                  <p className="text-xs text-red-600">
-                    {overallMetrics.criticalIncidents} críticos
-                  </p>
-                </div>
-              </div>
-              <AlertTriangle className="w-8 h-8 text-yellow-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 border-purple-200 dark:border-purple-700">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-purple-700 dark:text-purple-300">
-                  MTTR MÉDIO
-                </p>
-                <p className="text-3xl font-bold text-purple-800 dark:text-purple-200">
-                  {overallMetrics.averageMTTR}min
-                </p>
-                <div className="flex items-center gap-1 mt-1">
-                  <Clock className="w-3 h-3 text-purple-600" />
-                  <p className="text-xs text-purple-600">
-                    {overallMetrics.totalDowntime}h downtime total
-                  </p>
-                </div>
-              </div>
-              <Zap className="w-8 h-8 text-purple-600" />
-            </div>
-          </CardContent>
-        </Card>
+        <MetricCard
+          icon={<Shield className="w-8 h-8 text-green-600" />}
+          title="DISPONIBILIDADE GERAL"
+          value={`${overallMetrics.availability}%`}
+          subtitle={`${overallMetrics.operationalServices} de ${overallMetrics.totalServices} serviços`}
+          colorClass="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-700"
+        >
+          <CheckCircle className="w-3 h-3 text-green-600" />
+        </MetricCard>
+        <MetricCard
+          icon={<BarChart3 className="w-8 h-8 text-blue-600" />}
+          title="SLA MÉDIO GLOBAL"
+          value={`${overallMetrics.averageSLA}%`}
+          subtitle="Meta: 99.0%"
+          colorClass="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 border-blue-200 dark:border-blue-700"
+        >
+          <Target className="w-3 h-3 text-blue-600" />
+        </MetricCard>
+        <MetricCard
+          icon={<AlertTriangle className="w-8 h-8 text-yellow-600" />}
+          title="INCIDENTES (30D)"
+          value={overallMetrics.totalIncidents}
+          subtitle={`${overallMetrics.criticalIncidents} críticos`}
+          colorClass="bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 border-yellow-200 dark:border-yellow-700"
+        >
+          <AlertTriangle className="w-3 h-3 text-red-600" />
+        </MetricCard>
+        <MetricCard
+          icon={<Zap className="w-8 h-8 text-purple-600" />}
+          title="MTTR MÉDIO"
+          value={`${overallMetrics.averageMTTR}min`}
+          subtitle={`${overallMetrics.totalDowntime}h downtime total`}
+          colorClass="bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 border-purple-200 dark:border-purple-700"
+        >
+          <Clock className="w-3 h-3 text-purple-600" />
+        </MetricCard>
       </div>
 
       {/* Tabs para diferentes visualizações */}
@@ -1235,85 +1186,23 @@ export default function ReportsPage() {
             <CardContent>
               <div className="space-y-4">
                 {filteredServices.map((service) => (
-                  <div
+                  <ServiceCard
                     key={service.id}
-                    className="p-4 border border-neutral-200 dark:border-neutral-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors"
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
-                          {service.type === "Base de Dados" ? <Database className="w-5 h-5 text-blue-600" /> :
-                           service.type === "Servidor Web" ? <Globe className="w-5 h-5 text-blue-600" /> :
-                           <Server className="w-5 h-5 text-blue-600" />}
-                        </div>
-                        <div>
-                          <h3 className="font-semibold text-neutral-800 dark:text-neutral-200">
-                            {service.name}
-                          </h3>
-                          <div className="flex items-center gap-2 mt-1">
-                            <Badge className={getCategoryColor(service.category)} variant="secondary">
-                              {service.category}
-                            </Badge>
-                            <Badge className={getStatusColor(service.status)} variant="secondary">
-                              {service.status === "operational" ? "Operacional" : 
-                               service.status === "degraded" ? "Degradado" : "Indisponível"}
-                            </Badge>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">
-                          {service.availability}%
-                        </p>
-                        <p className="text-sm text-neutral-500">Disponibilidade</p>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
-                      <div>
-                        <p className="text-xs text-neutral-500 uppercase">SLA Target</p>
-                        <p className="font-medium">{service.slaTarget}%</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-neutral-500 uppercase">SLA Atual</p>
-                        <p className={`font-medium ${service.slaActual >= service.slaTarget ? 'text-green-600' : 'text-red-600'}`}>
-                          {service.slaActual}%
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-neutral-500 uppercase">MTTR</p>
-                        <p className="font-medium">{service.mttr}min</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-neutral-500 uppercase">Incidentes</p>
-                        <p className="font-medium">{service.incidents}</p>
-                      </div>
-                    </div>
-
-                    <div className="relative">
-                      <Progress value={service.availability} className="h-3" />
-                      <div
-                        className="absolute top-0 h-3 w-0.5 bg-red-500 z-10"
-                        style={{ left: `${service.slaTarget}%` }}
-                        title={`Meta SLA: ${service.slaTarget}%`}
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-4 mt-3 pt-3 border-t border-neutral-200 dark:border-neutral-700">
-                      <div>
-                        <p className="text-xs text-neutral-500">Tempo Resposta</p>
-                        <p className="text-sm font-medium">{service.responseTime}ms</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-neutral-500">Throughput</p>
-                        <p className="text-sm font-medium">{service.throughput}/min</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-neutral-500">Taxa de Erro</p>
-                        <p className="text-sm font-medium">{service.errorRate}%</p>
-                      </div>
-                    </div>
-                  </div>
+                    name={service.name}
+                    type={service.type}
+                    category={service.category}
+                    status={service.status}
+                    availability={service.availability}
+                    slaTarget={service.slaTarget}
+                    slaActual={service.slaActual}
+                    mttr={service.mttr}
+                    incidents={service.incidents}
+                    responseTime={service.responseTime}
+                    throughput={service.throughput}
+                    errorRate={service.errorRate}
+                    getCategoryColor={getCategoryColor}
+                    getStatusColor={getStatusColor}
+                  />
                 ))}
               </div>
             </CardContent>
@@ -1339,69 +1228,21 @@ export default function ReportsPage() {
             <CardContent>
               <div className="space-y-4">
                 {filteredIncidents.map((incident) => (
-                  <div
+                  <IncidentCard
                     key={incident.id}
-                    className="p-4 border border-neutral-200 dark:border-neutral-700 rounded-lg"
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-red-100 dark:bg-red-900/20 rounded-lg">
-                          <AlertTriangle className="w-5 h-5 text-red-600" />
-                        </div>
-                        <div>
-                          <h3 className="font-semibold text-neutral-800 dark:text-neutral-200">
-                            {incident.title}
-                          </h3>
-                          <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                            {incident.id} • {incident.service}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Badge className={getSeverityColor(incident.severity)} variant="secondary">
-                          {incident.severity}
-                        </Badge>
-                        <Badge className="text-green-600 bg-green-100 dark:bg-green-900/20" variant="secondary">
-                          {incident.status}
-                        </Badge>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
-                      <div>
-                        <p className="text-xs text-neutral-500 uppercase">Duração</p>
-                        <p className="font-medium">{formatDuration(incident.duration)}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-neutral-500 uppercase">Impacto</p>
-                        <p className="font-medium">{incident.impact}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-neutral-500 uppercase">Responsável</p>
-                        <p className="font-medium">{incident.assignee}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-neutral-500 uppercase">Início</p>
-                        <p className="font-medium">
-                          {new Date(incident.startTime).toLocaleDateString('pt-BR', {
-                            day: '2-digit',
-                            month: '2-digit',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="p-3 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
-                      <p className="text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                        Causa Raiz:
-                      </p>
-                      <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                        {incident.rootCause}
-                      </p>
-                    </div>
-                  </div>
+                    id={incident.id}
+                    title={incident.title}
+                    service={incident.service}
+                    severity={incident.severity}
+                    status={incident.status}
+                    duration={incident.duration}
+                    impact={incident.impact}
+                    assignee={incident.assignee}
+                    startTime={incident.startTime}
+                    rootCause={incident.rootCause}
+                    getSeverityColor={getSeverityColor}
+                    formatDuration={formatDuration}
+                  />
                 ))}
               </div>
             </CardContent>
@@ -1415,21 +1256,14 @@ export default function ReportsPage() {
                 <CardTitle>Distribuição por Criticidade</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {["Critical", "High", "Medium", "Low"].map((category) => {
-                    const count = services.filter(s => s.category === category).length;
-                    const percentage = (count / services.length) * 100;
-                    return (
-                      <div key={category} className="space-y-2">
-                        <div className="flex justify-between">
-                          <span className="text-sm font-medium">{category}</span>
-                          <span className="text-sm text-neutral-500">{count} serviços</span>
-                        </div>
-                        <Progress value={percentage} className="h-2" />
-                      </div>
-                    );
-                  })}
-                </div>
+                <AnalyticsCard
+                  title="Distribuição por Criticidade"
+                  items={["Critical", "High", "Medium", "Low"].map((category) => ({
+                    label: category,
+                    value: services.filter(s => s.category === category).length,
+                    total: services.length,
+                  }))}
+                />
               </CardContent>
             </Card>
 
@@ -1438,25 +1272,18 @@ export default function ReportsPage() {
                 <CardTitle>Performance por Tipo</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {["Aplicação", "Serviço", "Base de Dados", "Servidor Web", "Backup"].map((type) => {
+                <AnalyticsCard
+                  title="Performance por Tipo"
+                  items={["Aplicação", "Serviço", "Base de Dados", "Servidor Web", "Backup"].map((type) => {
                     const typeServices = services.filter(s => s.type === type);
-                    if (typeServices.length === 0) return null;
-                    const avgAvailability = typeServices.reduce((sum, s) => sum + s.availability, 0) / typeServices.length;
-                    return (
-                      <div key={type} className="flex justify-between items-center p-3 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
-                        <div>
-                          <p className="font-medium">{type}</p>
-                          <p className="text-sm text-neutral-500">{typeServices.length} serviços</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-bold text-lg">{avgAvailability.toFixed(1)}%</p>
-                          <p className="text-xs text-neutral-500">Disponibilidade</p>
-                        </div>
-                      </div>
-                    );
+                    return {
+                      label: type,
+                      value: typeServices.length,
+                      total: services.length,
+                    };
                   })}
-                </div>
+                  unit="serviços"
+                />
               </CardContent>
             </Card>
           </div>
