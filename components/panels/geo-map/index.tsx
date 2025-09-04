@@ -71,7 +71,7 @@ export default function GeoMap() {
                 <Badge
                   className={cn(
                     "rounded-full px-3 py-1 text-xs font-semibold",
-                    machineTypes[selectedMachine.status.id]
+                    machineTypes[selectedMachine.status.id],
                   )}
                 >
                   {selectedMachine.status.label}
@@ -132,13 +132,13 @@ export default function GeoMap() {
                     <span className="font-medium">Criado em:</span>
                     <span>
                       {new Date(selectedMachine.created_at).toLocaleString(
-                        "pt-PT"
+                        "pt-PT",
                       )}
                     </span>
                     <span className="font-medium">Última atualização:</span>
                     <span>
                       {new Date(selectedMachine.updated_at).toLocaleString(
-                        "pt-PT"
+                        "pt-PT",
                       )}
                     </span>
                   </div>
