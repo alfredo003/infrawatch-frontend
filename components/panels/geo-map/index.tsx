@@ -1,6 +1,8 @@
 "use client";
-import Map from "./components/Map";
 
+import { useState } from "react";
+import dynamic from "next/dynamic";
+import { cn } from "@/lib/utils";
 import {
   Sheet,
   SheetContent,
@@ -8,9 +10,8 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { useState } from "react";
-import { cn } from "@/lib/utils";
+
+const Map = dynamic(() => import("./partials/Map"), { ssr: false });
 
 export interface Machine {
   id: number;
@@ -25,7 +26,6 @@ export interface Machine {
   lng: number;
   lastCheck: string;
 
-  // New fields from schema
   check_interval: string;
   owner_user_id: string;
   company_id: string;
@@ -48,7 +48,7 @@ const machineTypes: MachineState = {
   maintenance: "bg-yellow-600/10 text-yellow-500",
 };
 
-export default function MapV() {
+export default function GeoMap() {
   const [open, setOpen] = useState(false);
   const [selectedMachine, setSelectedMachine] = useState<Machine>();
 
@@ -71,7 +71,7 @@ export default function MapV() {
                 <Badge
                   className={cn(
                     "rounded-full px-3 py-1 text-xs font-semibold",
-                    machineTypes[selectedMachine.status.id],
+                    machineTypes[selectedMachine.status.id]
                   )}
                 >
                   {selectedMachine.status.label}
@@ -132,13 +132,13 @@ export default function MapV() {
                     <span className="font-medium">Criado em:</span>
                     <span>
                       {new Date(selectedMachine.created_at).toLocaleString(
-                        "pt-PT",
+                        "pt-PT"
                       )}
                     </span>
                     <span className="font-medium">Última atualização:</span>
                     <span>
                       {new Date(selectedMachine.updated_at).toLocaleString(
-                        "pt-PT",
+                        "pt-PT"
                       )}
                     </span>
                   </div>

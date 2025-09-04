@@ -141,7 +141,6 @@ export default function Map({
           <Marker
             key={machine.id}
             position={[machine.lat, machine.lng]}
-            
             icon={machineStateIcons[machine.status.id]}
           >
             <Popup>
