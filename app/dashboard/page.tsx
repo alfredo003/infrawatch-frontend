@@ -46,9 +46,7 @@ export default function InfraWatchDashboard() {
   };
 
   if (!mounted || isLoading) {
-    return (
-     <Loading/>
-    );
+    return <Loading />;
   }
 
   if (!isAuthenticated) {

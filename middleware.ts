@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { z } from "zod";
- 
+
 const TokenSchema = z.string().min(1, "Token inválido");
 
- 
 const protectedRoutes = [
   "/dashboard",
   "/servers",
@@ -19,12 +18,13 @@ const protectedRoutes = [
   "/agent-network",
 ];
 
- 
 const publicRoutes = ["/login", "/forgot-password", "/reset-password"];
 
 export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
-  const isProtectedRoute = protectedRoutes.some((route) => path.startsWith(route));
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    path.startsWith(route),
+  );
   const isPublicRoute = publicRoutes.includes(path);
 
   // Verificar se há token de autenticação
@@ -40,13 +40,12 @@ export function middleware(request: NextRequest) {
     console.warn(
       `Acesso não autorizado à rota protegida: ${path}. Erro: ${
         tokenValidation.error?.issues[0]?.message || "Token ausente"
-      }`
+      }`,
     );
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
- 
-  if (isPublicRoute && tokenValidation.success && path === "/login") { 
+  if (isPublicRoute && tokenValidation.success && path === "/login") {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 

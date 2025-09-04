@@ -1,30 +1,32 @@
 "use client";
 import { useRef, useState } from "react";
-import {
-  Eye,
-  EyeOff,
-  User,
-  Lock,
-  Shield,
-} from "lucide-react";
+import { Eye, EyeOff, User, Lock, Shield } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import InlineError from "@/components/ui/inline-error";
-import { validateForm, signIn, type FormData, type FormErrors } from "@/services/authService";
-import HCaptcha from "@hcaptcha/react-hcaptcha";
+import {
+  validateForm,
+  signIn,
+  type FormData,
+  type FormErrors,
+} from "@/services/authService";
+// import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 export default function NetworkMonitoringLogin() {
   const router = useRouter();
-  const [formData, setFormData] = useState<FormData>({ email: "", password: "" });
+  const [formData, setFormData] = useState<FormData>({
+    email: "",
+    password: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [authError, setAuthError] = useState<string | null>(null);
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
-  const captchaRef = useRef<HCaptcha>(null);
-  
+  // const captchaRef = useRef<HCaptcha>(null);
+
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
@@ -36,19 +38,21 @@ export default function NetworkMonitoringLogin() {
   const handleSubmit = () => {
     const newErrors = validateForm(formData);
     setErrors(newErrors);
-    
+
     if (Object.keys(newErrors).length === 0) {
       signIn(formData, setIsLoading, setAuthError, router);
     }
   };
 
   return (
-    <div className="min-h-screen  bg-cover bg-center  flex items-center justify-center p-6 relative overflow-hidden"
-    style={{
-    backgroundImage: "url('/asset5.png')",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-  }}>
+    <div
+      className="min-h-screen  bg-cover bg-center  flex items-center justify-center p-6 relative overflow-hidden"
+      style={{
+        backgroundImage: "url('/asset5.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       {/* Technical Background Pattern */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-10">
         <div
@@ -93,12 +97,7 @@ export default function NetworkMonitoringLogin() {
               {/* Header with System Info */}
               <div className="text-center">
                 <div className="relative inline-block">
-                  <Image
-                    src="/infralogo.png"
-                    width={300}
-                    height={300}
-                    alt=""
-                  />
+                  <Image src="/infralogo.png" width={300} height={300} alt="" />
                 </div>
               </div>
               <p className="text-xs text-gray-400 font-mono">
@@ -164,7 +163,9 @@ export default function NetworkMonitoringLogin() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   value={formData.password}
-                  onChange={(e) => handleInputChange("password", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("password", e.target.value)
+                  }
                   onFocus={() => setFocusedField("password")}
                   onBlur={() => setFocusedField(null)}
                   className={`w-full pl-10 pr-12 py-3 bg-slate-900/50 border rounded-lg text-white font-mono text-sm placeholder-gray-500 transition-all duration-200 focus:outline-none focus:ring-2 ${
@@ -208,13 +209,13 @@ export default function NetworkMonitoringLogin() {
             </div>
 
             {authError && <InlineError message={authError} />}
-         <HCaptcha
+            {/* <HCaptcha
               sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITEKEY!}
               onVerify={(token) => setToken(token)}
               ref={captchaRef}
                languageOverride="pt"
-            />
-               {/* Submit Button */}
+            /> */}
+            {/* Submit Button */}
             <button
               onClick={handleSubmit}
               disabled={isLoading}

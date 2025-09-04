@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState, useContext, useRef } from "react";
+
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import ReactDOMServer from "react-dom/server";
@@ -9,8 +11,9 @@ import { Button } from "./ui/button";
 import ErrorMachineIcon from "./icons/error";
 import ActiveMachineIcon from "./icons/active";
 import MaintenanceMachineIcon from "./icons/maintenance";
-import { Machine, MachineState } from "@/app/page";
+
 import { cn } from "@/lib/utils";
+import { IMapMachine, IMapMachineStatus } from "..";
 
 interface MachineStateIcon {
   active: L.DivIcon;
@@ -18,7 +21,7 @@ interface MachineStateIcon {
   maintenance: L.DivIcon;
 }
 
-const machines: Machine[] = [
+const machines: IMapMachine[] = [
   {
     id: 1,
     name: "Servidor DNS",
@@ -94,27 +97,27 @@ const machineStateIcons: MachineStateIcon = {
   active: L.divIcon({
     html: ReactDOMServer.renderToString(<ActiveMachineIcon />),
     className: "",
-    iconSize: [22, 22],
+    iconSize: [30, 30],
     iconAnchor: [16, 32],
     popupAnchor: [0, -32],
   }),
   inactive: L.divIcon({
     html: ReactDOMServer.renderToString(<ErrorMachineIcon />),
     className: "",
-    iconSize: [22, 22],
+    iconSize: [30, 30],
     iconAnchor: [16, 32],
     popupAnchor: [0, -32],
   }),
   maintenance: L.divIcon({
     html: ReactDOMServer.renderToString(<MaintenanceMachineIcon />),
     className: "",
-    iconSize: [22, 22],
+    iconSize: [30, 30],
     iconAnchor: [16, 32],
     popupAnchor: [0, -32],
   }),
 };
 
-const machineTypes: MachineState = {
+const machineTypes: IMapMachineStatus = {
   active: "bg-green-600/10 text-green-500",
   inactive: "bg-red-600/10 text-red-500",
   maintenance: "bg-yellow-600/10 text-yellow-500",
@@ -123,14 +126,25 @@ const machineTypes: MachineState = {
 export default function Map({
   onSelectMachine,
 }: {
-  onSelectMachine: (machine: Machine) => void;
+  onSelectMachine: (machine: IMapMachine) => void;
 }) {
+  const mapKey = useRef("map-container-fabio");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
   return (
     <>
       <MapContainer
+        key={typeof window !== "undefined" ? "map-" + Date.now() : "map-ssr"}
         center={[-8.9186, 13.204]}
         zoom={16}
         style={{ height: "100%", width: "100%" }}
+        className="rounded-md"
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -141,7 +155,6 @@ export default function Map({
           <Marker
             key={machine.id}
             position={[machine.lat, machine.lng]}
-            
             icon={machineStateIcons[machine.status.id]}
           >
             <Popup>
@@ -154,7 +167,7 @@ export default function Map({
                   <span
                     className={cn(
                       "rounded-full px-2 py-0.5 text-[10px] font-medium",
-                      machineTypes[machine.status.id],
+                      machineTypes[machine.status.id]
                     )}
                   >
                     {machine.status.label}

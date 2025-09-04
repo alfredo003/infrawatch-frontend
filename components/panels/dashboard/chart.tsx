@@ -69,23 +69,21 @@ const ChartV = () => {
     },
   };
 
-  
- 
   const { data, error } = useSWR<SystemData[]>("systems", listAllSystems, {
-       refreshInterval: 500,
-      });
+    refreshInterval: 500,
+  });
 
-      let total = data?.length;
-      let up = data?.filter((s) => s.status === "up").length;
- 
+  let total = data?.length;
+  let up = data?.filter((s) => s.status === "up").length;
+
   useEffect(() => {
     if (data) {
       const percentage = total > 0 ? (up / total) * 100 : 0;
       setSeries((prevSeries) => {
         const newSeries = prevSeries.map((s) => {
           const newData = [...s.data];
-          newData.shift();  
-          newData.push(percentage); 
+          newData.shift();
+          newData.push(percentage);
           return { ...s, data: newData };
         });
         return newSeries;
@@ -97,7 +95,6 @@ const ChartV = () => {
     <div className="app">
       <div className="row">
         <div className="mixed-chart">
-          
           {error && <p>Erro ao carregar dados: {error.message}</p>}
           <Chart options={options} series={series} type="area" height={500} />
         </div>
