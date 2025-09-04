@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -25,7 +25,7 @@ import { KeyedMutator } from "swr";
 interface ListProps {
   paginatedSystems: SystemData[];
   loading?: boolean;
-  onSystemReload: KeyedMutator<SystemData[]>; 
+  onSystemReload: KeyedMutator<SystemData[]>;
 }
 
 export default function ListSystems({
@@ -64,7 +64,7 @@ export default function ListSystems({
       });
 
       setSystemDeleteDialogOpen(false);
-      await onSystemReload();  
+      await onSystemReload();
     } catch (err) {
       toast({
         title: "Erro ao eliminar",
@@ -79,13 +79,21 @@ export default function ListSystems({
   const getLevel = (role: string) => {
     switch (role) {
       case "low":
-        return <span className="text-sm bg-green-600 px-2 text-white">Baixo</span>;
+        return (
+          <span className="text-sm bg-green-600 px-2 text-white">Baixo</span>
+        );
       case "medium":
-        return <span className="text-sm bg-yellow-600 px-2 text-white">Médio</span>;
+        return (
+          <span className="text-sm bg-yellow-600 px-2 text-white">Médio</span>
+        );
       case "high":
-        return <span className="text-sm bg-gray-600 px-2 text-white">Alto</span>;
+        return (
+          <span className="text-sm bg-gray-600 px-2 text-white">Alto</span>
+        );
       default:
-        return <span className="text-sm bg-red-600 px-2 text-white">Crítico</span>;
+        return (
+          <span className="text-sm bg-red-600 px-2 text-white">Crítico</span>
+        );
     }
   };
 
@@ -109,13 +117,27 @@ export default function ListSystems({
       <table className="w-full min-w-[800px]">
         <thead>
           <tr className="border-b border-border">
-            <th className="text-left py-3 px-2 text-xs uppercase tracking-wider">NOME</th>
-            <th className="text-left py-3 px-2 text-xs uppercase tracking-wider">TIPO</th>
-            <th className="text-left py-3 px-2 text-xs uppercase tracking-wider">CONEXÃO</th>
-            <th className="text-left py-3 px-2 text-xs uppercase tracking-wider">NÍVEL</th>
-            <th className="text-left py-3 px-2 text-xs uppercase tracking-wider">Alvo</th>
-            <th className="text-left py-3 px-2 text-xs uppercase tracking-wider">CHECK (s)</th>
-            <th className="text-left py-3 px-2 text-xs uppercase tracking-wider">AÇÕES</th>
+            <th className="text-left py-3 px-2 text-xs uppercase tracking-wider">
+              NOME
+            </th>
+            <th className="text-left py-3 px-2 text-xs uppercase tracking-wider">
+              TIPO
+            </th>
+            <th className="text-left py-3 px-2 text-xs uppercase tracking-wider">
+              CONEXÃO
+            </th>
+            <th className="text-left py-3 px-2 text-xs uppercase tracking-wider">
+              NÍVEL
+            </th>
+            <th className="text-left py-3 px-2 text-xs uppercase tracking-wider">
+              Alvo
+            </th>
+            <th className="text-left py-3 px-2 text-xs uppercase tracking-wider">
+              CHECK (s)
+            </th>
+            <th className="text-left py-3 px-2 text-xs uppercase tracking-wider">
+              AÇÕES
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -137,12 +159,18 @@ export default function ListSystems({
                   </div>
                   <div>
                     <p className="text-sm font-medium">{system.name}</p>
-                    <p className="text-xs text-muted-foreground">{system.status}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {system.status}
+                    </p>
                   </div>
                 </td>
                 <td className="py-4 px-2">{system.typeName}</td>
-                <td className="py-4 px-2">{system.connection_type.toUpperCase()}</td>
-                <td className="py-4 px-2">{getLevel(system.criticality_level)}</td>
+                <td className="py-4 px-2">
+                  {system.connection_type.toUpperCase()}
+                </td>
+                <td className="py-4 px-2">
+                  {getLevel(system.criticality_level)}
+                </td>
                 <td className="py-4 px-2 uppercase">{system.target}</td>
                 <td className="py-4 px-2">{system.check_interval}</td>
                 <td className="py-4 px-2 flex gap-1">
@@ -176,7 +204,10 @@ export default function ListSystems({
       </table>
 
       {/* Delete Dialog */}
-      <Dialog open={systemDeleteDialogOpen} onOpenChange={setSystemDeleteDialogOpen}>
+      <Dialog
+        open={systemDeleteDialogOpen}
+        onOpenChange={setSystemDeleteDialogOpen}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Eliminar - {viewingSystem?.name}</DialogTitle>
@@ -186,7 +217,10 @@ export default function ListSystems({
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setSystemDeleteDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setSystemDeleteDialogOpen(false)}
+            >
               Cancelar
             </Button>
             <Button

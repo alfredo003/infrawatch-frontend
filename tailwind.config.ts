@@ -87,18 +87,18 @@ const config: Config = {
           },
         },
         glow: {
-          '0%, 100%': {
-            boxShadow: '0 0 5px 2px rgba(239, 68, 68, 0.6)',   // pequeno glow vermelho
+          "0%, 100%": {
+            boxShadow: "0 0 5px 2px rgba(239, 68, 68, 0.6)", // pequeno glow vermelho
           },
-          '50%': {
-            boxShadow: '0 0 20px 6px rgba(239, 68, 68, 0.9)',  // glow expandido
+          "50%": {
+            boxShadow: "0 0 20px 6px rgba(239, 68, 68, 0.9)", // glow expandido
           },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-         glow: 'glow 1.5s infinite ease-in-out',
+        glow: "glow 1.5s infinite ease-in-out",
       },
     },
   },

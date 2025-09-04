@@ -1,5 +1,5 @@
-import { Bell } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Bell } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,7 +7,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 export default function NotificationMenu() {
   return (
@@ -34,5 +34,5 @@ export default function NotificationMenu() {
         <DropdownMenuItem className="text-blue-600">Ver todas</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }
