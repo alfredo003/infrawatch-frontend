@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
 import {
@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 
 const Map = dynamic(() => import("./partials/Map"), { ssr: false });
 
-export interface Machine {
+export interface IMapMachine {
   id: number;
   name: string;
   status: {
@@ -36,13 +36,13 @@ export interface Machine {
   updated_at: string;
 }
 
-export interface MachineState {
+export interface IMapMachineStatus {
   active: string;
   inactive: string;
   maintenance: string;
 }
 
-const machineTypes: MachineState = {
+const machineStatus: IMapMachineStatus = {
   active: "bg-green-600/10 text-green-500",
   inactive: "bg-red-600/10 text-red-500",
   maintenance: "bg-yellow-600/10 text-yellow-500",
@@ -50,15 +50,15 @@ const machineTypes: MachineState = {
 
 export default function GeoMap() {
   const [open, setOpen] = useState(false);
-  const [selectedMachine, setSelectedMachine] = useState<Machine>();
+  const [selectedMachine, setSelectedMachine] = useState<IMapMachine>();
 
-  function openSheet(machine: Machine) {
+  function openSheet(machine: IMapMachine) {
     setOpen(true);
     setSelectedMachine(machine);
   }
 
   return (
-    <main className="relative z-0 h-screen w-screen">
+    <main className="relative z-0 h-full w-full">
       <Map onSelectMachine={openSheet} />
       {selectedMachine && (
         <Sheet open={open} onOpenChange={setOpen}>
@@ -71,7 +71,7 @@ export default function GeoMap() {
                 <Badge
                   className={cn(
                     "rounded-full px-3 py-1 text-xs font-semibold",
-                    machineTypes[selectedMachine.status.id],
+                    machineStatus[selectedMachine.status.id]
                   )}
                 >
                   {selectedMachine.status.label}
@@ -132,13 +132,13 @@ export default function GeoMap() {
                     <span className="font-medium">Criado em:</span>
                     <span>
                       {new Date(selectedMachine.created_at).toLocaleString(
-                        "pt-PT",
+                        "pt-PT"
                       )}
                     </span>
                     <span className="font-medium">Última atualização:</span>
                     <span>
                       {new Date(selectedMachine.updated_at).toLocaleString(
-                        "pt-PT",
+                        "pt-PT"
                       )}
                     </span>
                   </div>
