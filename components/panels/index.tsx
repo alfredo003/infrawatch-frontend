@@ -8,16 +8,18 @@ import GeomapPage from "@/components/panels/geomap/page";
 import ApplicationsPage from "@/components/panels/applications/page";
 import ProfilesPage from "./profile/page"; 
 import MonitoringPage from "@/components/panels/monitoring/page";
+import IntegrationPage from "./integrations/page";
 
 export default function Panel({ active }: { active: number }) {
   const menuItems = [
     <DashboardPage />,
     <MonitoringPage />,
+    <SystemsPage />,
+    <IntegrationPage/>,
     <NetworkPage />,
     <ApplicationsPage />,
-    <SystemsPage />,
-    <AlertsPage />,
     <GeomapPage />,
+    <AlertsPage />,
     <ReportsPage />,
 	 <ProfilesPage />,
   ];

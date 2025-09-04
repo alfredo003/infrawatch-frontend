@@ -6,7 +6,11 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import TopBarLocation from "@/components/ui/top-bar-location";
 import Panel from "@/components/panels";
 import { menuItems } from "./menu";
-
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { listAllSystems, SystemData } from "@/services/systemService";
+import useSWR from "swr";
+import { AlertData, listAllAlerts } from "@/services/alertService";
+ 
 interface DashboardLayoutProps {
   sidebarCollapsed: boolean;
   activeSection: number;
@@ -24,11 +28,27 @@ export default function DashboardLayout({
   setActiveSection,
   handleOpenLogoutModal,
 }: DashboardLayoutProps) {
+
+    const { data: systems, error: systemsError, isLoading: systemsLoading, mutate: reloadSystems } =
+    useSWR<SystemData[]>("systems", listAllSystems, {
+      dedupingInterval: 10000,
+      revalidateOnFocus: false,
+    });
+
+    const { data: alerts, error: alertsError, isLoading: alertsLoading, mutate: reloadAlerts } =
+      useSWR<AlertData[]>("alerts", listAllAlerts, {
+        dedupingInterval: 10000,
+        revalidateOnFocus: false,
+      });
+
+    const onlineCount = systems?.length; 
+    const alertsCount = alerts?.length; 
+    const offlineCount = systems?.filter((s) => s.status === "down").length;
   return (
     <div className="flex h-screen bg-white dark:bg-black text-black dark:text-white transition-colors duration-300">
       {/* Sidebar */}
       <div
-        className={`w-64 bg-neutral-50 dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-700 transition-all duration-300 fixed md:relative z-50 md:z-auto h-full md:h-auto ${
+        className={` ${sidebarCollapsed ? "w-16" : "w-64"} bg-neutral-50 dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-700 transition-all duration-300 fixed md:relative z-50 md:z-auto h-full md:h-auto ${
           !sidebarCollapsed ? "md:block" : ""
         }`}
       >
@@ -65,7 +85,8 @@ export default function DashboardLayout({
                     : "text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800"
                 }`}
               >
-                <item.icon className="w-5 h-5 md:w-5 md:h-5 sm:w-6 sm:h-6" />
+                
+                <item.icon className="w-6 h-6" />
                 {!sidebarCollapsed && (
                   <span className="text-sm font-medium">{item.label}</span>
                 )}
@@ -82,9 +103,10 @@ export default function DashboardLayout({
                 </span>
               </div>
               <div className="text-xs text-neutral-600 dark:text-neutral-400">
+                <div>EMPRESA: RCS Angola</div>
                 <div>SLA: 99.8%</div>
-                <div>SERVIÇOS: 247 MONITORADOS</div>
-                <div>ALERTAS: 3 ATIVOS</div>
+                <div>SERVIÇOS: {onlineCount} MONITORADOS</div>
+                <div>ALERTAS: {offlineCount} ATIVOS</div>
               </div>
             </div>
           )}
@@ -140,16 +162,53 @@ export default function DashboardLayout({
                 {new Date().toLocaleString("pt-BR")}
             </div>
             <ThemeToggle />
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-neutral-400 hover:text-blue-600 relative"
-            >
-              <Bell className="w-4 h-4" />
-              <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
-                3
-              </span>
-            </Button>
+ <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-neutral-400 hover:text-blue-600 relative"
+        >
+          <Bell className="w-5 h-5" />
+         {
+          alertsCount && (
+            <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] font-semibold text-white flex items-center justify-center shadow-md">
+            {alertsCount}
+          </span>
+          )
+         }
+         
+        </Button>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent className="w-72 p-2 shadow-lg bg-white">
+        <DropdownMenuLabel className="text-base font-semibold text-gray-700 px-2">
+          Notificações
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+
+        {/* Exemplo de notificação */}
+        <DropdownMenuItem className="flex items-start gap-3 px-2 py-3   hover:bg-blue-50 cursor-pointer">
+          <span className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 font-bold">
+            📩
+          </span>
+          <div className="flex flex-col">
+            <p className="text-sm font-medium text-gray-800">
+              Nova mensagem recebida
+            </p>
+            <span className="text-xs text-gray-500">há 2 minutos</span>
+          </div>
+        </DropdownMenuItem>
+
+        
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuItem  onClick={() => setActiveSection(9)} className="text-center text-blue-600 font-medium py-2 cursor-pointer hover:bg-blue-50 ">
+          Ver todas as notificações
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
             
             <Button
               variant="ghost"

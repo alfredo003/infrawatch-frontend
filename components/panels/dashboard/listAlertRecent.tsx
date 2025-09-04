@@ -1,7 +1,7 @@
 import { CardContent } from "@/components/ui/card";
 import { getSeverityColor } from "@/lib/utils";
 import { AlertData } from "@/services/alertService";
-import { Badge } from "lucide-react";
+import { Badge, Mail } from "lucide-react";
 import { KeyedMutator } from "swr";
 
 interface ListProps {
@@ -20,22 +20,16 @@ export default function ListAlertRecent({ alerts, loading = false, onSystemReloa
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <h4 className="font-medium text-neutral-800 dark:text-neutral-200">
-                    {alert.system}
+                    {alert.trigger_condition}
                   </h4>
                   <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                    {alert.message}
+                    {alert.recipient}
                   </p>
                   <p className="text-xs text-neutral-500 mt-1">
-                    {alert.time}
+                    {alert.sent_at}
                   </p>
                 </div>
-                <Badge className={getSeverityColor(alert.severity)}>
-                  {alert.severity === "critical"
-                    ? "Crítico"
-                    : alert.severity === "warning"
-                      ? "Aviso"
-                      : "Info"}
-                </Badge>
+                <Mail  />
               </div>
             </div>
           ))

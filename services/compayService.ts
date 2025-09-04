@@ -10,12 +10,11 @@ export interface AlertData{
   company_id?: string; 
 }
 
-export const listAllAlerts = async (): Promise<AlertData[]> => {
+export const getDataCompany = async (): Promise<AlertData[]> => {
   try {
     const systemsRes = await api.get("/alerts")
     const systems: AlertData[] = systemsRes.data.data
 
-    console.log(systems);
     return systems;
   } catch (error) {
     console.error("Erro ao buscar sistemas:", error)

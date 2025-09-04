@@ -5,11 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"; 
-import { Search, Server, Activity,Settings } from "lucide-react";
+import { Search, Server, Activity,Settings, Locate } from "lucide-react";
 import ModalViewSystem from "./viewDetails";
-import { getStatusColor } from "@/lib/utils";
-import { connectionTypes, servers } from "./data";
-import { listAllSystems, SystemData } from "@/services/systemService";
+import { dateConversion, getStatusColor } from "@/lib/utils";
+import { connectionTypes } from "./data";
+import { DataMetrics, listAllSystems, SystemData } from "@/services/systemService";
+import { renderCardContent } from "./cards";
 
 export default function MonitoringPage() { 
   const [loading, setLoading] = useState<boolean>(true); 
@@ -17,10 +18,10 @@ export default function MonitoringPage() {
   const [selectedServer, setSelectedServer] = useState<SystemData | null>(null);
   const [selectedConnectionType, setSelectedConnectionType] = useState("ping");
 
-const [systems, setSystems] = useState<any[]>([]);
+const [systems, setSystems] = useState<any[]>([]); 
 
   useEffect(() => {
-    const URL = process.env.URL || 'http://localhost:2000/api'
+    const URL = process.env.NEXT_PUBLIC_API_URL;
     const eventSource = new EventSource(`${URL}/stream/systems`);
 
     eventSource.onmessage = (event) => {
@@ -32,18 +33,18 @@ const [systems, setSystems] = useState<any[]>([]);
       console.log("Erro SSE:", err);
       eventSource.close();
     };
-
-    return () => {
+ 
+    return () => {  
       eventSource.close();
     };
   }, []);
 
-  const allSystems: SystemData[] = systems || [];
-
- 
+  const allSystems: SystemData[] = systems || []; 
+  
+  
 const filteredSystems = allSystems.filter(
   (sys) =>
-    (sys.connection_type.toLowerCase() === selectedConnectionType.toLowerCase()) && // <- garante que só pega os sistemas do tipo selecionado
+    (sys.connection_type.toLowerCase() === selectedConnectionType.toLowerCase()) &&  
     (
       sys.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       sys.typeName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -153,7 +154,7 @@ const filteredSystems = allSystems.filter(
      {/* Servers Grid */}
 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
   {filteredSystems.length > 0 ? (
-    filteredSystems.map((server) => (
+    filteredSystems.map((server:any) => (
       <Card
         key={server.id}
         className={`bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-700 shadow-sm hover:border-blue-500/30 transition-colors cursor-pointer 
@@ -172,47 +173,30 @@ const filteredSystems = allSystems.filter(
               </div>
             </div>
             <Badge className={`${getStatusColor(server.status)} font-medium`}>
-              {server.status === "online"
-                ? "Online"
-                : server.status === "warning"
-                  ? "Alerta"
-                  : "Offline"}
+              {server.status === "up"
+                ? "UP"
+                : server.status === "down"
+                  ? "DOWN"
+                  : "DOWN"}
             </Badge>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            {connectionTypes
-              .find((c) => c.type === selectedConnectionType)
-              ?.metrics.map((metric) => (
-                <div key={metric.key}>
-                  <div className="flex items-center gap-2 mb-1">
-                    <metric.icon className="w-4 h-4 text-neutral-400"/>
-                    <span className="text-neutral-600 dark:text-neutral-400">{metric.label}</span>
-                  </div>
-                  <div className="text-neutral-800 dark:text-neutral-200 font-mono">
-                    {server[metric.key] || 0} {metric.unit}
-                  </div>
-                  {["cpu", "memory", "storage"].includes(metric.key) && (
-                    <Progress value={server[metric.key] || 0} className="h-1.5 mt-1 bg-neutral-200 dark:bg-neutral-700" />
-                  )}
-                </div>
-              ))}
-          </div>
+         {renderCardContent(server)}
 
           <div className="flex justify-between items-center text-sm">
             <div>
               <span className="text-neutral-600 dark:text-neutral-400">Uptime: </span>
-              <span className="text-neutral-800 dark:text-neutral-200 font-mono">{server.uptime}%</span>
+              <span className="text-neutral-800 dark:text-neutral-200 font-mono">{server.metric.uptime_percent}%</span>
             </div>
             <div>
               <span className="text-neutral-600 dark:text-neutral-400">Última verificação: </span>
-              <span className="text-neutral-800 dark:text-neutral-200">{server.lastCheck}</span>
+              <span className="text-neutral-800 dark:text-neutral-200">{dateConversion(server.metric.last_check)}</span>
             </div>
           </div>
 
           <div className="text-sm text-neutral-600 dark:text-neutral-400 flex items-center gap-2">
-            <Settings className="w-4 h-4" /> {server.location}
+            <Locate className="w-4 h-4" /> {server.target}
           </div>
         </CardContent>
       </Card>
