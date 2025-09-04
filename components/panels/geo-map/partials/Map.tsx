@@ -97,21 +97,21 @@ const machineStateIcons: MachineStateIcon = {
   active: L.divIcon({
     html: ReactDOMServer.renderToString(<ActiveMachineIcon />),
     className: "",
-    iconSize: [22, 22],
+    iconSize: [30, 30],
     iconAnchor: [16, 32],
     popupAnchor: [0, -32],
   }),
   inactive: L.divIcon({
     html: ReactDOMServer.renderToString(<ErrorMachineIcon />),
     className: "",
-    iconSize: [22, 22],
+    iconSize: [30, 30],
     iconAnchor: [16, 32],
     popupAnchor: [0, -32],
   }),
   maintenance: L.divIcon({
     html: ReactDOMServer.renderToString(<MaintenanceMachineIcon />),
     className: "",
-    iconSize: [22, 22],
+    iconSize: [30, 30],
     iconAnchor: [16, 32],
     popupAnchor: [0, -32],
   }),
@@ -144,6 +144,7 @@ export default function Map({
         center={[-8.9186, 13.204]}
         zoom={16}
         style={{ height: "100%", width: "100%" }}
+        className="rounded-md"
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
