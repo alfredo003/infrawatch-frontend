@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState, useContext, useRef } from "react";
+
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import ReactDOMServer from "react-dom/server";
@@ -9,8 +11,9 @@ import { Button } from "./ui/button";
 import ErrorMachineIcon from "./icons/error";
 import ActiveMachineIcon from "./icons/active";
 import MaintenanceMachineIcon from "./icons/maintenance";
-import { Machine, MachineState } from "@/app/page";
+
 import { cn } from "@/lib/utils";
+import { IMapMachine, IMapMachineStatus } from "..";
 
 interface MachineStateIcon {
   active: L.DivIcon;
@@ -18,7 +21,7 @@ interface MachineStateIcon {
   maintenance: L.DivIcon;
 }
 
-const machines: Machine[] = [
+const machines: IMapMachine[] = [
   {
     id: 1,
     name: "Servidor DNS",
@@ -114,7 +117,7 @@ const machineStateIcons: MachineStateIcon = {
   }),
 };
 
-const machineTypes: MachineState = {
+const machineTypes: IMapMachineStatus = {
   active: "bg-green-600/10 text-green-500",
   inactive: "bg-red-600/10 text-red-500",
   maintenance: "bg-yellow-600/10 text-yellow-500",
@@ -123,11 +126,21 @@ const machineTypes: MachineState = {
 export default function Map({
   onSelectMachine,
 }: {
-  onSelectMachine: (machine: Machine) => void;
+  onSelectMachine: (machine: IMapMachine) => void;
 }) {
+  const mapKey = useRef("map-container-fabio");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
   return (
     <>
       <MapContainer
+        key={typeof window !== "undefined" ? "map-" + Date.now() : "map-ssr"}
         center={[-8.9186, 13.204]}
         zoom={16}
         style={{ height: "100%", width: "100%" }}
@@ -153,7 +166,7 @@ export default function Map({
                   <span
                     className={cn(
                       "rounded-full px-2 py-0.5 text-[10px] font-medium",
-                      machineTypes[machine.status.id],
+                      machineTypes[machine.status.id]
                     )}
                   >
                     {machine.status.label}
