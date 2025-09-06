@@ -16,18 +16,24 @@ interface LogoutModalProps {
   onConfirm: () => void;
 }
 
-export default function LogoutModal({ isOpen, onClose, onConfirm }: LogoutModalProps) {
+export default function LogoutModal({
+  isOpen,
+  onClose,
+  onConfirm,
+}: LogoutModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Confirmar a Saida</DialogTitle>
-         <br /> 
+          <br />
           <DialogDescription>
-            Tem certeza que deseja sair do sistema? Você será desconectado e precisará fazer login novamente.
+            Tem certeza que deseja sair do sistema? Você será desconectado e
+            precisará fazer login novamente.
           </DialogDescription>
-        </DialogHeader><hr />
-        <DialogFooter> 
+        </DialogHeader>
+        <hr />
+        <DialogFooter>
           <Button variant="outline" onClick={onClose}>
             Cancelar
           </Button>

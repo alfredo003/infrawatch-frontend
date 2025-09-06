@@ -20,10 +20,31 @@ import { z } from "zod";
 
 interface RegisterModelProps {
   setIsSystemCreateDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  typeSystems: any[];
+
   onSystemCreated?: () => void;
 }
+export const INTEGRATION_TYPES = [
+  { value: "GLPi", label: "GLpi" },
+  { value: "DocWare", label: "DocWare" },
+];
 
+export const CONNECTION_TYPES = [
+  // { value: "ping", label: "Ping" },
+  // { value: "api", label: "API REST" },
+  // { value: "webhook", label: "Webhook" },
+  // { value: "snmp", label: "SNMP" },
+  // { value: "tcp", label: "TCP Socket" },
+  { value: "http", label: "HTTP/HTTPS" },
+  // { value: "ssh", label: "SSH" },
+  // { value: "database", label: "Database Connection" },
+];
+
+export const STATUS_OPTIONS = [
+  { value: "operacional", label: "Operacional", color: "green" },
+  { value: "manutencao", label: "Em Manutenção", color: "yellow" },
+  { value: "down", label: "Fora do Ar", color: "red" },
+  { value: "alerta", label: "Em Alerta", color: "orange" },
+];
 const ConnectionType = z.enum(["api", "snmp", "ping", "webhook"]);
 const Status = z.enum(["up", "maintenance", "down"]);
 const ipRegex =
@@ -64,9 +85,9 @@ const initialFormState = {
   check_interval: 60,
 };
 
-export default function RegisterSystem({
+export default function RegisterIntegration({
   setIsSystemCreateDialogOpen,
-  typeSystems,
+
   onSystemCreated,
 }: RegisterModelProps) {
   const [error, setError] = useState<string | null>(null);
@@ -136,11 +157,9 @@ export default function RegisterSystem({
               <SelectValue placeholder="Selecione o tipo de conexão" />
             </SelectTrigger>
             <SelectContent className="bg-popover border-border">
-              {typeSystems.map((item: { id: string; name: string }, index) => (
-                <SelectItem key={index} value={item.id}>
-                  {item.name}
-                </SelectItem>
-              ))}
+              <SelectItem key={2} value={4}>
+                v
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>

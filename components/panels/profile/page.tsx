@@ -1,17 +1,29 @@
-"use client"
-import { useState } from "react"
-import type React from "react"
+"use client";
+import { useState } from "react";
+import type React from "react";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Badge } from "@/components/ui/badge"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { useToast } from "@/hooks/use-toast"
-import { toast } from "sonner"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import {
   Shield,
   Users,
@@ -39,89 +51,91 @@ import {
   Smartphone,
   CheckCircle,
   Crown,
-} from "lucide-react"
-import { ThemeToggle } from "@/components/theme-toggle"
+} from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface Permission {
-  id: string
-  name: string
-  description: string
-  category: string
-  icon: React.ReactNode
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  icon: React.ReactNode;
 }
 
 interface Profile {
-  id: string
-  name: string
-  description: string
-  email: string
-  userCount: number
-  permissions: string[]
-  isSystem: boolean
-  createdAt: string
+  id: string;
+  name: string;
+  description: string;
+  email: string;
+  userCount: number;
+  permissions: string[];
+  isSystem: boolean;
+  createdAt: string;
 }
 
 interface UserData {
-  id: string
-  username: string
-  email: string
-  fullName: string
-  role: "admin" | "operator" | "viewer"
-  status: "active" | "inactive"
-  lastLogin: string
-  createdAt: string
-  permissions: string[]
-  lastLoginIP: string
-  department: string
-  phone: string
+  id: string;
+  username: string;
+  email: string;
+  fullName: string;
+  role: "admin" | "operator" | "viewer";
+  status: "active" | "inactive";
+  lastLogin: string;
+  createdAt: string;
+  permissions: string[];
+  lastLoginIP: string;
+  department: string;
+  phone: string;
 }
 
 export default function ProfilesPage() {
-  const { toast: useToastHook } = useToast()
+  const { toast: useToastHook } = useToast();
 
-  const [activeTab, setActiveTab] = useState<"permissions" | "users">("permissions")
+  const [activeTab, setActiveTab] = useState<"permissions" | "users">(
+    "permissions",
+  );
 
-  const [selectedProfile, setSelectedProfile] = useState<Profile | null>(null)
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false)
-  const [editingProfile, setEditingProfile] = useState<Profile | null>(null)
+  const [selectedProfile, setSelectedProfile] = useState<Profile | null>(null);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [editingProfile, setEditingProfile] = useState<Profile | null>(null);
   const [editProfile, setEditProfile] = useState({
     name: "",
     description: "",
     email: "",
     permissions: [] as string[],
-  })
+  });
   const [newProfile, setNewProfile] = useState({
     name: "",
     description: "",
     email: "",
     permissions: [] as string[],
-  })
+  });
 
-  const [searchTerm, setSearchTerm] = useState("")
-  const [roleFilter, setRoleFilter] = useState("all")
-  const [statusFilter, setStatusFilter] = useState("all")
-  const [currentPage, setCurrentPage] = useState(1)
-  const [isUserEditDialogOpen, setIsUserEditDialogOpen] = useState(false)
-  const [isUserViewDialogOpen, setIsUserViewDialogOpen] = useState(false)
-  const [isUserCreateDialogOpen, setIsUserCreateDialogOpen] = useState(false)
-  const [editingUser, setEditingUser] = useState<UserData | null>(null)
-  const [viewingUser, setViewingUser] = useState<UserData | null>(null)
+  const [searchTerm, setSearchTerm] = useState("");
+  const [roleFilter, setRoleFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isUserEditDialogOpen, setIsUserEditDialogOpen] = useState(false);
+  const [isUserViewDialogOpen, setIsUserViewDialogOpen] = useState(false);
+  const [isUserCreateDialogOpen, setIsUserCreateDialogOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<UserData | null>(null);
+  const [viewingUser, setViewingUser] = useState<UserData | null>(null);
   const [editUserForm, setEditUserForm] = useState({
     username: "",
     email: "",
     fullName: "",
     role: "" as "admin" | "operator" | "viewer",
-  })
+  });
   const [newUserForm, setNewUserForm] = useState({
     username: "",
     email: "",
     fullName: "",
     password: "",
     role: "" as "admin" | "operator" | "viewer",
-  })
-  const itemsPerPage = 10
+  });
+  const itemsPerPage = 10;
 
   // Available permissions
   const permissions: Permission[] = [
@@ -195,7 +209,7 @@ export default function ProfilesPage() {
       category: "Sistema",
       icon: <Lock className="w-4 h-4" />,
     },
-  ]
+  ];
 
   // System profiles
   const profiles: Profile[] = [
@@ -235,26 +249,34 @@ export default function ProfilesPage() {
       description: "Perfil personalizado para gestores de equipe",
       email: "manager@infrawatch.com",
       userCount: 5,
-      permissions: ["dashboards.view", "dashboards.edit", "reports.view", "reports.export", "users.edit"],
+      permissions: [
+        "dashboards.view",
+        "dashboards.edit",
+        "reports.view",
+        "reports.export",
+        "users.edit",
+      ],
       isSystem: false,
       createdAt: "2024-12-15",
     },
-  ]
+  ];
 
-  const [profileFilter, setProfileFilter] = useState<"all" | "system" | "custom">("all")
+  const [profileFilter, setProfileFilter] = useState<
+    "all" | "system" | "custom"
+  >("all");
 
   const handleProfileFilterClick = (filter: "all" | "system" | "custom") => {
-    setProfileFilter(filter)
+    setProfileFilter(filter);
     toast.success(
       `Filtro aplicado: ${filter === "all" ? "Todos os perfis" : filter === "system" ? "Perfis do sistema" : "Perfis personalizados"}`,
-    )
-  }
+    );
+  };
 
   const filteredProfiles = profiles.filter((profile) => {
-    if (profileFilter === "system") return profile.isSystem
-    if (profileFilter === "custom") return !profile.isSystem
-    return true
-  })
+    if (profileFilter === "system") return profile.isSystem;
+    if (profileFilter === "custom") return !profile.isSystem;
+    return true;
+  });
 
   const allUsers: UserData[] = [
     {
@@ -421,67 +443,71 @@ export default function ProfilesPage() {
       department: "Análise",
       phone: "+244 923 456 798",
     },
-  ]
+  ];
 
   const filteredUsers = allUsers.filter((user) => {
     const matchesSearch =
       user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.fullName.toLowerCase().includes(searchTerm.toLowerCase())
+      user.fullName.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesRole = roleFilter === "all" || user.role === roleFilter
-    const matchesStatus = statusFilter === "all" || user.status === statusFilter
+    const matchesRole = roleFilter === "all" || user.role === roleFilter;
+    const matchesStatus =
+      statusFilter === "all" || user.status === statusFilter;
 
-    return matchesSearch && matchesRole && matchesStatus
-  })
+    return matchesSearch && matchesRole && matchesStatus;
+  });
 
-  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage)
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const paginatedUsers = filteredUsers.slice(startIndex, startIndex + itemsPerPage)
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedUsers = filteredUsers.slice(
+    startIndex,
+    startIndex + itemsPerPage,
+  );
 
   const getRoleColor = (role: string) => {
     switch (role) {
       case "admin":
-        return "bg-red-500/20 text-red-500"
+        return "bg-red-500/20 text-red-500";
       case "operator":
-        return "bg-primary/20 text-primary"
+        return "bg-primary/20 text-primary";
       case "viewer":
-        return "bg-muted text-muted-foreground"
+        return "bg-muted text-muted-foreground";
       default:
-        return "bg-muted text-muted-foreground"
+        return "bg-muted text-muted-foreground";
     }
-  }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
-        return "bg-green-500/20 text-green-500"
+        return "bg-green-500/20 text-green-500";
       case "inactive":
-        return "bg-red-500/20 text-red-500"
+        return "bg-red-500/20 text-red-500";
       default:
-        return "bg-muted text-muted-foreground"
+        return "bg-muted text-muted-foreground";
     }
-  }
+  };
 
   const getPermissionsByCategory = () => {
-    const categories: { [key: string]: Permission[] } = {}
+    const categories: { [key: string]: Permission[] } = {};
     permissions.forEach((permission) => {
       if (!categories[permission.category]) {
-        categories[permission.category] = []
+        categories[permission.category] = [];
       }
-      categories[permission.category].push(permission)
-    })
-    return categories
-  }
+      categories[permission.category].push(permission);
+    });
+    return categories;
+  };
 
   const handleCreateProfile = () => {
-    console.log("Creating profile:", newProfile)
+    console.log("Creating profile:", newProfile);
     toast.success(`Perfil "${newProfile.name}" criado com sucesso!`, {
       description: `O perfil está disponível para uso.`,
-    })
-    setIsCreateDialogOpen(false)
-    setNewProfile({ name: "", description: "", email: "", permissions: [] })
-  }
+    });
+    setIsCreateDialogOpen(false);
+    setNewProfile({ name: "", description: "", email: "", permissions: [] });
+  };
 
   const handlePermissionToggle = (permissionId: string) => {
     setNewProfile((prev) => ({
@@ -489,31 +515,31 @@ export default function ProfilesPage() {
       permissions: prev.permissions.includes(permissionId)
         ? prev.permissions.filter((id) => id !== permissionId)
         : [...prev.permissions, permissionId],
-    }))
-  }
+    }));
+  };
 
   const handleEditProfile = (profile: Profile) => {
-    setEditingProfile(profile)
+    setEditingProfile(profile);
     setEditProfile({
       name: profile.name,
       description: profile.description,
       email: profile.email,
       permissions: [...profile.permissions],
-    })
-    setIsEditDialogOpen(true)
-  }
+    });
+    setIsEditDialogOpen(true);
+  };
 
   const handleViewProfile = (profile: Profile) => {
-    setSelectedProfile(profile)
-    setIsViewDialogOpen(true)
-  }
+    setSelectedProfile(profile);
+    setIsViewDialogOpen(true);
+  };
 
   const handleSaveEditedProfile = () => {
-    console.log("Saving edited profile:", editProfile)
-    toast.success(`Perfil "${editProfile.name}" atualizado com sucesso!`)
-    setIsEditDialogOpen(false)
-    setEditingProfile(null)
-  }
+    console.log("Saving edited profile:", editProfile);
+    toast.success(`Perfil "${editProfile.name}" atualizado com sucesso!`);
+    setIsEditDialogOpen(false);
+    setEditingProfile(null);
+  };
 
   const handleEditPermissionToggle = (permissionId: string) => {
     setEditProfile((prev) => ({
@@ -521,37 +547,37 @@ export default function ProfilesPage() {
       permissions: prev.permissions.includes(permissionId)
         ? prev.permissions.filter((id) => id !== permissionId)
         : [...prev.permissions, permissionId],
-    }))
-  }
+    }));
+  };
 
   const handleStatCardClick = (filterType: string) => {
     if (activeTab === "users") {
       switch (filterType) {
         case "total":
-          setRoleFilter("all")
-          setStatusFilter("all")
-          break
+          setRoleFilter("all");
+          setStatusFilter("all");
+          break;
         case "active":
-          setStatusFilter("active")
-          setRoleFilter("all")
-          break
+          setStatusFilter("active");
+          setRoleFilter("all");
+          break;
         case "admins":
-          setRoleFilter("admin")
-          setStatusFilter("all")
-          break
+          setRoleFilter("admin");
+          setStatusFilter("all");
+          break;
         case "operators":
-          setRoleFilter("operator")
-          setStatusFilter("all")
-          break
+          setRoleFilter("operator");
+          setStatusFilter("all");
+          break;
         case "viewers":
-          setRoleFilter("viewer")
-          setStatusFilter("all")
-          break
+          setRoleFilter("viewer");
+          setStatusFilter("all");
+          break;
       }
-      setCurrentPage(1)
-      toast.success(`Filtro aplicado: ${filterType}`)
+      setCurrentPage(1);
+      toast.success(`Filtro aplicado: ${filterType}`);
     }
-  }
+  };
 
   const handleCreateUser = () => {
     if (
@@ -561,63 +587,67 @@ export default function ProfilesPage() {
       !newUserForm.password ||
       !newUserForm.role
     ) {
-      toast.error("Todos os campos são obrigatórios")
-      return
+      toast.error("Todos os campos são obrigatórios");
+      return;
     }
 
-    console.log("Creating new user:", newUserForm)
-    toast.success(`Usuário ${newUserForm.fullName} criado com sucesso`)
-    setIsUserCreateDialogOpen(false)
+    console.log("Creating new user:", newUserForm);
+    toast.success(`Usuário ${newUserForm.fullName} criado com sucesso`);
+    setIsUserCreateDialogOpen(false);
     setNewUserForm({
       username: "",
       email: "",
       fullName: "",
       password: "",
       role: "" as "admin" | "operator" | "viewer",
-    })
-  }
+    });
+  };
 
   const handleUserAction = (action: string, userId: string) => {
-    console.log(`Action: ${action} for user: ${userId}`)
-    const user = allUsers.find((u) => u.id === userId)
+    console.log(`Action: ${action} for user: ${userId}`);
+    const user = allUsers.find((u) => u.id === userId);
 
     if (action === "edit" && user) {
-      setEditingUser(user)
+      setEditingUser(user);
       setEditUserForm({
         username: user.username,
         email: user.email,
         fullName: user.fullName,
         role: user.role,
-      })
-      setIsUserEditDialogOpen(true)
+      });
+      setIsUserEditDialogOpen(true);
     } else if (action === "view" && user) {
-      setViewingUser(user)
-      setIsUserViewDialogOpen(true)
+      setViewingUser(user);
+      setIsUserViewDialogOpen(true);
     } else if (action === "delete" && user) {
-      if (confirm(`Tem certeza que deseja remover o usuário ${user.fullName}?`)) {
-        toast.success(`Usuário ${user.fullName} removido com sucesso`)
+      if (
+        confirm(`Tem certeza que deseja remover o usuário ${user.fullName}?`)
+      ) {
+        toast.success(`Usuário ${user.fullName} removido com sucesso`);
       }
     } else if (action === "toggle" && user) {
-      const newStatus = user.status === "active" ? "inactive" : "active"
-      toast.success(`Usuário ${user.fullName} ${newStatus === "active" ? "ativado" : "desativado"} com sucesso`)
+      const newStatus = user.status === "active" ? "inactive" : "active";
+      toast.success(
+        `Usuário ${user.fullName} ${newStatus === "active" ? "ativado" : "desativado"} com sucesso`,
+      );
     } else if (action === "reset" && user) {
-      toast.success(`Senha do usuário ${user.fullName} resetada com sucesso`)
+      toast.success(`Senha do usuário ${user.fullName} resetada com sucesso`);
     }
-  }
+  };
 
   const handleUpdateUser = () => {
-    console.log("Updating user:", editingUser?.id, editUserForm)
-    toast.success(`Usuário ${editUserForm.fullName} atualizado com sucesso`)
-    setIsUserEditDialogOpen(false)
-    setEditingUser(null)
-  }
+    console.log("Updating user:", editingUser?.id, editUserForm);
+    toast.success(`Usuário ${editUserForm.fullName} atualizado com sucesso`);
+    setIsUserEditDialogOpen(false);
+    setEditingUser(null);
+  };
 
   const profileStats = {
     totalProfiles: profiles.length,
     systemProfiles: profiles.filter((p) => p.isSystem).length,
     customProfiles: profiles.filter((p) => !p.isSystem).length,
     totalUsers: profiles.reduce((sum, p) => sum + p.userCount, 0),
-  }
+  };
 
   const userStats = {
     total: allUsers.length,
@@ -625,19 +655,26 @@ export default function ProfilesPage() {
     admins: allUsers.filter((u) => u.role === "admin").length,
     operators: allUsers.filter((u) => u.role === "operator").length,
     viewers: allUsers.filter((u) => u.role === "viewer").length,
-  }
+  };
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground tracking-wider">PERFIS & USUÁRIOS</h1>
-          <p className="text-sm text-muted-foreground">Gestão completa de perfis, permissões e usuários do sistema</p>
+          <h1 className="text-2xl font-bold text-foreground tracking-wider">
+            PERFIS & USUÁRIOS
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Gestão completa de perfis, permissões e usuários do sistema
+          </p>
         </div>
         <div className="flex gap-2">
           <ThemeToggle />
           {activeTab === "permissions" ? (
-            <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+            <Dialog
+              open={isCreateDialogOpen}
+              onOpenChange={setIsCreateDialogOpen}
+            >
               <DialogTrigger asChild>
                 <Button className="bg-primary hover:bg-primary/90 text-primary-foreground hover-blue-bg">
                   <Plus className="w-4 h-4 mr-2" />
@@ -646,7 +683,9 @@ export default function ProfilesPage() {
               </DialogTrigger>
               <DialogContent className="bg-card border-border max-w-4xl max-h-[80vh] overflow-y-auto">
                 <DialogHeader>
-                  <DialogTitle className="text-foreground">Criar Novo Perfil</DialogTitle>
+                  <DialogTitle className="text-foreground">
+                    Criar Novo Perfil
+                  </DialogTitle>
                 </DialogHeader>
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -656,26 +695,45 @@ export default function ProfilesPage() {
                       </Label>
                       <Input
                         value={newProfile.name}
-                        onChange={(e) => setNewProfile((prev) => ({ ...prev, name: e.target.value }))}
+                        onChange={(e) =>
+                          setNewProfile((prev) => ({
+                            ...prev,
+                            name: e.target.value,
+                          }))
+                        }
                         placeholder="Ex: Supervisor"
                         className="bg-background border-border text-foreground hover-blue"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-foreground text-sm font-medium uppercase tracking-wide">EMAIL</Label>
+                      <Label className="text-foreground text-sm font-medium uppercase tracking-wide">
+                        EMAIL
+                      </Label>
                       <Input
                         type="email"
                         value={newProfile.email}
-                        onChange={(e) => setNewProfile((prev) => ({ ...prev, email: e.target.value }))}
+                        onChange={(e) =>
+                          setNewProfile((prev) => ({
+                            ...prev,
+                            email: e.target.value,
+                          }))
+                        }
                         placeholder="email@infrawatch.com"
                         className="bg-background border-border text-foreground hover-blue"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-foreground text-sm font-medium uppercase tracking-wide">DESCRIÇÃO</Label>
+                      <Label className="text-foreground text-sm font-medium uppercase tracking-wide">
+                        DESCRIÇÃO
+                      </Label>
                       <Input
                         value={newProfile.description}
-                        onChange={(e) => setNewProfile((prev) => ({ ...prev, description: e.target.value }))}
+                        onChange={(e) =>
+                          setNewProfile((prev) => ({
+                            ...prev,
+                            description: e.target.value,
+                          }))
+                        }
                         placeholder="Descrição do perfil..."
                         className="bg-background border-border text-foreground hover-blue"
                       />
@@ -683,40 +741,56 @@ export default function ProfilesPage() {
                   </div>
 
                   <div className="space-y-4">
-                    <Label className="text-foreground text-sm font-medium uppercase tracking-wide">PERMISSÕES</Label>
-                    {Object.entries(getPermissionsByCategory()).map(([category, categoryPermissions]) => (
-                      <Card key={category} className="bg-muted/50 border-border">
-                        <CardHeader className="pb-3">
-                          <CardTitle className="text-sm font-medium text-foreground uppercase tracking-wide">
-                            {category}
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                          {categoryPermissions.map((permission) => (
-                            <div key={permission.id} className="flex items-start space-x-3">
-                              <Checkbox
-                                id={permission.id}
-                                checked={newProfile.permissions.includes(permission.id)}
-                                onCheckedChange={() => handlePermissionToggle(permission.id)}
-                                className="mt-1"
-                              />
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2">
-                                  {permission.icon}
-                                  <Label
-                                    htmlFor={permission.id}
-                                    className="text-sm font-medium text-foreground cursor-pointer"
-                                  >
-                                    {permission.name}
-                                  </Label>
+                    <Label className="text-foreground text-sm font-medium uppercase tracking-wide">
+                      PERMISSÕES
+                    </Label>
+                    {Object.entries(getPermissionsByCategory()).map(
+                      ([category, categoryPermissions]) => (
+                        <Card
+                          key={category}
+                          className="bg-muted/50 border-border"
+                        >
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-sm font-medium text-foreground uppercase tracking-wide">
+                              {category}
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            {categoryPermissions.map((permission) => (
+                              <div
+                                key={permission.id}
+                                className="flex items-start space-x-3"
+                              >
+                                <Checkbox
+                                  id={permission.id}
+                                  checked={newProfile.permissions.includes(
+                                    permission.id,
+                                  )}
+                                  onCheckedChange={() =>
+                                    handlePermissionToggle(permission.id)
+                                  }
+                                  className="mt-1"
+                                />
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-2">
+                                    {permission.icon}
+                                    <Label
+                                      htmlFor={permission.id}
+                                      className="text-sm font-medium text-foreground cursor-pointer"
+                                    >
+                                      {permission.name}
+                                    </Label>
+                                  </div>
+                                  <p className="text-xs text-muted-foreground mt-1">
+                                    {permission.description}
+                                  </p>
                                 </div>
-                                <p className="text-xs text-muted-foreground mt-1">{permission.description}</p>
                               </div>
-                            </div>
-                          ))}
-                        </CardContent>
-                      </Card>
-                    ))}
+                            ))}
+                          </CardContent>
+                        </Card>
+                      ),
+                    )}
                   </div>
 
                   <div className="flex justify-end gap-2">
@@ -789,8 +863,12 @@ export default function ProfilesPage() {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-muted-foreground tracking-wider">TOTAL PERFIS</p>
-                    <p className="text-2xl font-bold text-foreground font-mono">{profileStats.totalProfiles}</p>
+                    <p className="text-xs text-muted-foreground tracking-wider">
+                      TOTAL PERFIS
+                    </p>
+                    <p className="text-2xl font-bold text-foreground font-mono">
+                      {profileStats.totalProfiles}
+                    </p>
                   </div>
                   <Shield className="w-8 h-8 text-foreground" />
                 </div>
@@ -804,8 +882,12 @@ export default function ProfilesPage() {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-muted-foreground tracking-wider">SISTEMA</p>
-                    <p className="text-2xl font-bold text-primary font-mono">{profileStats.systemProfiles}</p>
+                    <p className="text-xs text-muted-foreground tracking-wider">
+                      SISTEMA
+                    </p>
+                    <p className="text-2xl font-bold text-primary font-mono">
+                      {profileStats.systemProfiles}
+                    </p>
                   </div>
                   <Lock className="w-8 h-8 text-primary" />
                 </div>
@@ -819,8 +901,12 @@ export default function ProfilesPage() {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-muted-foreground tracking-wider">PERSONALIZADOS</p>
-                    <p className="text-2xl font-bold text-green-500 font-mono">{profileStats.customProfiles}</p>
+                    <p className="text-xs text-muted-foreground tracking-wider">
+                      PERSONALIZADOS
+                    </p>
+                    <p className="text-2xl font-bold text-green-500 font-mono">
+                      {profileStats.customProfiles}
+                    </p>
                   </div>
                   <Settings className="w-8 h-8 text-green-500" />
                 </div>
@@ -831,8 +917,12 @@ export default function ProfilesPage() {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-muted-foreground tracking-wider">USUÁRIOS</p>
-                    <p className="text-2xl font-bold text-foreground font-mono">{profileStats.totalUsers}</p>
+                    <p className="text-xs text-muted-foreground tracking-wider">
+                      USUÁRIOS
+                    </p>
+                    <p className="text-2xl font-bold text-foreground font-mono">
+                      {profileStats.totalUsers}
+                    </p>
                   </div>
                   <Users className="w-8 h-8 text-foreground" />
                 </div>
@@ -858,12 +948,20 @@ export default function ProfilesPage() {
                         <CardTitle className="text-lg font-bold text-foreground tracking-wider">
                           {profile.name}
                         </CardTitle>
-                        <p className="text-sm text-muted-foreground">{profile.description}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {profile.description}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      {profile.isSystem && <Badge className="bg-primary/20 text-primary text-xs">SISTEMA</Badge>}
-                      <Badge className="bg-muted text-muted-foreground text-xs">{profile.userCount} usuários</Badge>
+                      {profile.isSystem && (
+                        <Badge className="bg-primary/20 text-primary text-xs">
+                          SISTEMA
+                        </Badge>
+                      )}
+                      <Badge className="bg-muted text-muted-foreground text-xs">
+                        {profile.userCount} usuários
+                      </Badge>
                     </div>
                   </div>
                 </CardHeader>
@@ -875,7 +973,9 @@ export default function ProfilesPage() {
                       </Label>
                       <div className="flex flex-wrap gap-2">
                         {profile.permissions.slice(0, 6).map((permissionId) => {
-                          const permission = permissions.find((p) => p.id === permissionId)
+                          const permission = permissions.find(
+                            (p) => p.id === permissionId,
+                          );
                           return (
                             <Badge
                               key={permissionId}
@@ -884,7 +984,7 @@ export default function ProfilesPage() {
                               {permission?.icon}
                               {permission?.name}
                             </Badge>
-                          )
+                          );
                         })}
                         {profile.permissions.length > 6 && (
                           <Badge className="bg-muted/50 text-muted-foreground text-xs">
@@ -896,7 +996,10 @@ export default function ProfilesPage() {
 
                     <div className="flex items-center justify-between pt-4 border-t border-border">
                       <div className="text-xs text-muted-foreground">
-                        Criado em: {new Date(profile.createdAt).toLocaleDateString("pt-BR")}
+                        Criado em:{" "}
+                        {new Date(profile.createdAt).toLocaleDateString(
+                          "pt-BR",
+                        )}
                       </div>
                       <div className="flex items-center gap-1">
                         <Button
@@ -945,8 +1048,12 @@ export default function ProfilesPage() {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">TOTAL</p>
-                    <p className="text-2xl font-bold text-foreground">{userStats.total}</p>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      TOTAL
+                    </p>
+                    <p className="text-2xl font-bold text-foreground">
+                      {userStats.total}
+                    </p>
                   </div>
                   <Users className="w-8 h-8 text-primary" />
                 </div>
@@ -960,8 +1067,12 @@ export default function ProfilesPage() {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">ATIVOS</p>
-                    <p className="text-2xl font-bold text-green-500">{userStats.active}</p>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      ATIVOS
+                    </p>
+                    <p className="text-2xl font-bold text-green-500">
+                      {userStats.active}
+                    </p>
                   </div>
                   <CheckCircle className="w-8 h-8 text-green-500" />
                 </div>
@@ -975,8 +1086,12 @@ export default function ProfilesPage() {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">ADMINS</p>
-                    <p className="text-2xl font-bold text-red-500">{userStats.admins}</p>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      ADMINS
+                    </p>
+                    <p className="text-2xl font-bold text-red-500">
+                      {userStats.admins}
+                    </p>
                   </div>
                   <Crown className="w-8 h-8 text-red-500" />
                 </div>
@@ -990,8 +1105,12 @@ export default function ProfilesPage() {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">OPERADORES</p>
-                    <p className="text-2xl font-bold text-blue-500">{userStats.operators}</p>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      OPERADORES
+                    </p>
+                    <p className="text-2xl font-bold text-blue-500">
+                      {userStats.operators}
+                    </p>
                   </div>
                   <Settings className="w-8 h-8 text-blue-500" />
                 </div>
@@ -1005,8 +1124,12 @@ export default function ProfilesPage() {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">VISUALIZADORES</p>
-                    <p className="text-2xl font-bold text-yellow-500">{userStats.viewers}</p>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      VISUALIZADORES
+                    </p>
+                    <p className="text-2xl font-bold text-yellow-500">
+                      {userStats.viewers}
+                    </p>
                   </div>
                   <Eye className="w-8 h-8 text-yellow-500" />
                 </div>
@@ -1095,32 +1218,47 @@ export default function ProfilesPage() {
                   </thead>
                   <tbody>
                     {paginatedUsers.map((user) => (
-                      <tr key={user.id} className="border-b border-border hover:bg-muted/50 transition-colors">
+                      <tr
+                        key={user.id}
+                        className="border-b border-border hover:bg-muted/50 transition-colors"
+                      >
                         <td className="py-4 px-2">
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
                               <User className="w-4 h-4 text-primary" />
                             </div>
                             <div className="min-w-0">
-                              <p className="text-sm font-medium text-foreground truncate">{user.username}</p>
-                              <p className="text-xs text-muted-foreground truncate">{user.fullName}</p>
+                              <p className="text-sm font-medium text-foreground truncate">
+                                {user.username}
+                              </p>
+                              <p className="text-xs text-muted-foreground truncate">
+                                {user.fullName}
+                              </p>
                             </div>
                           </div>
                         </td>
                         <td className="py-4 px-2">
                           <div className="flex items-center gap-2 min-w-0">
                             <Mail className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                            <span className="text-sm text-foreground truncate">{user.email}</span>
+                            <span className="text-sm text-foreground truncate">
+                              {user.email}
+                            </span>
                           </div>
                         </td>
                         <td className="py-4 px-2">
-                          <Badge className={getRoleColor(user.role)}>{user.role.toUpperCase()}</Badge>
+                          <Badge className={getRoleColor(user.role)}>
+                            {user.role.toUpperCase()}
+                          </Badge>
                         </td>
                         <td className="py-4 px-2">
-                          <Badge className={getStatusColor(user.status)}>{user.status.toUpperCase()}</Badge>
+                          <Badge className={getStatusColor(user.status)}>
+                            {user.status.toUpperCase()}
+                          </Badge>
                         </td>
                         <td className="py-4 px-2 hidden sm:table-cell">
-                          <span className="text-sm text-muted-foreground font-mono">{user.lastLogin}</span>
+                          <span className="text-sm text-muted-foreground font-mono">
+                            {user.lastLogin}
+                          </span>
                         </td>
                         <td className="py-4 px-2">
                           <div className="flex items-center gap-1 flex-wrap">
@@ -1143,7 +1281,9 @@ export default function ProfilesPage() {
                             <Button
                               size="sm"
                               variant="ghost"
-                              onClick={() => handleUserAction("toggle", user.id)}
+                              onClick={() =>
+                                handleUserAction("toggle", user.id)
+                              }
                               className="h-8 w-8 p-0 hover:bg-primary/20 hover-blue"
                             >
                               <Power className="w-4 h-4" />
@@ -1159,7 +1299,9 @@ export default function ProfilesPage() {
                             <Button
                               size="sm"
                               variant="ghost"
-                              onClick={() => handleUserAction("delete", user.id)}
+                              onClick={() =>
+                                handleUserAction("delete", user.id)
+                              }
                               className="h-8 w-8 p-0 hover:bg-red-500/20 text-red-500 hover-blue"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -1175,14 +1317,17 @@ export default function ProfilesPage() {
               {/* Pagination */}
               <div className="flex items-center justify-between mt-6 pt-4 border-t border-border">
                 <div className="text-sm text-muted-foreground">
-                  Mostrando {startIndex + 1} a {Math.min(startIndex + itemsPerPage, filteredUsers.length)} de{" "}
+                  Mostrando {startIndex + 1} a{" "}
+                  {Math.min(startIndex + itemsPerPage, filteredUsers.length)} de{" "}
                   {filteredUsers.length} usuários
                 </div>
                 <div className="flex items-center gap-2">
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.max(prev - 1, 1))
+                    }
                     disabled={currentPage === 1}
                     className="border-border text-foreground hover:bg-accent hover-blue"
                   >
@@ -1194,7 +1339,9 @@ export default function ProfilesPage() {
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                    }
                     disabled={currentPage === totalPages}
                     className="border-border text-foreground hover:bg-accent hover-blue"
                   >
@@ -1211,34 +1358,57 @@ export default function ProfilesPage() {
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="bg-card border-border max-w-4xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-foreground">Editar Perfil: {editingProfile?.name}</DialogTitle>
+            <DialogTitle className="text-foreground">
+              Editar Perfil: {editingProfile?.name}
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label className="text-foreground text-sm font-medium uppercase tracking-wide">NOME DO PERFIL</Label>
+                <Label className="text-foreground text-sm font-medium uppercase tracking-wide">
+                  NOME DO PERFIL
+                </Label>
                 <Input
                   value={editProfile.name}
-                  onChange={(e) => setEditProfile((prev) => ({ ...prev, name: e.target.value }))}
+                  onChange={(e) =>
+                    setEditProfile((prev) => ({
+                      ...prev,
+                      name: e.target.value,
+                    }))
+                  }
                   placeholder="Ex: Supervisor"
                   className="bg-background border-border text-foreground hover-blue"
                 />
               </div>
               <div className="space-y-2">
-                <Label className="text-foreground text-sm font-medium uppercase tracking-wide">EMAIL</Label>
+                <Label className="text-foreground text-sm font-medium uppercase tracking-wide">
+                  EMAIL
+                </Label>
                 <Input
                   type="email"
                   value={editProfile.email}
-                  onChange={(e) => setEditProfile((prev) => ({ ...prev, email: e.target.value }))}
+                  onChange={(e) =>
+                    setEditProfile((prev) => ({
+                      ...prev,
+                      email: e.target.value,
+                    }))
+                  }
                   placeholder="email@infrawatch.com"
                   className="bg-background border-border text-foreground hover-blue"
                 />
               </div>
               <div className="space-y-2">
-                <Label className="text-foreground text-sm font-medium uppercase tracking-wide">DESCRIÇÃO</Label>
+                <Label className="text-foreground text-sm font-medium uppercase tracking-wide">
+                  DESCRIÇÃO
+                </Label>
                 <Input
                   value={editProfile.description}
-                  onChange={(e) => setEditProfile((prev) => ({ ...prev, description: e.target.value }))}
+                  onChange={(e) =>
+                    setEditProfile((prev) => ({
+                      ...prev,
+                      description: e.target.value,
+                    }))
+                  }
                   placeholder="Descrição do perfil..."
                   className="bg-background border-border text-foreground hover-blue"
                 />
@@ -1246,40 +1416,53 @@ export default function ProfilesPage() {
             </div>
 
             <div className="space-y-4">
-              <Label className="text-foreground text-sm font-medium uppercase tracking-wide">PERMISSÕES</Label>
-              {Object.entries(getPermissionsByCategory()).map(([category, categoryPermissions]) => (
-                <Card key={category} className="bg-muted/50 border-border">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium text-foreground uppercase tracking-wide">
-                      {category}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    {categoryPermissions.map((permission) => (
-                      <div key={permission.id} className="flex items-start space-x-3">
-                        <Checkbox
-                          id={`edit-${permission.id}`}
-                          checked={editProfile.permissions.includes(permission.id)}
-                          onCheckedChange={() => handleEditPermissionToggle(permission.id)}
-                          className="mt-1"
-                        />
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            {permission.icon}
-                            <Label
-                              htmlFor={`edit-${permission.id}`}
-                              className="text-sm font-medium text-foreground cursor-pointer"
-                            >
-                              {permission.name}
-                            </Label>
+              <Label className="text-foreground text-sm font-medium uppercase tracking-wide">
+                PERMISSÕES
+              </Label>
+              {Object.entries(getPermissionsByCategory()).map(
+                ([category, categoryPermissions]) => (
+                  <Card key={category} className="bg-muted/50 border-border">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm font-medium text-foreground uppercase tracking-wide">
+                        {category}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      {categoryPermissions.map((permission) => (
+                        <div
+                          key={permission.id}
+                          className="flex items-start space-x-3"
+                        >
+                          <Checkbox
+                            id={`edit-${permission.id}`}
+                            checked={editProfile.permissions.includes(
+                              permission.id,
+                            )}
+                            onCheckedChange={() =>
+                              handleEditPermissionToggle(permission.id)
+                            }
+                            className="mt-1"
+                          />
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              {permission.icon}
+                              <Label
+                                htmlFor={`edit-${permission.id}`}
+                                className="text-sm font-medium text-foreground cursor-pointer"
+                              >
+                                {permission.name}
+                              </Label>
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {permission.description}
+                            </p>
                           </div>
-                          <p className="text-xs text-muted-foreground mt-1">{permission.description}</p>
                         </div>
-                      </div>
-                    ))}
-                  </CardContent>
-                </Card>
-              ))}
+                      ))}
+                    </CardContent>
+                  </Card>
+                ),
+              )}
             </div>
 
             <div className="flex justify-end gap-2">
@@ -1310,7 +1493,11 @@ export default function ProfilesPage() {
                 <Shield className="w-4 h-4 text-primary" />
               </div>
               {selectedProfile?.name}
-              {selectedProfile?.isSystem && <Badge className="bg-primary/20 text-primary text-xs">SISTEMA</Badge>}
+              {selectedProfile?.isSystem && (
+                <Badge className="bg-primary/20 text-primary text-xs">
+                  SISTEMA
+                </Badge>
+              )}
             </DialogTitle>
           </DialogHeader>
           {selectedProfile && (
@@ -1324,25 +1511,45 @@ export default function ProfilesPage() {
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div>
-                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">NOME</Label>
-                      <p className="text-sm font-medium text-foreground">{selectedProfile.name}</p>
+                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">
+                        NOME
+                      </Label>
+                      <p className="text-sm font-medium text-foreground">
+                        {selectedProfile.name}
+                      </p>
                     </div>
                     <div>
-                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">EMAIL</Label>
-                      <p className="text-sm font-medium text-foreground">{selectedProfile.email}</p>
+                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">
+                        EMAIL
+                      </Label>
+                      <p className="text-sm font-medium text-foreground">
+                        {selectedProfile.email}
+                      </p>
                     </div>
                     <div>
-                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">DESCRIÇÃO</Label>
-                      <p className="text-sm font-medium text-foreground">{selectedProfile.description}</p>
+                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">
+                        DESCRIÇÃO
+                      </Label>
+                      <p className="text-sm font-medium text-foreground">
+                        {selectedProfile.description}
+                      </p>
                     </div>
                     <div>
-                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">USUÁRIOS</Label>
-                      <p className="text-sm font-medium text-foreground">{selectedProfile.userCount} usuários ativos</p>
+                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">
+                        USUÁRIOS
+                      </Label>
+                      <p className="text-sm font-medium text-foreground">
+                        {selectedProfile.userCount} usuários ativos
+                      </p>
                     </div>
                     <div>
-                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">CRIADO EM</Label>
+                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">
+                        CRIADO EM
+                      </Label>
                       <p className="text-sm text-foreground">
-                        {new Date(selectedProfile.createdAt).toLocaleDateString("pt-BR")}
+                        {new Date(selectedProfile.createdAt).toLocaleDateString(
+                          "pt-BR",
+                        )}
                       </p>
                     </div>
                   </CardContent>
@@ -1356,22 +1563,34 @@ export default function ProfilesPage() {
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-muted-foreground uppercase tracking-wide">PERMISSÕES</span>
-                      <Badge className="bg-primary/20 text-primary text-xs">{selectedProfile.permissions.length}</Badge>
+                      <span className="text-xs text-muted-foreground uppercase tracking-wide">
+                        PERMISSÕES
+                      </span>
+                      <Badge className="bg-primary/20 text-primary text-xs">
+                        {selectedProfile.permissions.length}
+                      </Badge>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-muted-foreground uppercase tracking-wide">TIPO</span>
+                      <span className="text-xs text-muted-foreground uppercase tracking-wide">
+                        TIPO
+                      </span>
                       <Badge
                         className={
-                          selectedProfile.isSystem ? "bg-primary/20 text-primary" : "bg-green-500/20 text-green-500"
+                          selectedProfile.isSystem
+                            ? "bg-primary/20 text-primary"
+                            : "bg-green-500/20 text-green-500"
                         }
                       >
                         {selectedProfile.isSystem ? "SISTEMA" : "PERSONALIZADO"}
                       </Badge>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-muted-foreground uppercase tracking-wide">STATUS</span>
-                      <Badge className="bg-green-500/20 text-green-500">ATIVO</Badge>
+                      <span className="text-xs text-muted-foreground uppercase tracking-wide">
+                        STATUS
+                      </span>
+                      <Badge className="bg-green-500/20 text-green-500">
+                        ATIVO
+                      </Badge>
                     </div>
                   </CardContent>
                 </Card>
@@ -1385,34 +1604,40 @@ export default function ProfilesPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {Object.entries(getPermissionsByCategory()).map(([category, categoryPermissions]) => {
-                      const categoryPerms = categoryPermissions.filter((p) =>
-                        selectedProfile.permissions.includes(p.id),
-                      )
-                      if (categoryPerms.length === 0) return null
+                    {Object.entries(getPermissionsByCategory()).map(
+                      ([category, categoryPermissions]) => {
+                        const categoryPerms = categoryPermissions.filter((p) =>
+                          selectedProfile.permissions.includes(p.id),
+                        );
+                        if (categoryPerms.length === 0) return null;
 
-                      return (
-                        <div key={category}>
-                          <Label className="text-xs text-muted-foreground uppercase tracking-wide mb-2 block">
-                            {category}
-                          </Label>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                            {categoryPerms.map((permission) => (
-                              <div
-                                key={permission.id}
-                                className="flex items-center gap-2 p-2 bg-background/50 rounded border border-border"
-                              >
-                                {permission.icon}
-                                <div>
-                                  <p className="text-sm font-medium text-foreground">{permission.name}</p>
-                                  <p className="text-xs text-muted-foreground">{permission.description}</p>
+                        return (
+                          <div key={category}>
+                            <Label className="text-xs text-muted-foreground uppercase tracking-wide mb-2 block">
+                              {category}
+                            </Label>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                              {categoryPerms.map((permission) => (
+                                <div
+                                  key={permission.id}
+                                  className="flex items-center gap-2 p-2 bg-background/50 rounded border border-border"
+                                >
+                                  {permission.icon}
+                                  <div>
+                                    <p className="text-sm font-medium text-foreground">
+                                      {permission.name}
+                                    </p>
+                                    <p className="text-xs text-muted-foreground">
+                                      {permission.description}
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
-                            ))}
+                              ))}
+                            </div>
                           </div>
-                        </div>
-                      )
-                    })}
+                        );
+                      },
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -1431,47 +1656,75 @@ export default function ProfilesPage() {
       </Dialog>
 
       {/* Edit User Dialog */}
-      <Dialog open={isUserEditDialogOpen} onOpenChange={setIsUserEditDialogOpen}>
+      <Dialog
+        open={isUserEditDialogOpen}
+        onOpenChange={setIsUserEditDialogOpen}
+      >
         <DialogContent className="bg-card border-border max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-foreground">Editar Usuário</DialogTitle>
+            <DialogTitle className="text-foreground">
+              Editar Usuário
+            </DialogTitle>
           </DialogHeader>
           {editingUser && (
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label className="text-foreground text-sm font-medium uppercase tracking-wide">USUÁRIO</Label>
+                <Label className="text-foreground text-sm font-medium uppercase tracking-wide">
+                  USUÁRIO
+                </Label>
                 <Input
                   value={editUserForm.username}
-                  onChange={(e) => setEditUserForm({ ...editUserForm, username: e.target.value })}
+                  onChange={(e) =>
+                    setEditUserForm({
+                      ...editUserForm,
+                      username: e.target.value,
+                    })
+                  }
                   placeholder="Nome de usuário"
                   className="bg-background border-border text-foreground hover-blue"
                 />
               </div>
               <div className="space-y-2">
-                <Label className="text-foreground text-sm font-medium uppercase tracking-wide">EMAIL</Label>
+                <Label className="text-foreground text-sm font-medium uppercase tracking-wide">
+                  EMAIL
+                </Label>
                 <Input
                   type="email"
                   value={editUserForm.email}
-                  onChange={(e) => setEditUserForm({ ...editUserForm, email: e.target.value })}
+                  onChange={(e) =>
+                    setEditUserForm({ ...editUserForm, email: e.target.value })
+                  }
                   placeholder="Email"
                   className="bg-background border-border text-foreground hover-blue"
                 />
               </div>
               <div className="space-y-2">
-                <Label className="text-foreground text-sm font-medium uppercase tracking-wide">NOME COMPLETO</Label>
+                <Label className="text-foreground text-sm font-medium uppercase tracking-wide">
+                  NOME COMPLETO
+                </Label>
                 <Input
                   value={editUserForm.fullName}
-                  onChange={(e) => setEditUserForm({ ...editUserForm, fullName: e.target.value })}
+                  onChange={(e) =>
+                    setEditUserForm({
+                      ...editUserForm,
+                      fullName: e.target.value,
+                    })
+                  }
                   placeholder="Nome Completo"
                   className="bg-background border-border text-foreground hover-blue"
                 />
               </div>
               <div className="space-y-2">
-                <Label className="text-foreground text-sm font-medium uppercase tracking-wide">PERFIL</Label>
+                <Label className="text-foreground text-sm font-medium uppercase tracking-wide">
+                  PERFIL
+                </Label>
                 <Select
                   value={editUserForm.role}
                   onValueChange={(value) =>
-                    setEditUserForm({ ...editUserForm, role: value as "admin" | "operator" | "viewer" })
+                    setEditUserForm({
+                      ...editUserForm,
+                      role: value as "admin" | "operator" | "viewer",
+                    })
                   }
                 >
                   <SelectTrigger className="bg-background border-border text-foreground focus:border-primary focus:ring-primary/20 hover-blue">
@@ -1505,7 +1758,10 @@ export default function ProfilesPage() {
       </Dialog>
 
       {/* View User Dialog */}
-      <Dialog open={isUserViewDialogOpen} onOpenChange={setIsUserViewDialogOpen}>
+      <Dialog
+        open={isUserViewDialogOpen}
+        onOpenChange={setIsUserViewDialogOpen}
+      >
         <DialogContent className="bg-card border-border max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-foreground flex items-center gap-3">
@@ -1513,7 +1769,9 @@ export default function ProfilesPage() {
                 <User className="w-4 h-4 text-primary" />
               </div>
               {viewingUser?.fullName}
-              <Badge className={getRoleColor(viewingUser?.role || "")}>{viewingUser?.role?.toUpperCase()}</Badge>
+              <Badge className={getRoleColor(viewingUser?.role || "")}>
+                {viewingUser?.role?.toUpperCase()}
+              </Badge>
             </DialogTitle>
           </DialogHeader>
           {viewingUser && (
@@ -1527,29 +1785,53 @@ export default function ProfilesPage() {
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div>
-                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">USUÁRIO</Label>
-                      <p className="text-sm font-medium text-foreground">{viewingUser.username}</p>
+                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">
+                        USUÁRIO
+                      </Label>
+                      <p className="text-sm font-medium text-foreground">
+                        {viewingUser.username}
+                      </p>
                     </div>
                     <div>
-                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">EMAIL</Label>
-                      <p className="text-sm font-medium text-foreground">{viewingUser.email}</p>
+                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">
+                        EMAIL
+                      </Label>
+                      <p className="text-sm font-medium text-foreground">
+                        {viewingUser.email}
+                      </p>
                     </div>
                     <div>
-                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">NOME COMPLETO</Label>
-                      <p className="text-sm font-medium text-foreground">{viewingUser.fullName}</p>
+                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">
+                        NOME COMPLETO
+                      </Label>
+                      <p className="text-sm font-medium text-foreground">
+                        {viewingUser.fullName}
+                      </p>
                     </div>
                     <div>
-                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">PERFIL</Label>
-                      <p className="text-sm font-medium text-foreground">{viewingUser.role}</p>
+                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">
+                        PERFIL
+                      </Label>
+                      <p className="text-sm font-medium text-foreground">
+                        {viewingUser.role}
+                      </p>
                     </div>
                     <div>
-                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">STATUS</Label>
-                      <p className="text-sm font-medium text-foreground">{viewingUser.status}</p>
+                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">
+                        STATUS
+                      </Label>
+                      <p className="text-sm font-medium text-foreground">
+                        {viewingUser.status}
+                      </p>
                     </div>
                     <div>
-                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">CRIADO EM</Label>
+                      <Label className="text-xs text-muted-foreground uppercase tracking-wide">
+                        CRIADO EM
+                      </Label>
                       <p className="text-sm text-foreground">
-                        {new Date(viewingUser.createdAt).toLocaleDateString("pt-BR")}
+                        {new Date(viewingUser.createdAt).toLocaleDateString(
+                          "pt-BR",
+                        )}
                       </p>
                     </div>
                   </CardContent>
@@ -1565,37 +1847,57 @@ export default function ProfilesPage() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground uppercase tracking-wide">ÚLTIMO LOGIN</span>
+                        <span className="text-xs text-muted-foreground uppercase tracking-wide">
+                          ÚLTIMO LOGIN
+                        </span>
                       </div>
-                      <Badge className="bg-primary/20 text-primary text-xs">{viewingUser.lastLogin}</Badge>
+                      <Badge className="bg-primary/20 text-primary text-xs">
+                        {viewingUser.lastLogin}
+                      </Badge>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Clock className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground uppercase tracking-wide">IP</span>
+                        <span className="text-xs text-muted-foreground uppercase tracking-wide">
+                          IP
+                        </span>
                       </div>
-                      <Badge className="bg-primary/20 text-primary text-xs">{viewingUser.lastLoginIP}</Badge>
+                      <Badge className="bg-primary/20 text-primary text-xs">
+                        {viewingUser.lastLoginIP}
+                      </Badge>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <MapPin className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground uppercase tracking-wide">DEPARTAMENTO</span>
+                        <span className="text-xs text-muted-foreground uppercase tracking-wide">
+                          DEPARTAMENTO
+                        </span>
                       </div>
-                      <Badge className="bg-primary/20 text-primary text-xs">{viewingUser.department}</Badge>
+                      <Badge className="bg-primary/20 text-primary text-xs">
+                        {viewingUser.department}
+                      </Badge>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Smartphone className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground uppercase tracking-wide">TELEFONE</span>
+                        <span className="text-xs text-muted-foreground uppercase tracking-wide">
+                          TELEFONE
+                        </span>
                       </div>
-                      <Badge className="bg-primary/20 text-primary text-xs">{viewingUser.phone}</Badge>
+                      <Badge className="bg-primary/20 text-primary text-xs">
+                        {viewingUser.phone}
+                      </Badge>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Power className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground uppercase tracking-wide">PERMISSÕES</span>
+                        <span className="text-xs text-muted-foreground uppercase tracking-wide">
+                          PERMISSÕES
+                        </span>
                       </div>
-                      <Badge className="bg-primary/20 text-primary text-xs">{viewingUser.permissions.length}</Badge>
+                      <Badge className="bg-primary/20 text-primary text-xs">
+                        {viewingUser.permissions.length}
+                      </Badge>
                     </div>
                   </CardContent>
                 </Card>
@@ -1615,7 +1917,9 @@ export default function ProfilesPage() {
                         className="flex items-center gap-2 p-2 bg-background/50 rounded border border-border"
                       >
                         <div>
-                          <p className="text-sm font-medium text-foreground">{permission}</p>
+                          <p className="text-sm font-medium text-foreground">
+                            {permission}
+                          </p>
                         </div>
                       </div>
                     ))}
@@ -1636,65 +1940,97 @@ export default function ProfilesPage() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={isUserCreateDialogOpen} onOpenChange={setIsUserCreateDialogOpen}>
+      <Dialog
+        open={isUserCreateDialogOpen}
+        onOpenChange={setIsUserCreateDialogOpen}
+      >
         <DialogContent className="bg-card border-border max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-foreground">Criar Novo Usuário</DialogTitle>
+            <DialogTitle className="text-foreground">
+              Criar Novo Usuário
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label className="text-foreground text-sm font-medium uppercase tracking-wide">USUÁRIO</Label>
+              <Label className="text-foreground text-sm font-medium uppercase tracking-wide">
+                USUÁRIO
+              </Label>
               <Input
                 value={newUserForm.username}
-                onChange={(e) => setNewUserForm({ ...newUserForm, username: e.target.value })}
+                onChange={(e) =>
+                  setNewUserForm({ ...newUserForm, username: e.target.value })
+                }
                 placeholder="Nome de usuário"
                 className="bg-background border-border text-foreground hover-blue"
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-foreground text-sm font-medium uppercase tracking-wide">EMAIL</Label>
+              <Label className="text-foreground text-sm font-medium uppercase tracking-wide">
+                EMAIL
+              </Label>
               <Input
                 type="email"
                 value={newUserForm.email}
-                onChange={(e) => setNewUserForm({ ...newUserForm, email: e.target.value })}
+                onChange={(e) =>
+                  setNewUserForm({ ...newUserForm, email: e.target.value })
+                }
                 placeholder="Email"
                 className="bg-background border-border text-foreground hover-blue"
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-foreground text-sm font-medium uppercase tracking-wide">NOME COMPLETO</Label>
+              <Label className="text-foreground text-sm font-medium uppercase tracking-wide">
+                NOME COMPLETO
+              </Label>
               <Input
                 value={newUserForm.fullName}
-                onChange={(e) => setNewUserForm({ ...newUserForm, fullName: e.target.value })}
+                onChange={(e) =>
+                  setNewUserForm({ ...newUserForm, fullName: e.target.value })
+                }
                 placeholder="Nome Completo"
                 className="bg-background border-border text-foreground hover-blue"
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-foreground text-sm font-medium uppercase tracking-wide">SENHA</Label>
+              <Label className="text-foreground text-sm font-medium uppercase tracking-wide">
+                SENHA
+              </Label>
               <Input
                 type="password"
                 value={newUserForm.password}
-                onChange={(e) => setNewUserForm({ ...newUserForm, password: e.target.value })}
+                onChange={(e) =>
+                  setNewUserForm({ ...newUserForm, password: e.target.value })
+                }
                 placeholder="Senha"
                 className="bg-background border-border text-foreground hover-blue"
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-foreground text-sm font-medium uppercase tracking-wide">PERFIL</Label>
+              <Label className="text-foreground text-sm font-medium uppercase tracking-wide">
+                PERFIL
+              </Label>
               <Select
                 value={newUserForm.role}
                 onValueChange={(value) =>
-                  setNewUserForm({ ...newUserForm, role: value as "admin" | "operator" | "viewer" })
+                  setNewUserForm({
+                    ...newUserForm,
+                    role: value as "admin" | "operator" | "viewer",
+                  })
                 }
               >
                 <SelectTrigger className="bg-background border-border text-foreground focus:border-primary focus:ring-primary/20 hover-blue">
                   <SelectValue placeholder="Selecione um perfil" />
                 </SelectTrigger>
                 <SelectContent className="bg-popover border-border">
-                  <SelectItem value="admin">Admin - Gestão completa do sistema</SelectItem>
-                  <SelectItem value="operator">Operator - Visualiza e reage a alertas</SelectItem>
-                  <SelectItem value="viewer">Viewer - Apenas leitura</SelectItem>
+                  <SelectItem value="admin">
+                    Admin - Gestão completa do sistema
+                  </SelectItem>
+                  <SelectItem value="operator">
+                    Operator - Visualiza e reage a alertas
+                  </SelectItem>
+                  <SelectItem value="viewer">
+                    Viewer - Apenas leitura
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -1717,5 +2053,5 @@ export default function ProfilesPage() {
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

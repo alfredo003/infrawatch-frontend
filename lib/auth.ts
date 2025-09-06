@@ -1,6 +1,5 @@
 import { z } from "zod";
 
- 
 const UserSchema = z.object({
   id: z.string().min(1, "ID do usuário inválido"),
   email: z.string().email("Email do usuário inválido"),
@@ -16,7 +15,6 @@ export interface AuthData {
   user: User;
 }
 
- 
 export const saveAuthData = (authData: AuthData) => {
   if (typeof window !== "undefined") {
     localStorage.setItem("authToken", authData.token);
