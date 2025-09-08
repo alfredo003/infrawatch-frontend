@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog } from "@/components/ui/dialog"
+import { Skeleton } from "@/components/ui/skeleton"
 
 import {
   Search,
@@ -17,11 +18,11 @@ import {
   CircleMinus,
   MonitorCog,
   Plus,
-} from "lucide-react" 
+} from "lucide-react"
 
 import { listAllSystems, listAllTypeSystems, SystemData } from "@/services/systemService"
 import ListSystems from "./list"
-import RegisterSystem from "./register" 
+import RegisterSystem from "./register"
 
 export default function SystemsPage() {
   const [searchTerm, setSearchTerm] = useState("")
@@ -30,22 +31,56 @@ export default function SystemsPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const [isSystemCreateDialogOpen, setIsSystemCreateDialogOpen] = useState(false)
 
- 
   const { data: systems, error: systemsError, isLoading: systemsLoading, mutate: reloadSystems } =
     useSWR<SystemData[]>("systems", listAllSystems, {
-      dedupingInterval: 60000,  
+      dedupingInterval: 60000,
       revalidateOnFocus: false,
     })
 
   const { data: typeSystems, error: typesError, isLoading: typesLoading } =
     useSWR<{ name: string }[]>("typeSystems", listAllTypeSystems, {
-      dedupingInterval: 300000,  
+      dedupingInterval: 300000,
       revalidateOnFocus: false,
     })
 
   if (systemsError || typesError) return <div>Erro ao carregar dados</div>
-  if (systemsLoading || typesLoading) return <div>Carregando...</div>
 
+  // 🔹 Skeleton enquanto carrega
+  if (systemsLoading || typesLoading) {
+    return (
+      <div className="p-6 space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <Card key={i} className="bg-card border-border">
+              <CardContent className="p-4">
+                <Skeleton className="h-4 w-24 mb-2" />
+                <Skeleton className="h-8 w-16" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <Card className="bg-card border-border">
+          <CardContent className="p-4 flex flex-col md:flex-row gap-4">
+            <Skeleton className="h-10 flex-1" />
+            <Skeleton className="h-10 w-40" />
+            <Skeleton className="h-10 w-40" />
+            <Skeleton className="h-10 w-32" />
+          </CardContent>
+        </Card>
+
+        <Card className="bg-card border-border">
+          <CardContent className="p-4 space-y-2">
+            {[...Array(5)].map((_, i) => (
+              <Skeleton key={i} className="h-10 w-full" />
+            ))}
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  // 🔹 Dados carregados normalmente
   const itemsPerPage = 10
   const allSystem: SystemData[] = systems || []
   const filteredSystems = allSystem.filter((system) => {
@@ -66,8 +101,6 @@ export default function SystemsPage() {
 
   return (
     <div className="p-6 space-y-6">
-      <>
-        {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card className="bg-card border-border">
             <CardContent className="p-4 flex items-center justify-between">
@@ -188,14 +221,11 @@ export default function SystemsPage() {
             </div>
           </CardContent>
         </Card>
-      </>
-
-      {/* Criar Novo Sistema */}
       <Dialog open={isSystemCreateDialogOpen} onOpenChange={setIsSystemCreateDialogOpen}>
-        <RegisterSystem 
-          setIsSystemCreateDialogOpen={setIsSystemCreateDialogOpen} 
-          typeSystems={typeSystems || []}
-          onSystemCreated={reloadSystems} // ✅ usa mutate para recarregar sem refazer useEffect
+        <RegisterSystem
+          setIsSystemCreateDialogOpen={setIsSystemCreateDialogOpen}
+          typeSystems={typeSystems}
+          onSystemCreated={reloadSystems}
         />
       </Dialog>
     </div>

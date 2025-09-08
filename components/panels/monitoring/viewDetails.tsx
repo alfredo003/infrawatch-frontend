@@ -66,7 +66,7 @@ export default function ModalViewSystem({ selectedServer, setSelectedServer }: M
                 <div>
                   <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mb-1 font-medium">UPTIME</p>
                   <p className="text-xs sm:text-sm text-neutral-800 dark:text-neutral-200 font-mono">
-                    {selectedServer.metric.uptime_percent}%
+                    {selectedServer?.metric?.uptime_percent}%
                   </p>
                 </div>
 
@@ -74,7 +74,7 @@ export default function ModalViewSystem({ selectedServer, setSelectedServer }: M
                 <div>
                   <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mb-1 font-medium">ÚLTIMA VERIFICAÇÃO</p>
                   <p className="text-xs sm:text-sm text-neutral-800 dark:text-neutral-200">
-                    {dateConversion(selectedServer.metric.last_check)}
+                    {dateConversion(selectedServer?.metric?.last_check)}
                   </p>
                 </div>
               </div>
@@ -105,7 +105,7 @@ export default function ModalViewSystem({ selectedServer, setSelectedServer }: M
                                 <span className="text-neutral-800 dark:text-neutral-200">{metric.label}</span>
                               </TableCell>
                               <TableCell className="text-neutral-800 dark:text-neutral-200 font-mono text-xs sm:text-sm">
-                                {selectedServer.metric[metric.key] || 0} {metric.unit}
+                                {(selectedServer?.metric?.[metric?.key as keyof typeof selectedServer.metric] ?? 0)} {metric.unit}
                               </TableCell>
                             </TableRow>
                           ))

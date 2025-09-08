@@ -19,7 +19,7 @@ interface DashboardLayoutProps {
   setActiveSection: (id: number) => void;
   handleOpenLogoutModal: () => void;
 }
-
+ 
 export default function DashboardLayout({
   sidebarCollapsed,
   activeSection,
@@ -42,7 +42,7 @@ export default function DashboardLayout({
       });
 
     const onlineCount = systems?.length; 
-    const alertsCount = alerts?.length; 
+    const alertsCount:any = alerts?.length; 
     const offlineCount = systems?.filter((s) => s.status === "down").length;
   return (
     <div className="flex h-screen bg-white dark:bg-black text-black dark:text-white transition-colors duration-300">
@@ -162,53 +162,58 @@ export default function DashboardLayout({
                 {new Date().toLocaleString("pt-BR")}
             </div>
             <ThemeToggle />
- <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-neutral-400 hover:text-blue-600 relative"
+<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <Button
+      variant="ghost"
+      size="icon"
+      className="text-neutral-400 hover:text-blue-600 relative"
+    >
+      <Bell className="w-5 h-5" />
+      {alertsCount  > 0 && (
+        <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] font-semibold text-white flex items-center justify-center shadow-md">
+          {alertsCount}
+        </span>
+      )}
+    </Button>
+  </DropdownMenuTrigger>
+
+  {/* Só mostra o conteúdo do dropdown se houver pelo menos 1 alerta */}
+  {alertsCount > 0 && (
+    <DropdownMenuContent className="w-72 p-2 shadow-lg bg-white">
+      <DropdownMenuLabel className="text-base font-semibold text-gray-700 px-2">
+        Notificações
+      </DropdownMenuLabel>
+      <DropdownMenuSeparator />
+
+      {/* Exemplo de notificação */}
+      <DropdownMenuItem className="flex items-start gap-3 px-2 py-3 hover:bg-blue-50 cursor-pointer">
+        <span className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 font-bold">
+          📩
+        </span>
+        <div className="flex flex-col">
+          <p className="text-sm font-medium text-gray-800">
+            Nova mensagem recebida
+          </p>
+          <span className="text-xs text-gray-500">há 2 minutos</span>
+        </div>
+      </DropdownMenuItem>
+
+      <DropdownMenuSeparator />
+
+      {/* Só mostra "Ver todas as notificações" se alertsCount > 2 */}
+      {alertsCount > 2 && (
+        <DropdownMenuItem
+          onClick={() => setActiveSection(9)}
+          className="text-center text-blue-600 font-medium py-2 cursor-pointer hover:bg-blue-50"
         >
-          <Bell className="w-5 h-5" />
-         {
-          alertsCount && (
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] font-semibold text-white flex items-center justify-center shadow-md">
-            {alertsCount}
-          </span>
-          )
-         }
-         
-        </Button>
-      </DropdownMenuTrigger>
-
-      <DropdownMenuContent className="w-72 p-2 shadow-lg bg-white">
-        <DropdownMenuLabel className="text-base font-semibold text-gray-700 px-2">
-          Notificações
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-
-        {/* Exemplo de notificação */}
-        <DropdownMenuItem className="flex items-start gap-3 px-2 py-3   hover:bg-blue-50 cursor-pointer">
-          <span className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 font-bold">
-            📩
-          </span>
-          <div className="flex flex-col">
-            <p className="text-sm font-medium text-gray-800">
-              Nova mensagem recebida
-            </p>
-            <span className="text-xs text-gray-500">há 2 minutos</span>
-          </div>
-        </DropdownMenuItem>
-
-        
-
-        <DropdownMenuSeparator />
-
-        <DropdownMenuItem  onClick={() => setActiveSection(9)} className="text-center text-blue-600 font-medium py-2 cursor-pointer hover:bg-blue-50 ">
           Ver todas as notificações
         </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+      )}
+    </DropdownMenuContent>
+  )}
+</DropdownMenu>
+
             
             <Button
               variant="ghost"

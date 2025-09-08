@@ -4,7 +4,7 @@ import NetworkPage from "@/components/panels/network/page";
 import ReportsPage from "@/components/panels/reports/page";
 import SystemsPage from "@/components/panels/systems/page";
 import DashboardPage from "@/components/panels/dashboard/page";
-import GeomapPage from "@/components/panels/geomap/page";
+import GeomapPage from "@/components/panels/geomap";
 import ApplicationsPage from "@/components/panels/applications/page";
 import ProfilesPage from "./profile/page"; 
 import MonitoringPage from "@/components/panels/monitoring/page";
@@ -19,9 +19,9 @@ export default function Panel({ active }: { active: number }) {
     <NetworkPage />,
     <ApplicationsPage />,
     <GeomapPage />,
-    <AlertsPage />,
     <ReportsPage />,
-	 <ProfilesPage />,
+    <ProfilesPage />,
+    <AlertsPage />,
   ];
 
   return menuItems[active];

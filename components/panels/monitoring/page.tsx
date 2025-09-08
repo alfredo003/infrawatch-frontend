@@ -2,14 +2,13 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; 
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"; 
-import { Search, Server, Activity,Settings, Locate } from "lucide-react";
+import { Badge } from "@/components/ui/badge"; 
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"; 
+import { Search, Server, Activity, Locate } from "lucide-react";
 import ModalViewSystem from "./viewDetails";
 import { dateConversion, getStatusColor } from "@/lib/utils";
 import { connectionTypes } from "./data";
-import { DataMetrics, listAllSystems, SystemData } from "@/services/systemService";
+import { SystemData } from "@/services/systemService";
 import { renderCardContent } from "./cards";
 
 export default function MonitoringPage() { 
@@ -187,11 +186,11 @@ const filteredSystems = allSystems.filter(
           <div className="flex justify-between items-center text-sm">
             <div>
               <span className="text-neutral-600 dark:text-neutral-400">Uptime: </span>
-              <span className="text-neutral-800 dark:text-neutral-200 font-mono">{server.metric.uptime_percent}%</span>
+              <span className="text-neutral-800 dark:text-neutral-200 font-mono">{server.metric?.uptime_percent || 0}%</span>
             </div>
             <div>
               <span className="text-neutral-600 dark:text-neutral-400">Última verificação: </span>
-              <span className="text-neutral-800 dark:text-neutral-200">{dateConversion(server.metric.last_check)}</span>
+              <span className="text-neutral-800 dark:text-neutral-200">{dateConversion(server.metric?.last_check)}</span>
             </div>
           </div>
 

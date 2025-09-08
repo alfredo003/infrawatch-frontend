@@ -27,8 +27,33 @@ export interface SystemData {
   criticality_level: string,
   sla_target: number,
   check_interval: number,
-  typeName?: string
+  typeName?: string,
+  updated_at: string,
+  lat: number | undefined;
+  lng: number | undefined;
+  metric?:any
 }
+
+export interface IMapMachine {
+  id?:string | undefined,
+  typeName: string; 
+  name: string;
+  status:   "up" | "down" | "maintenance";
+  type: string;
+  connection_type: string;
+  lat: number;
+  lng: number;
+  lastCheck: string;
+
+  check_interval: string;
+  owner_user_id: string;
+  company_id: string;
+  target: string;
+  sla_target: number;
+  criticality_level: "low" | "medium" | "high";
+  created_at: string;
+  updated_at: string;
+} 
  
  export const handleCreateSystem = async (
     formData: SystemData,
@@ -55,6 +80,32 @@ export interface SystemData {
     }
   };
 
+  export const listAllSystemsInMap = async (): Promise<IMapMachine[]> => {
+    try {
+      
+      const systemsRes = await api.get("/systems")
+      const systems: IMapMachine[] = systemsRes.data.data
+
+  
+      const typesRes = await api.get("/systems/type/all")
+      const types = typesRes.data.data
+
+      
+      const systemsWithTypeName = systems.map((s) => {
+        const type = types.find((t: any) => t.id === s.type)
+        return {
+          ...s,
+          type: type ? type.name : s.type, 
+        }
+      })
+
+      return systemsWithTypeName;
+    } catch (error) {
+      console.error("Erro ao buscar sistemas:", error)
+      throw error
+    }
+}
+
 export const listAllSystems = async (): Promise<SystemData[]> => {
   try {
     
@@ -80,6 +131,7 @@ export const listAllSystems = async (): Promise<SystemData[]> => {
     throw error
   }
 }
+
 export const listAllSystemsCritical = async (): Promise<SystemData[]> => {
   try {
     const systemsRes = await api.get("/systems")

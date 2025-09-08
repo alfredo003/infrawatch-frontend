@@ -1,65 +1,76 @@
 "use client";
-import Map from "./components/Map";
 
+import { useState } from "react";
+import dynamic from "next/dynamic";
+import { cn } from "@/lib/utils";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/sheet";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { useState } from "react";
-import { cn } from "@/lib/utils";
+} from "./partials/ui/sheet";
+import {
+  PackageCheck,
+  AlertTriangle, 
+  Settings,
+  TriangleAlert,
+  X
+} from "lucide-react";
+import { IMapMachine } from "@/services/systemService";
 
-export interface Machine {
-  id: number;
-  name: string;
-  status: {
-    id: "active" | "inactive" | "maintenance";
-    label: string;
-  };
-  type: string;
-  connection_type: string;
-  lat: number;
-  lng: number;
-  lastCheck: string;
+const Map = dynamic(() => import("./partials/Map"), { ssr: false });
 
-  // New fields from schema
-  check_interval: string;
-  owner_user_id: string;
-  company_id: string;
-  target: string;
-  sla_target: number;
-  criticality_level: "low" | "medium" | "high";
-  created_at: string;
-  updated_at: string;
-}
-
-export interface MachineState {
-  active: string;
-  inactive: string;
+export interface IMapMachineStatus {
+  up: string;
+  down: string;
   maintenance: string;
 }
 
-const machineTypes: MachineState = {
-  active: "bg-green-600/10 text-green-500",
-  inactive: "bg-red-600/10 text-red-500",
+const machineStatus: IMapMachineStatus = {
+  up: "bg-green-600/10 text-green-500",
+  down: "bg-red-600/10 text-red-500",
   maintenance: "bg-yellow-600/10 text-yellow-500",
 };
 
-export default function MapV() {
+export default function GeoMap() {
   const [open, setOpen] = useState(false);
-  const [selectedMachine, setSelectedMachine] = useState<Machine>();
+  const [selectedMachine, setSelectedMachine] = useState<IMapMachine>();
 
-  function openSheet(machine: Machine) {
+  function openSheet(machine: IMapMachine) {
     setOpen(true);
     setSelectedMachine(machine);
   }
 
   return (
-    <main className="relative z-0 h-screen w-screen">
-      <Map onSelectMachine={openSheet} />
+    <main className="relative z-0 h-screen w-full bg-white dark:bg-black text-black dark:text-white flex flex-col gap-4 p-6">
+  
+     
+<section className="w-full flex-1 rounded-md relative">
+  <Map onSelectMachine={openSheet} />
+ 
+  {/* Legenda */}
+  <div className="fixed bottom-4 left-4 z-50 bg-white dark:bg-neutral-900 
+                  border border-neutral-200 dark:border-neutral-700 
+                  rounded-lg shadow-lg p-3 w-60">
+    <h4 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
+      Legenda do Mapa
+    </h4>
+    <ul className="space-y-2 text-sm">
+      <li className="flex items-center gap-2">
+        <PackageCheck className="w-4 h-4 text-green-600" aria-label="Operacionais" />
+        <span className="text-neutral-600 dark:text-neutral-400">Operacionais</span>
+      </li>
+      <li className="flex items-center gap-2">
+        <X  className="w-4 h-4 text-red-600" aria-label="Com problemas" />
+        <span className="text-neutral-600 dark:text-neutral-400">Com problemas</span>
+      </li>
+      <li className="flex items-center gap-2">
+        <TriangleAlert className="w-4 h-4 text-orange-600" aria-label="Em manutenção" />
+        <span className="text-neutral-600 dark:text-neutral-400">Em manutenção</span>
+      </li> 
+    </ul>
+  </div>
+</section>
       {selectedMachine && (
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetContent side="right" className="w-[420px] overflow-auto p-6">
@@ -68,14 +79,15 @@ export default function MapV() {
                 <SheetTitle className="text-2xl font-semibold">
                   {selectedMachine.name}
                 </SheetTitle>
-                <Badge
+
+                <span
                   className={cn(
-                    "rounded-full px-3 py-1 text-xs font-semibold",
-                    machineTypes[selectedMachine.status.id],
+                    "rounded-full px-2 py-0.5 text-[10px] font-medium",
+                    machineStatus[selectedMachine.status]
                   )}
                 >
-                  {selectedMachine.status.label}
-                </Badge>
+                  {selectedMachine.status}
+                </span>
               </div>
             </SheetHeader>
 
@@ -132,13 +144,13 @@ export default function MapV() {
                     <span className="font-medium">Criado em:</span>
                     <span>
                       {new Date(selectedMachine.created_at).toLocaleString(
-                        "pt-PT",
+                        "pt-PT"
                       )}
                     </span>
                     <span className="font-medium">Última atualização:</span>
                     <span>
                       {new Date(selectedMachine.updated_at).toLocaleString(
-                        "pt-PT",
+                        "pt-PT"
                       )}
                     </span>
                   </div>

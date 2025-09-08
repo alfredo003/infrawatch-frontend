@@ -1,7 +1,7 @@
 import { Progress } from "@/components/ui/progress";
-import { CardContent } from "../geomap/components/ui/card";
 import { connectionTypes } from "./data";
 import { Activity, AlertCircle, Clock, Cpu, HardDrive, Webhook } from "lucide-react";
+import { CardContent } from "@/components/ui/card";
 
 export function PingCard({ server }: { server: any }) {
   return (
@@ -15,7 +15,7 @@ export function PingCard({ server }: { server: any }) {
                   </span>
                 </div>
                 <div className="text-neutral-800 dark:text-neutral-200 font-mono">
-                  {server.metric.value.latency? server.metric.value.latency : 4 } ms
+                  {server.metric?.value.latency? server.metric?.value.latency : 4 } ms
                 </div>
               </div>
                <div >
@@ -26,7 +26,7 @@ export function PingCard({ server }: { server: any }) {
                   </span>
                 </div>
                 <div className="text-neutral-800 dark:text-neutral-200 font-mono">
-                  {server.metric.value.packetLoss} %
+                  {server.metric?.value.packetLoss} %
                 </div>
               </div>
       </div>
@@ -47,10 +47,10 @@ export function SnmpCard({ server }: { server: any }) {
                   </span>
                 </div>
                 <div className="text-neutral-800 dark:text-neutral-200 font-mono">
-                {server.metric.value.cpu?server.metric.value.cpu:0} %
+                {server.metric?.value.cpu?server.metric.value.cpu:0} %
                 </div>
                   <Progress
-                    value={server.metric.value.cpu?server.metric.value.cpu:0}
+                    value={server.metric?.value.cpu?server.metric.value.cpu:0}
                     className="h-1.5 mt-1 bg-neutral-200 dark:bg-neutral-700"
                   /> 
               </div>
@@ -63,10 +63,10 @@ export function SnmpCard({ server }: { server: any }) {
                   </span>
                 </div>
                 <div className="text-neutral-800 dark:text-neutral-200 font-mono">
-                 {server.metric.value.cpu?server.metric.value.ram:0} %
+                 {server.metric?.value.cpu?server.metric.value.ram:0} %
                 </div>
                   <Progress
-                    value={server.metric.value.cpu?server.metric.value.ram:0}
+                    value={server.metric?.value.cpu?server.metric.value.ram:0}
                     className="h-1.5 mt-1 bg-neutral-200 dark:bg-neutral-700"
                   /> 
               </div>
@@ -79,10 +79,10 @@ export function SnmpCard({ server }: { server: any }) {
                   </span>
                 </div>
                 <div className="text-neutral-800 dark:text-neutral-200 font-mono">
-                {server.metric.value.cpu?server.metric.value.disco:0} %
+                {server.metric?.value.cpu?server.metric.value.disco:0} %
                 </div>
                   <Progress
-                    value={server.metric.value.cpu?server.metric.value.disco:0}
+                    value={server.metric?.value.cpu?server.metric.value.disco:0}
                     className="h-1.5 mt-1 bg-neutral-200 dark:bg-neutral-700"
                   /> 
               </div>
@@ -105,7 +105,7 @@ export function ApiCard({ server }: { server: any }) {
                   </span>
                 </div>
                 <div className="text-neutral-800 dark:text-neutral-200 font-mono">
-                  {server.metric.value.response_time} ms
+                  {server.metric?.value.response_time} ms
                 </div>
               </div>
               <div  >

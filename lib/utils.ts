@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 
-export const getStatusColor = (status) => {
+export const getStatusColor = (status:any) => {
     switch (status) {
       case "up":
         return "text-green-600 bg-green-100 dark:bg-green-900/20";
@@ -31,17 +31,35 @@ export const getSeverityColor = (severity: string) => {
     }
   };
 
+export function getSeverityLabel(level: string): string {
+  switch (level.toLowerCase()) {
+    case "critical":
+      return "Crítico";
+    case "high":
+      return "Alto";
+    case "medium":
+      return "Médio";
+    case "low":
+      return "Baixo";
+    default:
+      return level;  
+  }
+}
 
-export function dateConversion(isoDate:any):string
-{
-  const date = new Date(isoDate);
+export function dateConversion(isoDate: any): string {
+  let date = new Date(isoDate);
+
+  if (isNaN(date.getTime())) {
+    date = new Date();
+  }
 
   const dia = String(date.getDate()).padStart(2, "0");
-  const mes = String(date.getMonth() + 1).padStart(2, "0"); 
+  const mes = String(date.getMonth() + 1).padStart(2, "0");
   const ano = date.getFullYear();
   const horas = String(date.getHours()).padStart(2, "0");
   const minutos = String(date.getMinutes()).padStart(2, "0");
+
   return `${dia}/${mes}/${ano} ${horas}:${minutos}`;
- 
 }
+
 
