@@ -171,10 +171,10 @@ const filteredSystems = allSystems.filter(
                 <p className="text-sm text-neutral-600 dark:text-neutral-400">{server.type}</p>
               </div>
             </div>
-            <Badge className={`${getStatusColor(server.status)} font-medium`}>
-              {server.status === "up"
+            <Badge className={`${getStatusColor(server.metric?.status)} font-medium`}>
+              {server.metric?.status === "up"
                 ? "UP"
-                : server.status === "down"
+                : server.metric?.status === "down"
                   ? "DOWN"
                   : "DOWN"}
             </Badge>

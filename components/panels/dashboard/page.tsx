@@ -114,7 +114,7 @@ export default function DashboardPage() {
       </div>
     );
   }
-
+ 
   return (
     <div className="p-6 space-y-6">
       {/* KPIs Overview */}

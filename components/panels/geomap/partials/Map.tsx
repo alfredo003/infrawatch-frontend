@@ -30,7 +30,7 @@ const machineIcons: Record<string, Record<string, L.Icon>> = {
     down: createImgIcon("./icons/pc-down.png"),
     maintenance: createImgIcon("./icons/pc-maintenance.png"),
   },
-  router: {
+  Router: {
     up: createImgIcon("./icons/router-up.png"),
     down: createImgIcon("./icons/router-down.png"),
     maintenance: createImgIcon("./icons/router-maintenance.png"),
@@ -113,14 +113,13 @@ export default function Map({
           machine.lat,
           machine.lng,
           index
-        );
-
+        ); 
         return (
           <Marker
             key={machine.id}
             position={[latOffset, lngOffset]}
             icon={
-              machineIcons[machine.type]?.[machine.status] ??
+              machineIcons[machine.typeName]?.[machine.status] ??
               machineIcons.server.up
             }
           >
