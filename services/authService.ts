@@ -47,7 +47,7 @@ export const signIn = async (
   setIsLoading(true);
   setAuthError(null);
 
-  const API_URL = "http://localhost:2000/api";
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   try {
     const response = await axios.post(API_URL + "/auth/signin", formData);
@@ -78,7 +78,7 @@ export const signIn = async (
 };
 
 export const refreshToken = async (): Promise<string | null> => {
-  const API_URL = "http://localhost:2000/api";
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const refresh_token = localStorage.getItem("refresh_token");
 
   if (!refresh_token) return null;

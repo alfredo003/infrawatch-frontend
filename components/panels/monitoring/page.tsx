@@ -157,7 +157,7 @@ const filteredSystems = allSystems.filter(
       <Card
         key={server.id}
         className={`bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-700 shadow-sm hover:border-blue-500/30 transition-colors cursor-pointer 
-    ${server.status === "down" ? "animate-glow  border-red-500" : ""}`}
+    ${server.metric?.status === "down" ? "animate-glow  border-red-500" : ""}`}
         onClick={() => setSelectedServer(server)}
       >
         <CardHeader className="pb-3">
