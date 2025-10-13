@@ -1,4 +1,3 @@
-// userLib.ts
 import api from '../lib/api';
 
 export interface UserData {
@@ -6,7 +5,6 @@ export interface UserData {
   username: string;
   email: string;
   role: 'admin' | 'operator' | 'viewer';
-  company_id?: string;
   created_at: string;
   updated_at: string;
   status?: 'active' | 'inactive'; 

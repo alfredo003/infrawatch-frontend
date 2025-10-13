@@ -969,51 +969,15 @@ export default function ReportsPage() {
       <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-neutral-800 dark:text-neutral-200">
-            Centro de Relatórios Avançados
+            Centro de Relatórios
           </h1>
           <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-            Análise detalhada de performance, SLA e conformidade da infraestrutura
+            Análise detalhada de performance 
           </p>
         </div>
         
         <div className="flex flex-wrap gap-3">
-          <div className="flex items-center gap-2">
-            <Search className="w-4 h-4 text-neutral-500" />
-            <Input
-              placeholder="Buscar serviços ou incidentes..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-64"
-            />
-          </div>
           
-          <Select value={timeRange} onValueChange={setTimeRange}>
-            <SelectTrigger className="w-32">
-              <Calendar className="w-4 h-4 mr-2" />
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="1d">1 dia</SelectItem>
-              <SelectItem value="7d">7 dias</SelectItem>
-              <SelectItem value="30d">30 dias</SelectItem>
-              <SelectItem value="90d">90 dias</SelectItem>
-              <SelectItem value="1y">1 ano</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={selectedSeverity} onValueChange={setSelectedSeverity}>
-            <SelectTrigger className="w-32">
-              <Filter className="w-4 h-4 mr-2" />
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos</SelectItem>
-              <SelectItem value="critical">Crítico</SelectItem>
-              <SelectItem value="high">Alto</SelectItem>
-              <SelectItem value="medium">Médio</SelectItem>
-              <SelectItem value="low">Baixo</SelectItem>
-            </SelectContent>
-          </Select>
 
           
           <Button

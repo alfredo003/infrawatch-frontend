@@ -6,7 +6,7 @@ import SystemsPage from "@/components/panels/systems/page";
 import DashboardPage from "@/components/panels/dashboard/page";
 import GeomapPage from "@/components/panels/geomap";
 import ApplicationsPage from "@/components/panels/applications/page";
-import ProfilesPage from "./profile/page"; 
+import UsersPage from "./configurations/users/page"; 
 import MonitoringPage from "@/components/panels/monitoring/page";
 import IntegrationPage from "./integrations/page";
 
@@ -20,7 +20,7 @@ export default function Panel({ active }: { active: number }) {
     <ApplicationsPage />,
     <GeomapPage />,
     <ReportsPage />,
-    <ProfilesPage />,
+    <UsersPage />,
     <AlertsPage />,
   ];
 

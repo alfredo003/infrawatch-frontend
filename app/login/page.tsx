@@ -127,7 +127,7 @@ export default function NetworkMonitoringLogin() {
                   onChange={(e) => handleInputChange("email", e.target.value)}
                   onFocus={() => setFocusedField("email")}
                   onBlur={() => setFocusedField(null)}
-                  className={`w-full pl-10 pr-4 py-3 bg-slate-900/50 border rounded-lg text-white font-mono text-sm placeholder-gray-500 transition-all duration-200 focus:outline-none focus:ring-2 ${
+                  className={`w-full pl-10 pr-4 py-3 bg-slate-900/50 border text-white font-mono text-sm placeholder-gray-500 transition-all duration-200 focus:outline-none focus:ring-2 ${
                     errors.email
                       ? "border-red-500 focus:ring-red-500/20 focus:border-red-400"
                       : focusedField === "email"
@@ -167,7 +167,7 @@ export default function NetworkMonitoringLogin() {
                   onChange={(e) => handleInputChange("password", e.target.value)}
                   onFocus={() => setFocusedField("password")}
                   onBlur={() => setFocusedField(null)}
-                  className={`w-full pl-10 pr-12 py-3 bg-slate-900/50 border rounded-lg text-white font-mono text-sm placeholder-gray-500 transition-all duration-200 focus:outline-none focus:ring-2 ${
+                  className={`w-full pl-10 pr-12 py-3 bg-slate-900/50 border text-white font-mono text-sm placeholder-gray-500 transition-all duration-200 focus:outline-none focus:ring-2 ${
                     errors.password
                       ? "border-red-500 focus:ring-red-500/20 focus:border-red-400"
                       : focusedField === "password"
