@@ -5,16 +5,17 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import TopBarLocation from "@/components/ui/top-bar-location";
 import Panel from "@/components/panels";
-import { menuItems } from "./menu";
+import { menuItems,menuItemsOperator,menuItemsViewer } from "./menu";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { listAllSystems, SystemData } from "@/services/systemService";
 import useSWR from "swr";
 import { AlertData, listAllAlerts } from "@/services/alertService";
+import { User } from "@/lib/auth";
  
 interface DashboardLayoutProps {
   sidebarCollapsed: boolean;
   activeSection: number;
-  user: { email: string } | null;
+  user: User | null;
   setSidebarCollapsed: (value: boolean) => void;
   setActiveSection: (id: number) => void;
   handleOpenLogoutModal: () => void;
@@ -29,6 +30,22 @@ export default function DashboardLayout({
   handleOpenLogoutModal,
 }: DashboardLayoutProps) {
 
+let menuSlider;
+
+console.log("Acess:"+user?.role);
+  switch(user?.role) {
+    case 'admin':
+      menuSlider = menuItems;
+      break;
+    case 'operator':
+      menuSlider = menuItemsOperator;
+      break;
+    case 'viewer':
+      menuSlider = menuItemsViewer;
+      break;
+    default:
+      menuSlider = menuItems;
+  }
     const { data: systems, error: systemsError, isLoading: systemsLoading, mutate: reloadSystems } =
     useSWR<SystemData[]>("systems", listAllSystems, {
       dedupingInterval: 10000,
@@ -75,7 +92,8 @@ export default function DashboardLayout({
           </div>
 
           <nav className="space-y-2">
-            {menuItems.map((item) => (
+            {menuSlider.map((item) => {
+              return (
               <button
                 key={item.id}
                 onClick={() => setActiveSection(item.id)}
@@ -91,7 +109,7 @@ export default function DashboardLayout({
                   <span className="text-sm font-medium">{item.label}</span>
                 )}
               </button>
-            ))}
+            ) } )}
           </nav>
 
           {!sidebarCollapsed && (

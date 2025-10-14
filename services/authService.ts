@@ -60,8 +60,10 @@ export const signIn = async (
         token: response.data.access_token,
         user: {
           id: response.data.user.id,
-          email: response.data.user.email}
-        })
+          email: response.data.user.email,
+          role: response.data.user.role
+        }
+       });
 
       setIsLoading(false);
   

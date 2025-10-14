@@ -4,11 +4,13 @@ import { z } from "zod";
 const UserSchema = z.object({
   id: z.string().min(1, "ID do usuário inválido"),
   email: z.string().email("Email do usuário inválido"),
+  role: z.enum(['admin', 'operator', 'viewer']).optional(),
 });
 
 export interface User {
   id: string;
   email: string;
+  role?: string;
 }
 
 export interface AuthData {
@@ -47,7 +49,7 @@ export const getUser = (): User | null => {
     if (!userData) return null;
     try {
       const parsed = JSON.parse(userData);
-      const validated = UserSchema.safeParse(parsed);
+      const validated = UserSchema.safeParse(parsed); 
       if (validated.success) {
         return validated.data;
       }
