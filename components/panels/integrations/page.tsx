@@ -1,30 +1,31 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
-  Plus, 
+  Plus,
   Workflow,
   PackageCheck,
   BrainCircuit,
   AlertTriangle,
-} from "lucide-react";
+} from 'lucide-react';
 
-import { Dialog } from "@/components/ui/dialog"; 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent  } from "@/components/ui/card"; 
-import { useToast } from "@/hooks/use-toast"; 
-import ListIntegrations from "./list";
-import { Integration, listAllIntegration } from "@/services/integrationService";
-import { createEventSource } from "@/lib/sse";
-import { Skeleton } from "@/components/ui/skeleton"; // 👈 Import do skeleton
-import RegisterIntegration from "./register";
- 
+import { Dialog } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { useToast } from '@/hooks/use-toast';
+import ListIntegrations from './list';
+import { Integration, listAllIntegration } from '@/services/integrationService';
+import { createEventSource } from '@/lib/sse';
+import { Skeleton } from '@/components/ui/skeleton'; // 👈 Import do skeleton
+import RegisterIntegration from './register';
+
 export default function IntegrationPage() {
-  const [isSystemCreateDialogOpen, setIsSystemCreateDialogOpen] = useState(false);
+  const [isSystemCreateDialogOpen, setIsSystemCreateDialogOpen] =
+    useState(false);
   const [integrations, setIntegrations] = useState<Integration[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  
+
   const { toast } = useToast();
 
   useEffect(() => {
@@ -38,25 +39,25 @@ export default function IntegrationPage() {
         setLoading(false);
       });
   }, []);
- 
+
   useEffect(() => {
     const URL = process.env.NEXT_PUBLIC_API_URL!;
     const es = createEventSource<Integration[]>(
       `${URL}/stream/integrations`,
       (data) => setIntegrations(data),
       (err) => {
-        console.error("Erro SSE:", err);
+        console.error('Erro SSE:', err);
         toast({
-          title: "Erro de conexão",
-          description: "Não foi possível atualizar em tempo real.",
-          variant: "destructive",
+          title: 'Erro de conexão',
+          description: 'Não foi possível atualizar em tempo real.',
+          variant: 'destructive',
         });
-      }
+      },
     );
 
     return () => es.close();
   }, [toast]);
-  
+
   if (error) return <div>Erro ao carregar dados</div>;
 
   // --- SKELETON LOADING ---
@@ -106,10 +107,11 @@ export default function IntegrationPage() {
     );
   }
 
- 
   const total = integrations?.length ?? 0;
-  const totalActive = integrations?.filter((s:any) => s.status === "active").length ?? 0;
-  const totalInactive = integrations?.filter((s:any) => s.status !== "active").length ?? 0;
+  const totalActive =
+    integrations?.filter((s: any) => s.status === 'active').length ?? 0;
+  const totalInactive =
+    integrations?.filter((s: any) => s.status !== 'active').length ?? 0;
 
   return (
     <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white p-6">
@@ -126,7 +128,10 @@ export default function IntegrationPage() {
           </div>
 
           {integrations?.length !== 0 && (
-            <Button onClick={() => setIsSystemCreateDialogOpen(true)} className="bg-blue-600 text-white">
+            <Button
+              onClick={() => setIsSystemCreateDialogOpen(true)}
+              className="bg-blue-600 text-white"
+            >
               <Plus className="w-4 h-4 mr-2" />
               Fazer Integração
             </Button>
@@ -142,14 +147,12 @@ export default function IntegrationPage() {
                   <p className="text-sm text-neutral-600 dark:text-neutral-400">
                     Integrações realizadas
                   </p>
-                  <p className="text-2xl font-bold text-blue-600">
-                    {total}
-                  </p>
+                  <p className="text-2xl font-bold text-blue-600">{total}</p>
                 </div>
                 <Workflow className="w-8 h-8 text-blue-600" />
               </div>
             </CardContent>
-          </Card> 
+          </Card>
 
           <Card>
             <CardContent className="p-4">
@@ -175,7 +178,7 @@ export default function IntegrationPage() {
                     Com Problemas
                   </p>
                   <p className="text-2xl font-bold text-red-600">
-                    { totalInactive }
+                    {totalInactive}
                   </p>
                 </div>
                 <AlertTriangle className="w-8 h-8 text-red-600" />
@@ -195,7 +198,7 @@ export default function IntegrationPage() {
             <p className="text-neutral-500 mb-4">
               Comece por cadastrar sua primeira integração
             </p>
-            <Button 
+            <Button
               className="bg-blue-600 hover:bg-blue-700"
               onClick={() => setIsSystemCreateDialogOpen(true)}
             >
@@ -207,8 +210,13 @@ export default function IntegrationPage() {
       </div>
 
       {/* Criar Novo RegisterIntegration */}
-      <Dialog open={isSystemCreateDialogOpen} onOpenChange={setIsSystemCreateDialogOpen}>
-        <RegisterIntegration setIsSystemCreateDialogOpen={setIsSystemCreateDialogOpen} />
+      <Dialog
+        open={isSystemCreateDialogOpen}
+        onOpenChange={setIsSystemCreateDialogOpen}
+      >
+        <RegisterIntegration
+          setIsSystemCreateDialogOpen={setIsSystemCreateDialogOpen}
+        />
       </Dialog>
     </div>
   );

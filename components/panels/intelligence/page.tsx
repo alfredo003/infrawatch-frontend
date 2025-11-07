@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
 import {
   Search,
   FileText,
@@ -14,118 +14,118 @@ import {
   Globe,
   Shield,
   AlertTriangle,
-} from "lucide-react";
+} from 'lucide-react';
 
 export default function IntelligencePage() {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [selectedReport, setSelectedReport] = useState(null);
 
   const reports = [
     {
-      id: "INT-2025-001",
-      title: "ANÁLISE DE REDE DE CIBERCRIME",
-      classification: "ULTRA SECRETO",
-      source: "SIGINT",
-      location: "Leste Europeu",
-      date: "2025-06-17",
-      status: "verificado",
-      threat: "alta",
+      id: 'INT-2025-001',
+      title: 'ANÁLISE DE REDE DE CIBERCRIME',
+      classification: 'ULTRA SECRETO',
+      source: 'SIGINT',
+      location: 'Leste Europeu',
+      date: '2025-06-17',
+      status: 'verificado',
+      threat: 'alta',
       summary:
-        "Análise detalhada de sindicato de cibercrime emergente operando em múltiplas jurisdições",
-      tags: ["cibercrime", "internacional", "financeiro"],
+        'Análise detalhada de sindicato de cibercrime emergente operando em múltiplas jurisdições',
+      tags: ['cibercrime', 'internacional', 'financeiro'],
     },
     {
-      id: "INT-2025-002",
-      title: "COMUNICAÇÕES DE AGENTE DESONESTO",
-      classification: "SECRETO",
-      source: "HUMINT",
-      location: "Berlim",
-      date: "2025-06-16",
-      status: "pendente",
-      threat: "crítica",
+      id: 'INT-2025-002',
+      title: 'COMUNICAÇÕES DE AGENTE DESONESTO',
+      classification: 'SECRETO',
+      source: 'HUMINT',
+      location: 'Berlim',
+      date: '2025-06-16',
+      status: 'pendente',
+      threat: 'crítica',
       summary:
-        "Comunicações interceptadas sugerindo possível violação de segurança em operações europeias",
-      tags: ["interno", "segurança", "comunicações"],
+        'Comunicações interceptadas sugerindo possível violação de segurança em operações europeias',
+      tags: ['interno', 'segurança', 'comunicações'],
     },
     {
-      id: "INT-2025-003",
-      title: "ROTAS DE TRÁFICO DE ARMAS",
-      classification: "CONFIDENCIAL",
-      source: "OSINT",
-      location: "Oriente Médio",
-      date: "2025-06-15",
-      status: "verificado",
-      threat: "média",
+      id: 'INT-2025-003',
+      title: 'ROTAS DE TRÁFICO DE ARMAS',
+      classification: 'CONFIDENCIAL',
+      source: 'OSINT',
+      location: 'Oriente Médio',
+      date: '2025-06-15',
+      status: 'verificado',
+      threat: 'média',
       summary:
-        "Inteligência atualizada sobre corredores de contrabando de armas pela região mediterrânea",
-      tags: ["tráfico", "armas", "marítimo"],
+        'Inteligência atualizada sobre corredores de contrabando de armas pela região mediterrânea',
+      tags: ['tráfico', 'armas', 'marítimo'],
     },
     {
-      id: "INT-2025-004",
-      title: "VIGILÂNCIA DE CÉLULA TERRORISTA",
-      classification: "ULTRA SECRETO",
-      source: "HUMINT",
-      location: "Norte da África",
-      date: "2025-06-14",
-      status: "ativo",
-      threat: "crítica",
+      id: 'INT-2025-004',
+      title: 'VIGILÂNCIA DE CÉLULA TERRORISTA',
+      classification: 'ULTRA SECRETO',
+      source: 'HUMINT',
+      location: 'Norte da África',
+      date: '2025-06-14',
+      status: 'ativo',
+      threat: 'crítica',
       summary:
-        "Vigilância contínua de célula terrorista suspeita planejando ataques coordenados",
-      tags: ["terrorismo", "vigilância", "coordenado"],
+        'Vigilância contínua de célula terrorista suspeita planejando ataques coordenados',
+      tags: ['terrorismo', 'vigilância', 'coordenado'],
     },
     {
-      id: "INT-2025-005",
-      title: "BRIEFING DE INTELIGÊNCIA DIPLOMÁTICA",
-      classification: "SECRETO",
-      source: "DIPLOMÁTICA",
-      location: "Ásia-Pacífico",
-      date: "2025-06-13",
-      status: "verificado",
-      threat: "baixa",
+      id: 'INT-2025-005',
+      title: 'BRIEFING DE INTELIGÊNCIA DIPLOMÁTICA',
+      classification: 'SECRETO',
+      source: 'DIPLOMÁTICA',
+      location: 'Ásia-Pacífico',
+      date: '2025-06-13',
+      status: 'verificado',
+      threat: 'baixa',
       summary:
-        "Desenvolvimentos políticos afetando segurança regional e considerações operacionais",
-      tags: ["diplomático", "político", "regional"],
+        'Desenvolvimentos políticos afetando segurança regional e considerações operacionais',
+      tags: ['diplomático', 'político', 'regional'],
     },
   ];
 
   const getClassificationColor = (classification) => {
     switch (classification) {
-      case "ULTRA SECRETO":
-        return "bg-red-500/20 text-red-500";
-      case "SECRETO":
-        return "bg-orange-500/20 text-orange-500";
-      case "CONFIDENCIAL":
-        return "bg-neutral-500/20 text-neutral-300";
+      case 'ULTRA SECRETO':
+        return 'bg-red-500/20 text-red-500';
+      case 'SECRETO':
+        return 'bg-orange-500/20 text-orange-500';
+      case 'CONFIDENCIAL':
+        return 'bg-neutral-500/20 text-neutral-300';
       default:
-        return "bg-white/20 text-white";
+        return 'bg-white/20 text-white';
     }
   };
 
   const getThreatColor = (threat) => {
     switch (threat) {
-      case "crítica":
-        return "bg-red-500/20 text-red-500";
-      case "alta":
-        return "bg-orange-500/20 text-orange-500";
-      case "média":
-        return "bg-neutral-500/20 text-neutral-300";
-      case "baixa":
-        return "bg-white/20 text-white";
+      case 'crítica':
+        return 'bg-red-500/20 text-red-500';
+      case 'alta':
+        return 'bg-orange-500/20 text-orange-500';
+      case 'média':
+        return 'bg-neutral-500/20 text-neutral-300';
+      case 'baixa':
+        return 'bg-white/20 text-white';
       default:
-        return "bg-neutral-500/20 text-neutral-300";
+        return 'bg-neutral-500/20 text-neutral-300';
     }
   };
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "verificado":
-        return "bg-white/20 text-white";
-      case "pendente":
-        return "bg-orange-500/20 text-orange-500";
-      case "ativo":
-        return "bg-white/20 text-white";
+      case 'verificado':
+        return 'bg-white/20 text-white';
+      case 'pendente':
+        return 'bg-orange-500/20 text-orange-500';
+      case 'ativo':
+        return 'bg-white/20 text-white';
       default:
-        return "bg-neutral-500/20 text-neutral-300";
+        return 'bg-neutral-500/20 text-neutral-300';
     }
   };
 
@@ -413,13 +413,13 @@ export default function IntelligencePage() {
                       <div className="w-full bg-neutral-800 rounded-full h-2">
                         <div
                           className={`h-2 rounded-full transition-all duration-300 ${
-                            selectedReport.threat === "crítica"
-                              ? "bg-red-500 w-full"
-                              : selectedReport.threat === "alta"
-                                ? "bg-orange-500 w-3/4"
-                                : selectedReport.threat === "média"
-                                  ? "bg-neutral-400 w-1/2"
-                                  : "bg-white w-1/4"
+                            selectedReport.threat === 'crítica'
+                              ? 'bg-red-500 w-full'
+                              : selectedReport.threat === 'alta'
+                                ? 'bg-orange-500 w-3/4'
+                                : selectedReport.threat === 'média'
+                                  ? 'bg-neutral-400 w-1/2'
+                                  : 'bg-white w-1/4'
                           }`}
                         ></div>
                       </div>

@@ -1,19 +1,19 @@
-"use client";
-import { useEffect, useState, useRef } from "react";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+'use client';
+import { useEffect, useState, useRef } from 'react';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 
-import { Button } from "./ui/button";
+import { Button } from './ui/button';
 
-import { cn } from "@/lib/utils";
-import { useSystems } from "../data";
-import { IMapMachine } from "@/services/systemService";
+import { cn } from '@/lib/utils';
+import { useSystems } from '../data';
+import { IMapMachine } from '@/services/systemService';
 
 function createImgIcon(url: string) {
   return L.icon({
     iconUrl: url,
-    iconSize: [30, 30],
+    iconSize: [50, 50],
     iconAnchor: [16, 32],
     popupAnchor: [0, -32],
   });
@@ -21,31 +21,36 @@ function createImgIcon(url: string) {
 
 const machineIcons: Record<string, Record<string, L.Icon>> = {
   server: {
-    up: createImgIcon("./icons/server-up.png"),
-    down: createImgIcon("./icons/server-down.png"),
-    maintenance: createImgIcon("./icons/server-maintenance.png"),
+    up: createImgIcon('./icons/server-up.png'),
+    down: createImgIcon('./icons/server-down.png'),
+    maintenance: createImgIcon('./icons/server-maintenance.png'),
   },
   pc: {
-    up: createImgIcon("./icons/pc-up.png"),
-    down: createImgIcon("./icons/pc-down.png"),
-    maintenance: createImgIcon("./icons/pc-maintenance.png"),
+    up: createImgIcon('./icons/pc-up.png'),
+    down: createImgIcon('./icons/pc-down.png'),
+    maintenance: createImgIcon('./icons/pc-maintenance.png'),
   },
   Router: {
-    up: createImgIcon("./icons/router-up.png"),
-    down: createImgIcon("./icons/router-down.png"),
-    maintenance: createImgIcon("./icons/router-maintenance.png"),
+    up: createImgIcon('./icons/router-up.png'),
+    down: createImgIcon('./icons/router-down.png'),
+    maintenance: createImgIcon('./icons/router-maintenance.png'),
   },
   software: {
-    up: createImgIcon("./icons/software-up.png"),
-    down: createImgIcon("./icons/software-down.png"),
-    maintenance: createImgIcon("./icons/software-maintenance.png"),
+    up: createImgIcon('./icons/software-up.png'),
+    down: createImgIcon('./icons/software-down.png'),
+    maintenance: createImgIcon('./icons/software-maintenance.png'),
+  },
+   impressora: {
+    up: createImgIcon('./icons/printer-up.png'),
+    down: createImgIcon('./icons/printer-down.png'),
+    maintenance: createImgIcon('./icons/printer-maintenance.png'),
   },
 };
 
 const machineTypes: any = {
-  up: "bg-green-600/10 text-green-500",
-  down: "bg-red-600/10 text-red-500",
-  maintenance: "bg-yellow-600/10 text-yellow-500",
+  up: 'bg-green-600/10 text-green-500',
+  down: 'bg-red-600/10 text-red-500',
+  maintenance: 'bg-yellow-600/10 text-yellow-500',
 };
 
 export default function Map({
@@ -72,9 +77,9 @@ export default function Map({
       }
     }
 
-    document.addEventListener("visibilitychange", handleVisibilityChange);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 
@@ -94,7 +99,7 @@ export default function Map({
     <MapContainer
       center={[-8.9186, 13.204]}
       zoom={16}
-      style={{ height: "100%", width: "100%" }}
+      style={{ height: '100%', width: '100%' }}
       className="rounded-md"
       whenCreated={(mapInstance) => {
         mapRef.current = mapInstance;
@@ -112,15 +117,16 @@ export default function Map({
         const [latOffset, lngOffset] = offsetLatLng(
           machine.lat,
           machine.lng,
-          index
-        ); 
+          index,
+        );
+
         return (
           <Marker
             key={machine.id}
             position={[latOffset, lngOffset]}
             icon={
-              machineIcons[machine.typeName]?.[machine.status] ??
-              machineIcons.server.up
+              machineIcons[machine.typeName.toLowerCase()]?.[machine.status.toLowerCase()] ??
+              machineIcons.pc.up
             }
           >
             <Popup>
@@ -132,8 +138,8 @@ export default function Map({
                   </h1>
                   <span
                     className={cn(
-                      "rounded-full px-2 py-0.5 text-[10px] font-medium",
-                      machineTypes[machine.status]
+                      'rounded-full px-2 py-0.5 text-[10px] font-medium',
+                      machineTypes[machine.status],
                     )}
                   >
                     {machine?.status}
@@ -155,7 +161,7 @@ export default function Map({
                       Última verificação:
                     </span>
                     <span className="truncate">
-                      {new Date(machine.lastCheck).toLocaleString("pt-PT")}
+                      {new Date(machine.lastCheck).toLocaleString('pt-PT')}
                     </span>
                   </div>
                 </div>

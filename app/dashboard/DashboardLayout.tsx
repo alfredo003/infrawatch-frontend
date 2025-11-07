@@ -1,17 +1,26 @@
-"use client";
+'use client';
 
-import { ChevronRight, Bell, RefreshCw, LogOut } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/theme-toggle";
-import TopBarLocation from "@/components/ui/top-bar-location";
-import Panel from "@/components/panels";
-import { menuItems,menuItemsOperator,menuItemsViewer } from "./menu";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { listAllSystems, SystemData } from "@/services/systemService";
-import useSWR from "swr";
-import { AlertData, listAllAlerts } from "@/services/alertService";
-import { User } from "@/lib/auth";
- 
+import { ChevronRight, Bell, LogOut, Crown, Settings, Eye } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/theme-toggle';
+import TopBarLocation from '@/components/ui/top-bar-location';
+import Panel from '@/components/panels';
+import { menuItems, menuItemsOperator, menuItemsViewer } from './menu';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { listAllSystems, SystemData } from '@/services/systemService';
+import useSWR from 'swr';
+import { AlertData, listAllAlerts } from '@/services/alertService';
+import { User } from '@/lib/auth';
+import DataAtual from '@/components/DataAtual';
+import Link from 'next/link';
+
 interface DashboardLayoutProps {
   sidebarCollapsed: boolean;
   activeSection: number;
@@ -20,7 +29,7 @@ interface DashboardLayoutProps {
   setActiveSection: (id: number) => void;
   handleOpenLogoutModal: () => void;
 }
- 
+
 export default function DashboardLayout({
   sidebarCollapsed,
   activeSection,
@@ -29,11 +38,9 @@ export default function DashboardLayout({
   setActiveSection,
   handleOpenLogoutModal,
 }: DashboardLayoutProps) {
+  let menuSlider;
 
-let menuSlider;
-
-console.log("Acess:"+user?.role);
-  switch(user?.role) {
+  switch (user?.role) {
     case 'admin':
       menuSlider = menuItems;
       break;
@@ -46,36 +53,44 @@ console.log("Acess:"+user?.role);
     default:
       menuSlider = menuItems;
   }
-    const { data: systems, error: systemsError, isLoading: systemsLoading, mutate: reloadSystems } =
-    useSWR<SystemData[]>("systems", listAllSystems, {
-      dedupingInterval: 10000,
-      revalidateOnFocus: false,
-    });
+  const {
+    data: systems,
+    error: systemsError,
+    isLoading: systemsLoading,
+    mutate: reloadSystems,
+  } = useSWR<SystemData[]>('systems', listAllSystems, {
+    dedupingInterval: 10000,
+    revalidateOnFocus: false,
+  });
 
-    const { data: alerts, error: alertsError, isLoading: alertsLoading, mutate: reloadAlerts } =
-      useSWR<AlertData[]>("alerts", listAllAlerts, {
-        dedupingInterval: 10000,
-        revalidateOnFocus: false,
-      });
+  const {
+    data: alerts,
+    error: alertsError,
+    isLoading: alertsLoading,
+    mutate: reloadAlerts,
+  } = useSWR<AlertData[]>('alerts', listAllAlerts, {
+    dedupingInterval: 10000,
+    revalidateOnFocus: false,
+  });
 
-    const onlineCount = systems?.length; 
-    const alertsCount:any = alerts?.length; 
-    const offlineCount = systems?.filter((s) => s.status === "down").length;
+  const onlineCount = systems?.length;
+  const alertsCount: any = alerts?.length;
+  const offlineCount = systems?.filter((s) => s.status === 'down').length;
   return (
     <div className="flex h-screen bg-white dark:bg-black text-black dark:text-white transition-colors duration-300">
       {/* Sidebar */}
       <div
-        className={` ${sidebarCollapsed ? "w-16" : "w-64"} bg-neutral-50 dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-700 transition-all duration-300 fixed md:relative z-50 md:z-auto h-full md:h-auto ${
-          !sidebarCollapsed ? "md:block" : ""
+        className={` ${sidebarCollapsed ? 'w-16' : 'w-64'} bg-neutral-50 dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-700 transition-all duration-300 fixed md:relative z-50 md:z-auto h-full md:h-auto ${
+          !sidebarCollapsed ? 'md:block' : ''
         }`}
       >
         <div className="p-4">
           <div className="flex items-center justify-between mb-8">
-            <div className={`${sidebarCollapsed ? "hidden" : "block"}`}>
-                <img src="/letter-logo.png" alt="" />
-                <p className="text-neutral-500 text-xs uppercase">
-                  <small>servidor v1.0</small> 
-                </p>
+            <div className={`${sidebarCollapsed ? 'hidden' : 'block'}`}>
+              <img src="/letter-logo.png" alt="" />
+              <p className="text-neutral-500 text-xs uppercase">
+                <small>servidor v1.0</small>
+              </p>
             </div>
             <Button
               variant="ghost"
@@ -85,7 +100,7 @@ console.log("Acess:"+user?.role);
             >
               <ChevronRight
                 className={`w-4 h-4 sm:w-5 sm:h-5 transition-transform ${
-                  sidebarCollapsed ? "" : "rotate-180"
+                  sidebarCollapsed ? '' : 'rotate-180'
                 }`}
               />
             </Button>
@@ -94,22 +109,22 @@ console.log("Acess:"+user?.role);
           <nav className="space-y-2">
             {menuSlider.map((item) => {
               return (
-              <button
-                key={item.id}
-                onClick={() => setActiveSection(item.id)}
-                className={`w-full flex items-center gap-3 p-3 rounded transition-colors ${
-                  activeSection === item.id
-                    ? "bg-blue-600 text-white"
-                    : "text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800"
-                }`}
-              >
-                
-                <item.icon className="w-6 h-6" />
-                {!sidebarCollapsed && (
-                  <span className="text-sm font-medium">{item.label}</span>
-                )}
-              </button>
-            ) } )}
+                <button
+                  key={item.id}
+                  onClick={() => setActiveSection(item.id)}
+                  className={`w-full flex items-center gap-3 p-3 rounded transition-colors ${
+                    activeSection === item.id
+                      ? 'bg-blue-600 text-white'
+                      : 'text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800'
+                  }`}
+                >
+                  <item.icon className="w-6 h-6" />
+                  {!sidebarCollapsed && (
+                    <span className="text-sm font-medium">{item.label}</span>
+                  )}
+                </button>
+              );
+            })}
           </nav>
 
           {!sidebarCollapsed && (
@@ -155,7 +170,7 @@ console.log("Acess:"+user?.role);
 
       {/* Main Content */}
       <div
-        className={`flex-1 flex flex-col ${!sidebarCollapsed ? "md:ml-0" : ""}`}
+        className={`flex-1 flex flex-col ${!sidebarCollapsed ? 'md:ml-0' : ''}`}
       >
         {/* Top Toolbar */}
         <div className="h-16 bg-white dark:bg-neutral-800 border-b border-neutral-200 dark:border-neutral-700 flex items-center justify-between px-6">
@@ -164,75 +179,110 @@ console.log("Acess:"+user?.role);
               <TopBarLocation
                 location={
                   menuItems.find((item) => item.id === activeSection)?.label ??
-                  "N/A"
+                  'N/A'
                 }
               />
             </div>
           </div>
           <div className="flex items-center gap-4">
-            {user && (
-              <div className="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-400">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span>{user.email}</span>
+           
+            
+             {user && (
+              <div className="flex items-center gap-3">
+                {/* Role Badge */}
+                <div
+                  className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold uppercase ${
+                    user.role === "admin"
+                      ? "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-700"
+                      : user.role === "operator"
+                      ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-700"
+                      : "bg-gray-100 dark:bg-gray-900/30 text-gray-700 dark:text-gray-400 border border-gray-200 dark:border-gray-700"
+                  }`}
+                >
+                  {user.role === "admin" ? (
+                    <>
+                      <Crown size={14} className="mr-1" />
+                      Admin
+                    </>
+                  ) : user.role === "operator" ? (
+                    <>
+                      <Settings size={14} className="mr-1" />
+                      Operador
+                    </>
+                  ) : (
+                    <>
+                      <Eye size={14} className="mr-1" />
+                      Visualizador
+                    </>
+                  )}
+                </div>
+                
+                {/* User Email */}
+                <div className="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-400">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span>{user.email}</span>
+                </div>
               </div>
             )}
             <div className="text-xs text-neutral-500">
-                {new Date().toLocaleString("pt-BR")}
+             <DataAtual/>
             </div>
             <ThemeToggle />
-<DropdownMenu>
-  <DropdownMenuTrigger asChild>
-    <Button
-      variant="ghost"
-      size="icon"
-      className="text-neutral-400 hover:text-blue-600 relative"
-    >
-      <Bell className="w-5 h-5" />
-      {alertsCount  > 0 && (
-        <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] font-semibold text-white flex items-center justify-center shadow-md">
-          {alertsCount}
-        </span>
-      )}
-    </Button>
-  </DropdownMenuTrigger>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-neutral-400 hover:text-blue-600 relative"
+                >
+                  <Bell className="w-5 h-5" />
+                  {alertsCount > 0 && (
+                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] font-semibold text-white flex items-center justify-center shadow-md">
+                      {alertsCount}
+                    </span>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
 
-  {/* Só mostra o conteúdo do dropdown se houver pelo menos 1 alerta */}
-  {alertsCount > 0 && (
-    <DropdownMenuContent className="w-72 p-2 shadow-lg bg-white">
-      <DropdownMenuLabel className="text-base font-semibold text-gray-700 px-2">
-        Notificações
-      </DropdownMenuLabel>
-      <DropdownMenuSeparator />
+              {/* Só mostra o conteúdo do dropdown se houver pelo menos 1 alerta */}
+              {alertsCount > 0 && (
+                <DropdownMenuContent className="w-72 p-2 shadow-lg bg-white">
+                  <DropdownMenuLabel className="text-base font-semibold text-gray-700 px-2">
+                    Notificações
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
 
-      {/* Exemplo de notificação */}
-      <DropdownMenuItem className="flex items-start gap-3 px-2 py-3 hover:bg-blue-50 cursor-pointer">
-        <span className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 font-bold">
-          📩
-        </span>
-        <div className="flex flex-col">
-          <p className="text-sm font-medium text-gray-800">
-            Nova mensagem recebida
-          </p>
-          <span className="text-xs text-gray-500">há 2 minutos</span>
-        </div>
-      </DropdownMenuItem>
+                  {/* Exemplo de notificação */}
+               
+                  <DropdownMenuItem className="flex items-start gap-3 px-2 py-3 hover:bg-blue-50 cursor-pointer" onClick={() => setActiveSection(9)}>
+                    <span className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 font-bold">
+                      📩
+                    </span>
+                    <div className="flex flex-col">
+                      <p className="text-sm font-medium text-gray-800">
+                        Nova mensagem recebida
+                      </p>
+                      <span className="text-xs text-gray-500">
+                        há 2 minutos
+                      </span>
+                    </div>
+                  </DropdownMenuItem>
 
-      <DropdownMenuSeparator />
+                  <DropdownMenuSeparator />
 
-      {/* Só mostra "Ver todas as notificações" se alertsCount > 2 */}
-      {alertsCount > 2 && (
-        <DropdownMenuItem
-          onClick={() => setActiveSection(9)}
-          className="text-center text-blue-600 font-medium py-2 cursor-pointer hover:bg-blue-50"
-        >
-          Ver todas as notificações
-        </DropdownMenuItem>
-      )}
-    </DropdownMenuContent>
-  )}
-</DropdownMenu>
+                  {/* Só mostra "Ver todas as notificações" se alertsCount > 2 */}
+                  {alertsCount > 2 && (
+                    <DropdownMenuItem
+                      onClick={() => setActiveSection(9)}
+                      className="text-center text-blue-600 font-medium py-2 cursor-pointer hover:bg-blue-50"
+                    >
+                      Ver todas as notificações
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              )}
+            </DropdownMenu>
 
-            
             <Button
               variant="ghost"
               size="icon"

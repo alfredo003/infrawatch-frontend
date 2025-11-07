@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import {
   Wifi,
   Router,
@@ -9,50 +9,50 @@ import {
   Activity,
   TrendingUp,
   TrendingDown,
-} from "lucide-react";
+} from 'lucide-react';
 
 export default function NetworkPage() {
   const networkDevices = [
     {
-      name: "ROUTER-PRINCIPAL",
-      status: "online",
+      name: 'ROUTER-PRINCIPAL',
+      status: 'online',
       latency: 12,
       bandwidth: 85,
-      location: "Sala de Servidores",
+      location: 'Sala de Servidores',
     },
     {
-      name: "SWITCH-CORE-01",
-      status: "online",
+      name: 'SWITCH-CORE-01',
+      status: 'online',
       latency: 8,
       bandwidth: 67,
-      location: "Data Center",
+      location: 'Data Center',
     },
     {
-      name: "FIREWALL-DMZ",
-      status: "warning",
+      name: 'FIREWALL-DMZ',
+      status: 'warning',
       latency: 45,
       bandwidth: 92,
-      location: "DMZ",
+      location: 'DMZ',
     },
     {
-      name: "AP-ESCRITORIO-01",
-      status: "online",
+      name: 'AP-ESCRITORIO-01',
+      status: 'online',
       latency: 23,
       bandwidth: 34,
-      location: "1º Andar",
+      location: '1º Andar',
     },
   ];
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "online":
-        return "text-green-600 bg-green-100 dark:bg-green-900/20";
-      case "warning":
-        return "text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20";
-      case "offline":
-        return "text-red-600 bg-red-100 dark:bg-red-900/20";
+      case 'online':
+        return 'text-green-600 bg-green-100 dark:bg-green-900/20';
+      case 'warning':
+        return 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20';
+      case 'offline':
+        return 'text-red-600 bg-red-100 dark:bg-red-900/20';
       default:
-        return "text-gray-600 bg-gray-100 dark:bg-gray-900/20";
+        return 'text-gray-600 bg-gray-100 dark:bg-gray-900/20';
     }
   };
 
@@ -175,11 +175,11 @@ export default function NetworkPage() {
                     <p className="text-xs text-neutral-500">Uso</p>
                   </div>
                   <Badge className={getStatusColor(device.status)}>
-                    {device.status === "online"
-                      ? "Online"
-                      : device.status === "warning"
-                        ? "Aviso"
-                        : "Offline"}
+                    {device.status === 'online'
+                      ? 'Online'
+                      : device.status === 'warning'
+                        ? 'Aviso'
+                        : 'Offline'}
                   </Badge>
                 </div>
               </div>

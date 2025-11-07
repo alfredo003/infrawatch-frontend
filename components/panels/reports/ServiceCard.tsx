@@ -1,7 +1,7 @@
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Database, Globe, Server } from "lucide-react";
-import { ReactNode } from "react";
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { Database, Globe, Server } from 'lucide-react';
+import { ReactNode } from 'react';
 
 interface ServiceCardProps {
   name: string;
@@ -41,22 +41,36 @@ export function ServiceCard({
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
-            {type === "Base de Dados" ? <Database className="w-5 h-5 text-blue-600" /> :
-              type === "Servidor Web" ? <Globe className="w-5 h-5 text-blue-600" /> :
-              <Server className="w-5 h-5 text-blue-600" />}
+            {type === 'Base de Dados' ? (
+              <Database className="w-5 h-5 text-blue-600" />
+            ) : type === 'Servidor Web' ? (
+              <Globe className="w-5 h-5 text-blue-600" />
+            ) : (
+              <Server className="w-5 h-5 text-blue-600" />
+            )}
           </div>
           <div>
-            <h3 className="font-semibold text-neutral-800 dark:text-neutral-200">{name}</h3>
+            <h3 className="font-semibold text-neutral-800 dark:text-neutral-200">
+              {name}
+            </h3>
             <div className="flex items-center gap-2 mt-1">
-              <Badge className={getCategoryColor(category)} variant="secondary">{category}</Badge>
+              <Badge className={getCategoryColor(category)} variant="secondary">
+                {category}
+              </Badge>
               <Badge className={getStatusColor(status)} variant="secondary">
-                {status === "operational" ? "Operacional" : status === "degraded" ? "Degradado" : "Indisponível"}
+                {status === 'operational'
+                  ? 'Operacional'
+                  : status === 'degraded'
+                    ? 'Degradado'
+                    : 'Indisponível'}
               </Badge>
             </div>
           </div>
         </div>
         <div className="text-right">
-          <p className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">{availability}%</p>
+          <p className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">
+            {availability}%
+          </p>
           <p className="text-sm text-neutral-500">Disponibilidade</p>
         </div>
       </div>
@@ -67,7 +81,11 @@ export function ServiceCard({
         </div>
         <div>
           <p className="text-xs text-neutral-500 uppercase">SLA Atual</p>
-          <p className={`font-medium ${slaActual >= slaTarget ? 'text-green-600' : 'text-red-600'}`}>{slaActual}%</p>
+          <p
+            className={`font-medium ${slaActual >= slaTarget ? 'text-green-600' : 'text-red-600'}`}
+          >
+            {slaActual}%
+          </p>
         </div>
         <div>
           <p className="text-xs text-neutral-500 uppercase">MTTR</p>

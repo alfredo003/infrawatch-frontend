@@ -1,4 +1,4 @@
-import api from "../lib/api";
+import api from '../lib/api';
 
 export interface Integration {
   id?: string;
@@ -15,11 +15,11 @@ export interface Integration {
 
 export const listAllIntegration = async (): Promise<Integration[]> => {
   try {
-    const systemsRes = await api.get("/integrations");
+    const systemsRes = await api.get('/integrations');
     const systems: Integration[] = systemsRes.data.data;
     return systems;
   } catch (error) {
-    console.error("Erro ao buscar Integration:", error);
+    console.error('Erro ao buscar Integration:', error);
     throw error;
   }
 };
@@ -33,30 +33,30 @@ export async function handleCreateIntegration(
     auth_token?: string;
   },
   setIsLoading: (loading: boolean) => void,
-  setError: (error: string | null) => void
+  setError: (error: string | null) => void,
 ) {
-  setIsLoading(true); 
+  setIsLoading(true);
   try {
-    await api.post("/integrations", formData);
+    await api.post('/integrations', formData);
     setIsLoading(false);
   } catch (err) {
-    setError("Falha ao criar integração");
+    setError('Falha ao criar integração');
     setIsLoading(false);
     throw err;
   }
 }
-  
+
 export async function handleDeleteIntegration(
   id: string,
   setIsLoading: (loading: boolean) => void,
-  setError: (error: string | null) => void
+  setError: (error: string | null) => void,
 ) {
   setIsLoading(true);
   try {
     await api.delete(`/integrations/${id}`);
     setIsLoading(false);
   } catch (err) {
-    setError("Falha ao deletar integração");
+    setError('Falha ao deletar integração');
     setIsLoading(false);
     throw err;
   }

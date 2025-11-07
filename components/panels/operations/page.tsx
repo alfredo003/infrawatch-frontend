@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   Target,
   MapPin,
@@ -12,138 +12,138 @@ import {
   AlertTriangle,
   CheckCircle,
   XCircle,
-} from "lucide-react";
+} from 'lucide-react';
 
 export default function OperationsPage() {
   const [selectedOperation, setSelectedOperation] = useState(null);
 
   const operations = [
     {
-      id: "OP-OMEGA-001",
-      name: "PROTOCOLO SOMBRA",
-      status: "ativa",
-      priority: "crítica",
-      location: "Leste Europeu",
+      id: 'OP-OMEGA-001',
+      name: 'PROTOCOLO SOMBRA',
+      status: 'ativa',
+      priority: 'crítica',
+      location: 'Leste Europeu',
       agents: 5,
       progress: 75,
-      startDate: "2025-06-15",
-      estimatedCompletion: "2025-06-30",
-      description: "Rastrear alvo de alto valor no Leste Europeu",
+      startDate: '2025-06-15',
+      estimatedCompletion: '2025-06-30',
+      description: 'Rastrear alvo de alto valor no Leste Europeu',
       objectives: [
-        "Localizar alvo",
-        "Estabelecer vigilância",
-        "Extrair inteligência",
+        'Localizar alvo',
+        'Estabelecer vigilância',
+        'Extrair inteligência',
       ],
     },
     {
-      id: "OP-DELTA-002",
-      name: "FOGO FANTASMA",
-      status: "planejamento",
-      priority: "alta",
-      location: "Seul",
+      id: 'OP-DELTA-002',
+      name: 'FOGO FANTASMA',
+      status: 'planejamento',
+      priority: 'alta',
+      location: 'Seul',
       agents: 3,
       progress: 25,
-      startDate: "2025-06-20",
-      estimatedCompletion: "2025-07-05",
-      description: "Infiltrar rede de cibercrime em Seul",
+      startDate: '2025-06-20',
+      estimatedCompletion: '2025-07-05',
+      description: 'Infiltrar rede de cibercrime em Seul',
       objectives: [
-        "Penetrar rede",
-        "Coletar evidências",
-        "Identificar jogadores-chave",
+        'Penetrar rede',
+        'Coletar evidências',
+        'Identificar jogadores-chave',
       ],
     },
     {
-      id: "OP-SIERRA-003",
-      name: "CAÇADOR NOTURNO",
-      status: "completada",
-      priority: "média",
-      location: "Berlim",
+      id: 'OP-SIERRA-003',
+      name: 'CAÇADOR NOTURNO',
+      status: 'completada',
+      priority: 'média',
+      location: 'Berlim',
       agents: 2,
       progress: 100,
-      startDate: "2025-05-28",
-      estimatedCompletion: "2025-06-12",
-      description: "Monitorar comunicações de agente desonesto em Berlim",
+      startDate: '2025-05-28',
+      estimatedCompletion: '2025-06-12',
+      description: 'Monitorar comunicações de agente desonesto em Berlim',
       objectives: [
-        "Interceptar comunicações",
-        "Decodificar mensagens",
-        "Relatar descobertas",
+        'Interceptar comunicações',
+        'Decodificar mensagens',
+        'Relatar descobertas',
       ],
     },
     {
-      id: "OP-ALPHA-004",
-      name: "MARÉ CARMESIM",
-      status: "ativa",
-      priority: "alta",
-      location: "Cairo",
+      id: 'OP-ALPHA-004',
+      name: 'MARÉ CARMESIM',
+      status: 'ativa',
+      priority: 'alta',
+      location: 'Cairo',
       agents: 4,
       progress: 60,
-      startDate: "2025-06-10",
-      estimatedCompletion: "2025-06-25",
-      description: "Apoiar extração secreta na América do Sul",
+      startDate: '2025-06-10',
+      estimatedCompletion: '2025-06-25',
+      description: 'Apoiar extração secreta na América do Sul',
       objectives: [
-        "Proteger ponto de extração",
-        "Neutralizar ameaças",
-        "Extrair ativo",
+        'Proteger ponto de extração',
+        'Neutralizar ameaças',
+        'Extrair ativo',
       ],
     },
     {
-      id: "OP-BRAVO-005",
-      name: "LÂMINA SILENCIOSA",
-      status: "comprometida",
-      priority: "crítica",
-      location: "Moscou",
+      id: 'OP-BRAVO-005',
+      name: 'LÂMINA SILENCIOSA',
+      status: 'comprometida',
+      priority: 'crítica',
+      location: 'Moscou',
       agents: 6,
       progress: 40,
-      startDate: "2025-06-05",
-      estimatedCompletion: "2025-06-20",
-      description: "Monitorar comunicações de agente desonesto em Berlim",
+      startDate: '2025-06-05',
+      estimatedCompletion: '2025-06-20',
+      description: 'Monitorar comunicações de agente desonesto em Berlim',
       objectives: [
-        "Avaliar comprometimento",
-        "Extrair pessoal",
-        "Controle de danos",
+        'Avaliar comprometimento',
+        'Extrair pessoal',
+        'Controle de danos',
       ],
     },
   ];
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "ativa":
-        return "bg-white/20 text-white";
-      case "planejamento":
-        return "bg-orange-500/20 text-orange-500";
-      case "completada":
-        return "bg-white/20 text-white";
-      case "comprometida":
-        return "bg-red-500/20 text-red-500";
+      case 'ativa':
+        return 'bg-white/20 text-white';
+      case 'planejamento':
+        return 'bg-orange-500/20 text-orange-500';
+      case 'completada':
+        return 'bg-white/20 text-white';
+      case 'comprometida':
+        return 'bg-red-500/20 text-red-500';
       default:
-        return "bg-neutral-500/20 text-neutral-300";
+        return 'bg-neutral-500/20 text-neutral-300';
     }
   };
 
   const getPriorityColor = (priority) => {
     switch (priority) {
-      case "crítica":
-        return "bg-red-500/20 text-red-500";
-      case "alta":
-        return "bg-orange-500/20 text-orange-500";
-      case "média":
-        return "bg-neutral-500/20 text-neutral-300";
-      case "baixa":
-        return "bg-white/20 text-white";
+      case 'crítica':
+        return 'bg-red-500/20 text-red-500';
+      case 'alta':
+        return 'bg-orange-500/20 text-orange-500';
+      case 'média':
+        return 'bg-neutral-500/20 text-neutral-300';
+      case 'baixa':
+        return 'bg-white/20 text-white';
       default:
-        return "bg-neutral-500/20 text-neutral-300";
+        return 'bg-neutral-500/20 text-neutral-300';
     }
   };
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case "ativa":
+      case 'ativa':
         return <Target className="w-4 h-4" />;
-      case "planejamento":
+      case 'planejamento':
         return <Clock className="w-4 h-4" />;
-      case "completada":
+      case 'completada':
         return <CheckCircle className="w-4 h-4" />;
-      case "comprometida":
+      case 'comprometida':
         return <XCircle className="w-4 h-4" />;
       default:
         return <AlertTriangle className="w-4 h-4" />;

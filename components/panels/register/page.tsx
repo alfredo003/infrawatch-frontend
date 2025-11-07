@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import type React from "react";
-import { useRouter } from "next/router";
+import type React from 'react';
+import { useRouter } from 'next/router';
 
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useEffect, useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
+} from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 import {
   User,
   Mail,
@@ -27,7 +27,7 @@ import {
   Shield,
   Activity,
   Clock,
-} from "lucide-react";
+} from 'lucide-react';
 import {
   Dialog,
   DialogTrigger,
@@ -35,20 +35,20 @@ import {
   DialogHeader,
   DialogTitle,
   DialogClose,
-} from "@/components/ui/dialog";
-import { get } from "http";
-import { getAuthHeaders } from "@/lib/auth";
-import { set } from "react-hook-form";
-import InlineError from "@/components/ui/inline-error";
-import InlineSuccess from "@/components/ui/inline-success";
+} from '@/components/ui/dialog';
+import { get } from 'http';
+import { getAuthHeaders } from '@/lib/auth';
+import { set } from 'react-hook-form';
+import InlineError from '@/components/ui/inline-error';
+import InlineSuccess from '@/components/ui/inline-success';
 
 export default function RegisterPage() {
   const [recentUsers, setRecentUsers] = useState<any[]>([]);
   const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-    role: "",
+    username: '',
+    email: '',
+    password: '',
+    role: '',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [totalUsers, setTotalUsers] = useState(0);
@@ -69,11 +69,11 @@ export default function RegisterPage() {
         setRecentUsers(data.data || []);
         const totalUsers = data.data?.length || 0;
         const totalAdmins =
-          data.data?.filter((user) => user.role === "admin").length || 0;
+          data.data?.filter((user) => user.role === 'admin').length || 0;
         const totalOperators =
-          data.data?.filter((user) => user.role === "operator").length || 0;
+          data.data?.filter((user) => user.role === 'operator').length || 0;
         const totalViewers =
-          data.data?.filter((user) => user.role === "viewer").length || 0;
+          data.data?.filter((user) => user.role === 'viewer').length || 0;
 
         setTotalUsers(totalUsers);
         setTotalAdmins(totalAdmins);
@@ -91,13 +91,13 @@ export default function RegisterPage() {
     try {
       const r = await fetch(`${API_URL}/users`, { headers: getAuthHeaders() });
       if (!r.ok) {
-        const txt = await r.text().catch(() => "");
+        const txt = await r.text().catch(() => '');
         throw new Error(`Status ${r.status} ${r.statusText} ${txt}`);
       }
       const data = await r.json();
       setFullUsers(data.data || []);
     } catch (err) {
-      console.error("Failed to load full users list", err);
+      console.error('Failed to load full users list', err);
     } finally {
       setIsLoadingFull(false);
     }
@@ -109,12 +109,12 @@ export default function RegisterPage() {
   }, [openUsers]);
 
   // dialog controls: search/filter/export
-  const [searchQuery, setSearchQuery] = useState("");
-  const [roleFilter, setRoleFilter] = useState("all");
+  const [searchQuery, setSearchQuery] = useState('');
+  const [roleFilter, setRoleFilter] = useState('all');
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
   const filteredUsers = fullUsers.filter((u: any) => {
-    const matchesRole = roleFilter === "all" || u.role === roleFilter;
+    const matchesRole = roleFilter === 'all' || u.role === roleFilter;
     const q = searchQuery.trim().toLowerCase();
     const matchesQuery =
       !q || `${u.username} ${u.email}`.toLowerCase().includes(q);
@@ -122,18 +122,18 @@ export default function RegisterPage() {
   });
 
   const handleExportCSV = () => {
-    const rows = [["id", "username", "email", "role"]];
+    const rows = [['id', 'username', 'email', 'role']];
     fullUsers.forEach((u) =>
-      rows.push([u.id ?? "", u.username ?? "", u.email ?? "", u.role ?? ""]),
+      rows.push([u.id ?? '', u.username ?? '', u.email ?? '', u.role ?? '']),
     );
     const csv = rows
       .map((r) =>
-        r.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(","),
+        r.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','),
       )
-      .join("\n");
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      .join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
     a.download = `users_export_${new Date().toISOString()}.csv`;
     document.body.appendChild(a);
@@ -168,25 +168,25 @@ export default function RegisterPage() {
     } = {};
 
     if (!formData.username) {
-      newErrors.username = "Nome de usuário obrigatório";
+      newErrors.username = 'Nome de usuário obrigatório';
     } else if (formData.username.length < 3) {
-      newErrors.username = "Mínimo 3 caracteres";
+      newErrors.username = 'Mínimo 3 caracteres';
     }
 
     if (!formData.email) {
-      newErrors.email = "Email obrigatório";
+      newErrors.email = 'Email obrigatório';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email inválido";
+      newErrors.email = 'Email inválido';
     }
 
     if (!formData.password) {
-      newErrors.password = "Senha obrigatória";
+      newErrors.password = 'Senha obrigatória';
     } else if (formData.password.length < 6) {
-      newErrors.password = "Mínimo 6 caracteres";
+      newErrors.password = 'Mínimo 6 caracteres';
     }
 
     if (!formData.role) {
-      newErrors.role = "Função obrigatória";
+      newErrors.role = 'Função obrigatória';
     }
 
     setErrors(newErrors);
@@ -196,7 +196,7 @@ export default function RegisterPage() {
   // Registro do usuário
   const API_URL =
     process.env.NEXT_PUBLIC_API_URL ||
-    "https://infrawatch-backend.onrender.com/api";
+    'https://infrawatch-backend.onrender.com/api';
   const handleRegister = async () => {
     if (!validateForm()) return;
     setIsLoading(true);
@@ -209,9 +209,9 @@ export default function RegisterPage() {
         password: formData.password, // campo correto
         role: formData.role,
       };
-      const res = await fetch(API_URL + "/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch(API_URL + '/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newUser),
       });
 
@@ -234,11 +234,11 @@ export default function RegisterPage() {
       setRecentUsers((prev) => [{ ...createdUser }, ...prev].slice(0, 5));
 
       // limpa o form via setter (não mutando)
-      setFormData({ username: "", email: "", password: "", role: "" });
+      setFormData({ username: '', email: '', password: '', role: '' });
 
       setIsLoading(false);
     } catch (error: any) {
-      console.error("Falha no request:", error);
+      console.error('Falha no request:', error);
       setAuthError(error?.message ?? String(error));
       setIsLoading(false);
     }
@@ -256,25 +256,25 @@ export default function RegisterPage() {
 
   const getRoleColor = (role: string) => {
     switch (role) {
-      case "admin":
-        return "bg-red-500/20 text-red-500";
-      case "operator":
-        return "bg-orange-500/20 text-orange-500";
-      case "viewer":
-        return "bg-white/20 text-white";
+      case 'admin':
+        return 'bg-red-500/20 text-red-500';
+      case 'operator':
+        return 'bg-orange-500/20 text-orange-500';
+      case 'viewer':
+        return 'bg-white/20 text-white';
       default:
-        return "bg-neutral-500/20 text-neutral-300";
+        return 'bg-neutral-500/20 text-neutral-300';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "active":
-        return "bg-white/20 text-white";
-      case "inactive":
-        return "bg-neutral-500/20 text-neutral-400";
+      case 'active':
+        return 'bg-white/20 text-white';
+      case 'inactive':
+        return 'bg-neutral-500/20 text-neutral-400';
       default:
-        return "bg-neutral-500/20 text-neutral-300";
+        return 'bg-neutral-500/20 text-neutral-300';
     }
   };
 
@@ -367,10 +367,10 @@ export default function RegisterPage() {
                           <span
                             className={
                               getRoleColor(u.role) +
-                              " px-2 py-0.5 rounded text-xs font-mono"
+                              ' px-2 py-0.5 rounded text-xs font-mono'
                             }
                           >
-                            {(u.role || "").toUpperCase()}
+                            {(u.role || '').toUpperCase()}
                           </span>
                           <Button
                             size="sm"
@@ -385,7 +385,7 @@ export default function RegisterPage() {
                         <div className="mt-2 text-sm text-neutral-300 font-mono border-t border-neutral-700 pt-2">
                           <div>ID: {u.id}</div>
                           <div>Função: {u.role}</div>
-                          <div>Status: {u.status ?? "active"}</div>
+                          <div>Status: {u.status ?? 'active'}</div>
                         </div>
                       )}
                     </div>
@@ -494,7 +494,7 @@ export default function RegisterPage() {
                     placeholder="nome.usuario"
                     value={formData.username}
                     onChange={(e) =>
-                      handleInputChange("username", e.target.value)
+                      handleInputChange('username', e.target.value)
                     }
                     className="bg-neutral-800 border-neutral-600 text-white placeholder:text-neutral-500 pl-10 focus:border-orange-500 focus:ring-orange-500/20"
                   />
@@ -520,7 +520,7 @@ export default function RegisterPage() {
                     type="email"
                     placeholder="usuario@infrawatch.com"
                     value={formData.email}
-                    onChange={(e) => handleInputChange("email", e.target.value)}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
                     className="bg-neutral-800 border-neutral-600 text-white placeholder:text-neutral-500 pl-10 focus:border-orange-500 focus:ring-orange-500/20"
                   />
                   {errors.email && (
@@ -540,11 +540,11 @@ export default function RegisterPage() {
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-400" />
                   <Input
                     id="password"
-                    type={showPassword ? "text" : "password"}
+                    type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
                     value={formData.password}
                     onChange={(e) =>
-                      handleInputChange("password", e.target.value)
+                      handleInputChange('password', e.target.value)
                     }
                     className="bg-neutral-800 border-neutral-600 text-white placeholder:text-neutral-500 pl-10 pr-10 focus:border-orange-500 focus:ring-orange-500/20"
                   />
@@ -578,7 +578,7 @@ export default function RegisterPage() {
                   <UserCheck className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-400 z-10" />
                   <Select
                     value={formData.role}
-                    onValueChange={(value) => handleInputChange("role", value)}
+                    onValueChange={(value) => handleInputChange('role', value)}
                   >
                     <SelectTrigger className="bg-neutral-800 border-neutral-600 text-white pl-10 focus:border-orange-500 focus:ring-orange-500/20">
                       <SelectValue placeholder="Selecione a função" />
@@ -622,7 +622,7 @@ export default function RegisterPage() {
                     CRIANDO USUÁRIO...
                   </div>
                 ) : (
-                  "CRIAR USUÁRIO"
+                  'CRIAR USUÁRIO'
                 )}
               </Button>
             </form>
@@ -669,7 +669,7 @@ export default function RegisterPage() {
                       <Badge className={getRoleColor(user?.role)}>
                         {user.role.toUpperCase()}
                       </Badge>
-                      <Badge className={getStatusColor("active")}>ACTIVE</Badge>
+                      <Badge className={getStatusColor('active')}>ACTIVE</Badge>
                       {/* <Badge className={getStatusColor(user.status)}>{user.status.toUpperCase()}</Badge> */}
                     </div>
                   </div>
@@ -680,7 +680,7 @@ export default function RegisterPage() {
               <div className="flex items-center gap-2 text-xs text-neutral-400">
                 <Clock className="w-3 h-3" />
                 <span>
-                  Última atualização: {new Date().toLocaleString("pt-BR")}
+                  Última atualização: {new Date().toLocaleString('pt-BR')}
                 </span>
               </div>
             </div>

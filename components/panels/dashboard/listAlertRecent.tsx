@@ -1,8 +1,8 @@
-import { CardContent } from "@/components/ui/card";
-import { AlertData } from "@/services/alertService";
-import { Mail } from "lucide-react";
-import { KeyedMutator } from "swr";
-import Link from "next/link";
+import { CardContent } from '@/components/ui/card';
+import { AlertData } from '@/services/alertService';
+import { Mail } from 'lucide-react';
+import { KeyedMutator } from 'swr';
+import Link from 'next/link';
 
 interface ListProps {
   alerts: AlertData[] | undefined;
@@ -10,7 +10,11 @@ interface ListProps {
   onSystemReload: KeyedMutator<AlertData[]>;
 }
 
-export default function ListAlertRecent({ alerts, loading = false, onSystemReload }: ListProps) {
+export default function ListAlertRecent({
+  alerts,
+  loading = false,
+  onSystemReload,
+}: ListProps) {
   const maxAlerts = 6;
   const visibleAlerts = alerts ? alerts.slice(0, maxAlerts) : [];
 
@@ -20,7 +24,10 @@ export default function ListAlertRecent({ alerts, loading = false, onSystemReloa
         {alerts && alerts.length > 0 ? (
           <>
             {visibleAlerts.map((alert) => (
-              <div key={alert.id} className="border-l-4 border-l-red-500 pl-4 py-2">
+              <div
+                key={alert.id}
+                className="border-l-4 border-l-red-500 pl-4 py-2"
+              >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <h4 className="font-medium text-neutral-800 dark:text-neutral-200">
@@ -29,7 +36,9 @@ export default function ListAlertRecent({ alerts, loading = false, onSystemReloa
                     <p className="text-sm text-neutral-600 dark:text-neutral-400">
                       {alert.recipient}
                     </p>
-                    <p className="text-xs text-neutral-500 mt-1">{alert.sent_at}</p>
+                    <p className="text-xs text-neutral-500 mt-1">
+                      {alert.sent_at}
+                    </p>
                   </div>
                   <Mail />
                 </div>

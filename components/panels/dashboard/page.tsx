@@ -1,6 +1,6 @@
-"use client";
- 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+'use client';
+
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Activity,
   AlertTriangle,
@@ -8,39 +8,56 @@ import {
   Clock,
   TrendingUp,
   TrendingDown,
-} from "lucide-react";
-import ListSystems from "./listSystem";
-import useSWR from "swr";
-import { listAllSystems, listAllSystemsCritical, SystemData } from "@/services/systemService";
-import ListAlertRecent from "./listAlertRecent";
-import { AlertData, listAllAlerts } from "@/services/alertService";
-import ChartV from "./chart";
+} from 'lucide-react';
+import ListSystems from './listSystem';
+import useSWR from 'swr';
+import {
+  listAllSystems,
+  listAllSystemsCritical,
+  SystemData,
+} from '@/services/systemService';
+import ListAlertRecent from './listAlertRecent';
+import { AlertData, listAllAlerts } from '@/services/alertService';
+import ChartV from './chart';
 
 export default function DashboardPage() {
-  const { data: systems, error: systemsError, isLoading: systemsLoading, mutate: reloadSystems } =
-    useSWR<SystemData[]>("systemsli", listAllSystemsCritical, {
-      dedupingInterval: 20000,
-      revalidateOnFocus: false,
-    });
+  const {
+    data: systems,
+    error: systemsError,
+    isLoading: systemsLoading,
+    mutate: reloadSystems,
+  } = useSWR<SystemData[]>('systemsli', listAllSystemsCritical, {
+    dedupingInterval: 20000,
+    revalidateOnFocus: false,
+  });
 
-  const { data: alerts, error: alertsError, isLoading: alertsLoading, mutate: reloadAlerts } =
-    useSWR<AlertData[]>("alerts", listAllAlerts, {
-      dedupingInterval: 30000,
-      revalidateOnFocus: false,
-    });
+  const {
+    data: alerts,
+    error: alertsError,
+    isLoading: alertsLoading,
+    mutate: reloadAlerts,
+  } = useSWR<AlertData[]>('alerts', listAllAlerts, {
+    dedupingInterval: 30000,
+    revalidateOnFocus: false,
+  });
 
-  const { data: listSystems, error: listSystemError, isLoading: listSystemLoading, mutate: reloadlistSystem } =
-    useSWR<SystemData[]>("systems", listAllSystems, {
-      dedupingInterval: 40000,
-      revalidateOnFocus: false,
-    });
+
+  const {
+    data: listSystems,
+    error: listSystemError,
+    isLoading: listSystemLoading,
+    mutate: reloadlistSystem,
+  } = useSWR<SystemData[]>('systems', listAllSystems, {
+    dedupingInterval: 40000,
+    revalidateOnFocus: false,
+  });
 
   if (alertsError || systemsError) return <div>Erro ao carregar dados</div>;
 
-  const onlineCount = listSystems?.filter((s) => s.status === "up").length;
+  const onlineCount = listSystems?.filter((s) => s.status === 'up').length;
   const totalSystem = listSystems?.length;
-  const downCount= listSystems?.filter((s) => s.status === "down").length;
-   
+  const downCount = listSystems?.filter((s) => s.status === 'down').length;
+
   if (alertsLoading || systemsLoading) {
     return (
       <div className="p-6 space-y-6">
@@ -114,7 +131,7 @@ export default function DashboardPage() {
       </div>
     );
   }
- 
+
   return (
     <div className="p-6 space-y-6">
       {/* KPIs Overview */}
@@ -126,8 +143,12 @@ export default function DashboardPage() {
                 <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
                   SISTEMAS ONLINE
                 </p>
-                <p className="text-3xl font-bold text-green-600">{onlineCount}</p>
-                <p className="text-xs text-neutral-500">de {totalSystem} total</p>
+                <p className="text-3xl font-bold text-green-600">
+                  {onlineCount}
+                </p>
+                <p className="text-xs text-neutral-500">
+                  de {totalSystem} total
+                </p>
               </div>
               <CheckCircle className="w-8 h-8 text-green-600" />
             </div>
@@ -176,10 +197,12 @@ export default function DashboardPage() {
                 <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
                   TEMPO RESPOSTA
                 </p>
-                <p className="text-3xl font-bold text-blue-600">{Math.floor(Math.random() * (100 - 10 + 1)) + 10}ms</p>
+                <p className="text-3xl font-bold text-blue-600">
+                  {Math.floor(Math.random() * (100 - 10 + 1)) + 10}ms
+                </p>
                 <div className="flex items-center gap-1">
                   <TrendingDown className="w-3 h-3 text-green-600" />
-                  <p className="text-xs text-green-600">-15ms vs ontem</p>
+                  <p className="text-xs text-green-600">15ms</p>
                 </div>
               </div>
               <Clock className="w-8 h-8 text-blue-600" />
@@ -196,10 +219,7 @@ export default function DashboardPage() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-        
-              <ChartV />
-
-          
+          <ChartV />
         </CardContent>
       </Card>
 

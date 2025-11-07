@@ -1,21 +1,21 @@
-import AlertsPage from "@/components/panels/alerts/page";
-import ServersPage from "@/components/panels/monitoring/page";
-import NetworkPage from "@/components/panels/network/page";
-import ReportsPage from "@/components/panels/reports/page";
-import SystemsPage from "@/components/panels/systems/page";
-import DashboardPage from "@/components/panels/dashboard/page";
-import GeomapPage from "@/components/panels/geomap";
-import ApplicationsPage from "@/components/panels/applications/page";
-import UsersPage from "./configurations/users/page"; 
-import MonitoringPage from "@/components/panels/monitoring/page";
-import IntegrationPage from "./integrations/page";
+import AlertsPage from '@/components/panels/alerts/page';
+import ServersPage from '@/components/panels/monitoring/page';
+import NetworkPage from '@/components/panels/network/page';
+import ReportsPage from '@/components/panels/reports/page';
+import SystemsPage from '@/components/panels/systems/page';
+import DashboardPage from '@/components/panels/dashboard/page';
+import GeomapPage from '@/components/panels/geomap';
+import ApplicationsPage from '@/components/panels/applications/page';
+import UsersPage from './configurations/users/page';
+import MonitoringPage from '@/components/panels/monitoring/page';
+import IntegrationPage from './integrations/page';
 
 export default function Panel({ active }: { active: number }) {
   const menuItems = [
     <DashboardPage />,
     <MonitoringPage />,
     <SystemsPage />,
-    <IntegrationPage/>,
+    <IntegrationPage />,
     <NetworkPage />,
     <ApplicationsPage />,
     <GeomapPage />,

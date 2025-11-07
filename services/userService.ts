@@ -7,18 +7,17 @@ export interface UserData {
   role: 'admin' | 'operator' | 'viewer';
   created_at: string;
   updated_at: string;
-  status?: 'active' | 'inactive'; 
+  status?: 'active' | 'block' | 'registered';
 }
 
 export const handleCreateUser = async (
   formData: UserData & { password: string },
   setIsLoading: (loading: boolean) => void,
-  setAuthError: (error: string | null) => void
+  setAuthError: (error: string | null) => void,
 ) => {
   setIsLoading(true);
   setAuthError(null);
 
-  console.log(formData);
   try {
     const response = await api.post('/users/create', {
       username: formData.username,
@@ -56,14 +55,14 @@ export const listAllUsers = async (): Promise<UserData[]> => {
 
 export const deleteUser = async (
   id: string | undefined,
-  setIsLoading: (loading: boolean) => void
+  setIsLoading: (loading: boolean) => void,
 ) => {
   if (!id) throw new Error('User ID is required');
   setIsLoading(true);
   try {
     const response = await api.delete(`/users/${id}`);
     setIsLoading(false);
-    return response.data; 
+    return response.data;
   } catch (error) {
     console.error(`Erro ao deletar usuário com ID ${id}:`, error);
     setIsLoading(false);
@@ -71,16 +70,16 @@ export const deleteUser = async (
   }
 };
 
-
 export const updateUser = async (
   id: string,
   formData: Partial<UserData & { password: string }>,
   setIsLoading: (loading: boolean) => void,
-  setAuthError: (error: string | null) => void
+  setAuthError: (error: string | null) => void,
 ) => {
   setIsLoading(true);
   setAuthError(null);
 
+  console.log(formData);
   try {
     const response = await api.patch(`/users/${id}`, formData);
     if (response.data.error) {
@@ -88,7 +87,7 @@ export const updateUser = async (
       throw new Error(response.data.error);
     }
     setIsLoading(false);
-    return response.data.data; // Backend returns { message, data }
+    return response.data.data;
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
     console.log('User update failed:', msg);
@@ -96,4 +95,21 @@ export const updateUser = async (
     setIsLoading(false);
     throw error;
   }
-}; 
+};
+
+export const ResetPasswordUser = async (formData: {
+  new_password: string;
+  user_id: string;
+}) => {
+  try {
+    const response = await api.patch(`/users/reset/password/`, formData);
+    if (response.data.error) {
+      throw new Error(response.data.error);
+    }
+    return response.data.data;
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.log('User update failed:', msg);
+    throw error;
+  }
+};

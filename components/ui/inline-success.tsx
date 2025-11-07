@@ -1,6 +1,6 @@
-import * as React from "react";
-import { CheckCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
+import * as React from 'react';
+import { CheckCircle } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 type InlineSuccessProps = {
   message?: string | null;
@@ -17,7 +17,7 @@ export default function InlineSuccess({
     <div
       role="status"
       className={cn(
-        "mt-3 bg-green-900/50 border border-green-600 rounded-lg p-3 flex items-start space-x-3",
+        'mt-3 bg-green-900/50 border border-green-600 rounded-lg p-3 flex items-start space-x-3',
         className,
       )}
     >

@@ -1,72 +1,72 @@
-"use client";
+'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Monitor, Database, Globe, Smartphone, Clock } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { Monitor, Database, Globe, Smartphone, Clock } from 'lucide-react';
 
 export default function ApplicationsPage() {
   const applications = [
     {
-      name: "KIOSKS-API",
-      status: "online",
+      name: 'KIOSKS-API',
+      status: 'online',
       uptime: 99.3,
       responseTime: 245,
       users: 156,
-      type: "API REST",
-      version: "v2.1.4",
+      type: 'API REST',
+      version: 'v2.1.4',
     },
     {
-      name: "Portal Corporativo",
-      status: "online",
+      name: 'Portal Corporativo',
+      status: 'online',
       uptime: 99.8,
       responseTime: 180,
       users: 89,
-      type: "Aplicação Web",
-      version: "v1.5.2",
+      type: 'Aplicação Web',
+      version: 'v1.5.2',
     },
     {
-      name: "Sistema ERP",
-      status: "warning",
+      name: 'Sistema ERP',
+      status: 'warning',
       uptime: 98.5,
       responseTime: 890,
       users: 234,
-      type: "Sistema Empresarial",
-      version: "v3.2.1",
+      type: 'Sistema Empresarial',
+      version: 'v3.2.1',
     },
     {
-      name: "App Mobile",
-      status: "online",
+      name: 'App Mobile',
+      status: 'online',
       uptime: 99.1,
       responseTime: 320,
       users: 445,
-      type: "Aplicação Mobile",
-      version: "v1.8.0",
+      type: 'Aplicação Mobile',
+      version: 'v1.8.0',
     },
   ];
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "online":
-        return "text-green-600 bg-green-100 dark:bg-green-900/20";
-      case "warning":
-        return "text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20";
-      case "offline":
-        return "text-red-600 bg-red-100 dark:bg-red-900/20";
+      case 'online':
+        return 'text-green-600 bg-green-100 dark:bg-green-900/20';
+      case 'warning':
+        return 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20';
+      case 'offline':
+        return 'text-red-600 bg-red-100 dark:bg-red-900/20';
       default:
-        return "text-gray-600 bg-gray-100 dark:bg-gray-900/20";
+        return 'text-gray-600 bg-gray-100 dark:bg-gray-900/20';
     }
   };
 
   const getAppIcon = (type) => {
     switch (type) {
-      case "API REST":
+      case 'API REST':
         return <Database className="w-6 h-6 text-blue-600" />;
-      case "Aplicação Web":
+      case 'Aplicação Web':
         return <Globe className="w-6 h-6 text-green-600" />;
-      case "Sistema Empresarial":
+      case 'Sistema Empresarial':
         return <Monitor className="w-6 h-6 text-purple-600" />;
-      case "Aplicação Mobile":
+      case 'Aplicação Mobile':
         return <Smartphone className="w-6 h-6 text-orange-600" />;
       default:
         return <Monitor className="w-6 h-6 text-gray-600" />;
@@ -168,11 +168,11 @@ export default function ApplicationsPage() {
                   </div>
                 </div>
                 <Badge className={getStatusColor(app.status)}>
-                  {app.status === "online"
-                    ? "Online"
-                    : app.status === "warning"
-                      ? "Aviso"
-                      : "Offline"}
+                  {app.status === 'online'
+                    ? 'Online'
+                    : app.status === 'warning'
+                      ? 'Aviso'
+                      : 'Offline'}
                 </Badge>
               </div>
             </CardHeader>

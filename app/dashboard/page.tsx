@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/hooks/use-auth";
-import { useToast } from "@/hooks/use-toast";
-import DashboardLayout from "@/app/dashboard/DashboardLayout";
-import LogoutModal from "@/components/LogoutModal";
-import Loading from "@/components/Loading";
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/use-auth';
+import { useToast } from '@/hooks/use-toast';
+import DashboardLayout from '@/app/dashboard/DashboardLayout';
+import LogoutModal from '@/components/LogoutModal';
+import Loading from '@/components/Loading';
 
 export default function InfraWatchDashboard() {
   const router = useRouter();
@@ -18,12 +18,15 @@ export default function InfraWatchDashboard() {
   const { signOut, user, isAuthenticated, isLoading } = useAuth();
 
   useEffect(() => {
+    if (user?.status === 'block' || user?.status === 'registered') {
+      router.push('/verify');
+    }
     setMounted(true);
   }, []);
 
   useEffect(() => {
     if (mounted && !isLoading && !isAuthenticated) {
-      router.push("/login");
+      router.push('/login');
     }
   }, [mounted, isLoading, isAuthenticated, router]);
 
@@ -37,18 +40,16 @@ export default function InfraWatchDashboard() {
 
   const handleLogout = () => {
     toast({
-      title: "Sessão Terminada",
-      description: "Você foi desconectado com sucesso.",
-      variant: "default",
+      title: 'Sessão Terminada',
+      description: 'Você foi desconectado com sucesso.',
+      variant: 'default',
     });
     signOut();
     setIsLogoutModalOpen(false);
   };
 
   if (!mounted || isLoading) {
-    return (
-     <Loading/>
-    );
+    return <Loading />;
   }
 
   if (!isAuthenticated) {

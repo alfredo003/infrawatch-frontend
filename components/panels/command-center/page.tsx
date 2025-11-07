@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function CommandCenterPage() {
   return (
@@ -38,17 +38,17 @@ export default function CommandCenterPage() {
 
             <div className="space-y-2">
               {[
-                { id: "G-078W", name: "ESPÍRITO VINGATIVO", status: "active" },
+                { id: 'G-078W', name: 'ESPÍRITO VINGATIVO', status: 'active' },
                 {
-                  id: "G-079X",
-                  name: "SENTINELA OBSIDIANA",
-                  status: "standby",
+                  id: 'G-079X',
+                  name: 'SENTINELA OBSIDIANA',
+                  status: 'standby',
                 },
-                { id: "G-080Y", name: "FÚRIA FANTASMA", status: "active" },
+                { id: 'G-080Y', name: 'FÚRIA FANTASMA', status: 'active' },
                 {
-                  id: "G-081Z",
-                  name: "VINGADOR MALDITO",
-                  status: "compromised",
+                  id: 'G-081Z',
+                  name: 'VINGADOR MALDITO',
+                  status: 'compromised',
                 },
               ].map((agent) => (
                 <div
@@ -58,11 +58,11 @@ export default function CommandCenterPage() {
                   <div className="flex items-center gap-3">
                     <div
                       className={`w-2 h-2 rounded-full ${
-                        agent.status === "active"
-                          ? "bg-orange-500 dark:bg-white"
-                          : agent.status === "standby"
-                            ? "bg-neutral-500"
-                            : "bg-red-500"
+                        agent.status === 'active'
+                          ? 'bg-orange-500 dark:bg-white'
+                          : agent.status === 'standby'
+                            ? 'bg-neutral-500'
+                            : 'bg-red-500'
                       }`}
                     ></div>
                     <div>
@@ -91,39 +91,39 @@ export default function CommandCenterPage() {
             <div className="space-y-3 max-h-80 overflow-y-auto">
               {[
                 {
-                  time: "25/06/2025 09:29",
-                  agent: "gh0st_Fire",
-                  action: "completou missão em",
-                  location: "Berlim",
-                  target: "zer0_Nigh",
+                  time: '25/06/2025 09:29',
+                  agent: 'gh0st_Fire',
+                  action: 'completou missão em',
+                  location: 'Berlim',
+                  target: 'zer0_Nigh',
                 },
                 {
-                  time: "25/06/2025 08:12",
-                  agent: "dr4g0n_V3in",
-                  action: "extraiu alvo de alto valor em",
-                  location: "Cairo",
+                  time: '25/06/2025 08:12',
+                  agent: 'dr4g0n_V3in',
+                  action: 'extraiu alvo de alto valor em',
+                  location: 'Cairo',
                   target: null,
                 },
                 {
-                  time: "24/06/2025 22:55",
-                  agent: "sn4ke_Sh4de",
-                  action: "perdeu comunicação em",
-                  location: "Havana",
+                  time: '24/06/2025 22:55',
+                  agent: 'sn4ke_Sh4de',
+                  action: 'perdeu comunicação em',
+                  location: 'Havana',
                   target: null,
                 },
                 {
-                  time: "24/06/2025 21:33",
-                  agent: "ph4nt0m_R4ven",
-                  action: "iniciou vigilância em",
-                  location: "Tóquio",
+                  time: '24/06/2025 21:33',
+                  agent: 'ph4nt0m_R4ven',
+                  action: 'iniciou vigilância em',
+                  location: 'Tóquio',
                   target: null,
                 },
                 {
-                  time: "24/06/2025 19:45",
-                  agent: "v0id_Walk3r",
-                  action: "comprometeu segurança em",
-                  location: "Moscou",
-                  target: "d4rk_M4trix",
+                  time: '24/06/2025 19:45',
+                  agent: 'v0id_Walk3r',
+                  action: 'comprometeu segurança em',
+                  location: 'Moscou',
+                  target: 'd4rk_M4trix',
                 },
               ].map((log, index) => (
                 <div
@@ -132,18 +132,18 @@ export default function CommandCenterPage() {
                 >
                   <div className="text-neutral-500 font-mono">{log.time}</div>
                   <div className="text-black dark:text-white">
-                    Agente{" "}
+                    Agente{' '}
                     <span className="text-orange-500 font-mono">
                       {log.agent}
-                    </span>{" "}
-                    {log.action}{" "}
+                    </span>{' '}
+                    {log.action}{' '}
                     <span className="text-black dark:text-white font-mono">
                       {log.location}
                     </span>
                     {log.target && (
                       <span>
-                        {" "}
-                        com agente{" "}
+                        {' '}
+                        com agente{' '}
                         <span className="text-orange-500 font-mono">
                           {log.target}
                         </span>
@@ -183,13 +183,13 @@ export default function CommandCenterPage() {
                 <span># 2025-06-17 14:23 UTC</span>
               </div>
               <div className="text-black dark:text-white">
-                {"> [AGT:gh0stfire] ::: INIT >> ^^^ carregando canal seguro"}
+                {'> [AGT:gh0stfire] ::: INIT >> ^^^ carregando canal seguro'}
               </div>
               <div className="text-orange-500">
-                {"> CH#2 | 1231.9082464.500...xR3"}
+                {'> CH#2 | 1231.9082464.500...xR3'}
               </div>
               <div className="text-black dark:text-white">
-                {"> CHAVE BLOQUEADA"}
+                {'> CHAVE BLOQUEADA'}
               </div>
               <div className="text-neutral-400">
                 {

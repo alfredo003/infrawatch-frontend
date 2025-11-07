@@ -1,18 +1,34 @@
-import axios from "axios";
-import { z } from "zod";
-import { saveAuthData  } from "@/lib/auth";
- 
+import axios from 'axios';
+import { z } from 'zod';
+import { saveAuthData } from '@/lib/auth';
+
 const FormSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Email obrigatório")
-    .email("Email inválido"),
+  email: z.string().min(1, 'Email obrigatório').email('Email inválido'),
   password: z
     .string()
-    .min(1, "Senha obrigatória")
-    .min(6, "Mínimo 6 caracteres"),
+    .min(1, 'Senha obrigatória')
+    .min(6, 'Mínimo 6 caracteres'),
 });
- 
+
+const FormSchemaRedefine = z
+  .object({
+    password: z
+      .string()
+      .min(1, 'Senha obrigatória')
+      .min(6, 'A senha deve ter no mínimo 6 caracteres')
+      .refine((val) => val !== '12345678', {
+        message: "A senha não pode ser '12345678'",
+      }),
+
+    confirmPassword: z.string().min(1, 'Confirmação de senha obrigatória'),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'A senha e a confirmação devem ser iguais',
+    path: ['confirmPassword'],
+  });
+
+export type FormDataRedifine = z.infer<typeof FormSchemaRedefine>;
+
 export type FormData = z.infer<typeof FormSchema>;
 
 export interface FormErrors {
@@ -28,9 +44,9 @@ export const validateForm = (formData: FormData): FormErrors => {
 
   const errors: FormErrors = {};
   result.error.issues.forEach((issue) => {
-    if (issue.path[0] === "email") {
+    if (issue.path[0] === 'email') {
       errors.email = issue.message;
-    } else if (issue.path[0] === "password") {
+    } else if (issue.path[0] === 'password') {
       errors.password = issue.message;
     }
   });
@@ -42,7 +58,7 @@ export const signIn = async (
   formData: FormData,
   setIsLoading: (loading: boolean) => void,
   setAuthError: (error: string | null) => void,
-  router: { push: (path: string) => void }
+  router: { push: (path: string) => void },
 ) => {
   setIsLoading(true);
   setAuthError(null);
@@ -50,50 +66,59 @@ export const signIn = async (
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   try {
-    const response = await axios.post(API_URL + "/auth/signin", formData);
-  
+    const response = await axios.post(API_URL + '/auth/signin', formData);
     if (response.data.access_token && response.data.refresh_token) {
-      localStorage.setItem("refresh_token", response.data.refresh_token);
-      localStorage.setItem("expires_in", String(Date.now() + response.data.expires_in * 1000));
- 
-       saveAuthData({
+      localStorage.setItem('refresh_token', response.data.refresh_token);
+      localStorage.setItem(
+        'expires_in',
+        String(Date.now() + response.data.expires_in * 1000),
+      );
+
+      saveAuthData({
         token: response.data.access_token,
         user: {
           id: response.data.user.id,
           email: response.data.user.email,
-          role: response.data.user.role
-        }
-       });
+          role: response.data.user.role,
+          status: response.data.user.status,
+        },
+      });
 
       setIsLoading(false);
-  
-       router.push("/");
+
+      router.push('/');
     } else {
-      setAuthError("Resposta inesperada do servidor");
+      setAuthError('Resposta inesperada do servidor');
       setIsLoading(false);
     }
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
-    setAuthError("Erro de autenticação: Credenciais inválidas");
+    console.log(error);
+    setAuthError('Erro de autenticação: Credenciais inválidas');
     setIsLoading(false);
   }
 };
 
 export const refreshToken = async (): Promise<string | null> => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
-  const refresh_token = localStorage.getItem("refresh_token");
+  const refresh_token = localStorage.getItem('refresh_token');
 
   if (!refresh_token) return null;
 
   try {
-    const response = await axios.post(API_URL + "/auth/refresh", { refresh_token });
-    localStorage.setItem("authToken", response.data.access_token);
-    localStorage.setItem("refresh_token", response.data.refresh_token);
-    localStorage.setItem("expires_in", String(Date.now() + response.data.expires_in * 1000));
+    const response = await axios.post(API_URL + '/auth/refresh', {
+      refresh_token,
+    });
+    localStorage.setItem('authToken', response.data.access_token);
+    localStorage.setItem('refresh_token', response.data.refresh_token);
+    localStorage.setItem(
+      'expires_in',
+      String(Date.now() + response.data.expires_in * 1000),
+    );
 
     return response.data.access_token;
   } catch (err) {
-    console.error("Erro ao refrescar token", err);
+    console.error('Erro ao refrescar token', err);
     return null;
   }
 };

@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Search,
   Filter,
@@ -11,84 +11,84 @@ import {
   MapPin,
   Clock,
   Shield,
-} from "lucide-react";
+} from 'lucide-react';
 
 export default function AgentNetworkPage() {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [selectedAgent, setSelectedAgent] = useState(null);
 
   const agents = [
     {
-      id: "G-078W",
-      name: "ESPÍRITO VINGATIVO",
-      status: "ativo",
-      location: "Berlim",
-      lastSeen: "2 min ago",
+      id: 'G-078W',
+      name: 'ESPÍRITO VINGATIVO',
+      status: 'ativo',
+      location: 'Berlim',
+      lastSeen: '2 min ago',
       missions: 47,
-      risk: "alto",
+      risk: 'alto',
     },
     {
-      id: "G-079X",
-      name: "SENTINELA OBSIDIANA",
-      status: "espera",
-      location: "Tóquio",
-      lastSeen: "15 min ago",
+      id: 'G-079X',
+      name: 'SENTINELA OBSIDIANA',
+      status: 'espera',
+      location: 'Tóquio',
+      lastSeen: '15 min ago',
       missions: 32,
-      risk: "médio",
+      risk: 'médio',
     },
     {
-      id: "G-080Y",
-      name: "FÚRIA FANTASMA",
-      status: "ativo",
-      location: "Cairo",
-      lastSeen: "1 min ago",
+      id: 'G-080Y',
+      name: 'FÚRIA FANTASMA',
+      status: 'ativo',
+      location: 'Cairo',
+      lastSeen: '1 min ago',
       missions: 63,
-      risk: "alto",
+      risk: 'alto',
     },
     {
-      id: "G-081Z",
-      name: "VINGADOR MALDITO",
-      status: "comprometido",
-      location: "Moscou",
-      lastSeen: "3 hours ago",
+      id: 'G-081Z',
+      name: 'VINGADOR MALDITO',
+      status: 'comprometido',
+      location: 'Moscou',
+      lastSeen: '3 hours ago',
       missions: 28,
-      risk: "crítico",
+      risk: 'crítico',
     },
     {
-      id: "G-082A",
-      name: "SOMBRA VENENOSA",
-      status: "ativo",
-      location: "Londres",
-      lastSeen: "5 min ago",
+      id: 'G-082A',
+      name: 'SOMBRA VENENOSA',
+      status: 'ativo',
+      location: 'Londres',
+      lastSeen: '5 min ago',
       missions: 41,
-      risk: "médio",
+      risk: 'médio',
     },
     {
-      id: "G-083B",
-      name: "ENIGMA MÍSTICO",
-      status: "treinamento",
-      location: "Base Alfa",
-      lastSeen: "1 day ago",
+      id: 'G-083B',
+      name: 'ENIGMA MÍSTICO',
+      status: 'treinamento',
+      location: 'Base Alfa',
+      lastSeen: '1 day ago',
       missions: 12,
-      risk: "baixo",
+      risk: 'baixo',
     },
     {
-      id: "G-084C",
-      name: "VINGADOR ESPECTRAL",
-      status: "ativo",
-      location: "Paris",
-      lastSeen: "8 min ago",
+      id: 'G-084C',
+      name: 'VINGADOR ESPECTRAL',
+      status: 'ativo',
+      location: 'Paris',
+      lastSeen: '8 min ago',
       missions: 55,
-      risk: "alto",
+      risk: 'alto',
     },
     {
-      id: "G-085D",
-      name: "FÚRIA ESPECTRAL",
-      status: "espera",
-      location: "Sydney",
-      lastSeen: "22 min ago",
+      id: 'G-085D',
+      name: 'FÚRIA ESPECTRAL',
+      status: 'espera',
+      location: 'Sydney',
+      lastSeen: '22 min ago',
       missions: 38,
-      risk: "médio",
+      risk: 'médio',
     },
   ];
 
@@ -225,7 +225,7 @@ export default function AgentNetworkPage() {
                   <tr
                     key={agent.id}
                     className={`border-b border-neutral-800 hover:bg-neutral-800 transition-colors cursor-pointer ${
-                      index % 2 === 0 ? "bg-neutral-900" : "bg-neutral-850"
+                      index % 2 === 0 ? 'bg-neutral-900' : 'bg-neutral-850'
                     }`}
                     onClick={() => setSelectedAgent(agent)}
                   >
@@ -239,13 +239,13 @@ export default function AgentNetworkPage() {
                       <div className="flex items-center gap-2">
                         <div
                           className={`w-2 h-2 rounded-full ${
-                            agent.status === "ativo"
-                              ? "bg-white"
-                              : agent.status === "espera"
-                                ? "bg-neutral-500"
-                                : agent.status === "treinamento"
-                                  ? "bg-orange-500"
-                                  : "bg-red-500"
+                            agent.status === 'ativo'
+                              ? 'bg-white'
+                              : agent.status === 'espera'
+                                ? 'bg-neutral-500'
+                                : agent.status === 'treinamento'
+                                  ? 'bg-orange-500'
+                                  : 'bg-red-500'
                           }`}
                         ></div>
                         <span className="text-xs text-neutral-300 uppercase tracking-wider">
@@ -275,13 +275,13 @@ export default function AgentNetworkPage() {
                     <td className="py-3 px-4">
                       <span
                         className={`text-xs px-2 py-1 rounded uppercase tracking-wider ${
-                          agent.risk === "crítico"
-                            ? "bg-red-500/20 text-red-500"
-                            : agent.risk === "alto"
-                              ? "bg-orange-500/20 text-orange-500"
-                              : agent.risk === "médio"
-                                ? "bg-neutral-500/20 text-neutral-300"
-                                : "bg-white/20 text-white"
+                          agent.risk === 'crítico'
+                            ? 'bg-red-500/20 text-red-500'
+                            : agent.risk === 'alto'
+                              ? 'bg-orange-500/20 text-orange-500'
+                              : agent.risk === 'médio'
+                                ? 'bg-neutral-500/20 text-neutral-300'
+                                : 'bg-white/20 text-white'
                         }`}
                       >
                         {agent.risk}
@@ -334,13 +334,13 @@ export default function AgentNetworkPage() {
                   <div className="flex items-center gap-2">
                     <div
                       className={`w-2 h-2 rounded-full ${
-                        selectedAgent.status === "ativo"
-                          ? "bg-white"
-                          : selectedAgent.status === "espera"
-                            ? "bg-neutral-500"
-                            : selectedAgent.status === "treinamento"
-                              ? "bg-orange-500"
-                              : "bg-red-500"
+                        selectedAgent.status === 'ativo'
+                          ? 'bg-white'
+                          : selectedAgent.status === 'espera'
+                            ? 'bg-neutral-500'
+                            : selectedAgent.status === 'treinamento'
+                              ? 'bg-orange-500'
+                              : 'bg-red-500'
                       }`}
                     ></div>
                     <span className="text-sm text-white uppercase tracking-wider">
@@ -368,13 +368,13 @@ export default function AgentNetworkPage() {
                   </p>
                   <span
                     className={`text-xs px-2 py-1 rounded uppercase tracking-wider ${
-                      selectedAgent.risk === "crítico"
-                        ? "bg-red-500/20 text-red-500"
-                        : selectedAgent.risk === "alto"
-                          ? "bg-orange-500/20 text-orange-500"
-                          : selectedAgent.risk === "médio"
-                            ? "bg-neutral-500/20 text-neutral-300"
-                            : "bg-white/20 text-white"
+                      selectedAgent.risk === 'crítico'
+                        ? 'bg-red-500/20 text-red-500'
+                        : selectedAgent.risk === 'alto'
+                          ? 'bg-orange-500/20 text-orange-500'
+                          : selectedAgent.risk === 'médio'
+                            ? 'bg-neutral-500/20 text-neutral-300'
+                            : 'bg-white/20 text-white'
                     }`}
                   >
                     {selectedAgent.risk}

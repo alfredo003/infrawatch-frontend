@@ -1,6 +1,6 @@
-import { Badge } from "@/components/ui/badge";
-import { AlertTriangle } from "lucide-react";
-import { ReactNode } from "react";
+import { Badge } from '@/components/ui/badge';
+import { AlertTriangle } from 'lucide-react';
+import { ReactNode } from 'react';
 
 interface IncidentCardProps {
   id: string;
@@ -39,13 +39,24 @@ export function IncidentCard({
             <AlertTriangle className="w-5 h-5 text-red-600" />
           </div>
           <div>
-            <h3 className="font-semibold text-neutral-800 dark:text-neutral-200">{title}</h3>
-            <p className="text-sm text-neutral-600 dark:text-neutral-400">{id} • {service}</p>
+            <h3 className="font-semibold text-neutral-800 dark:text-neutral-200">
+              {title}
+            </h3>
+            <p className="text-sm text-neutral-600 dark:text-neutral-400">
+              {id} • {service}
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Badge className={getSeverityColor(severity)} variant="secondary">{severity}</Badge>
-          <Badge className="text-green-600 bg-green-100 dark:bg-green-900/20" variant="secondary">{status}</Badge>
+          <Badge className={getSeverityColor(severity)} variant="secondary">
+            {severity}
+          </Badge>
+          <Badge
+            className="text-green-600 bg-green-100 dark:bg-green-900/20"
+            variant="secondary"
+          >
+            {status}
+          </Badge>
         </div>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
@@ -63,12 +74,23 @@ export function IncidentCard({
         </div>
         <div>
           <p className="text-xs text-neutral-500 uppercase">Início</p>
-          <p className="font-medium">{new Date(startTime).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</p>
+          <p className="font-medium">
+            {new Date(startTime).toLocaleDateString('pt-BR', {
+              day: '2-digit',
+              month: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+            })}
+          </p>
         </div>
       </div>
       <div className="p-3 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
-        <p className="text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Causa Raiz:</p>
-        <p className="text-sm text-neutral-600 dark:text-neutral-400">{rootCause}</p>
+        <p className="text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+          Causa Raiz:
+        </p>
+        <p className="text-sm text-neutral-600 dark:text-neutral-400">
+          {rootCause}
+        </p>
       </div>
     </div>
   );

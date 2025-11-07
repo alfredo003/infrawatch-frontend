@@ -1,9 +1,9 @@
-import { CardContent } from "@/components/ui/card";
-import { dateConversion, getStatusColor } from "@/lib/utils";
-import { SystemData } from "@/services/systemService";
-import { Globe, HardDrive, Link, Router, Plus } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { KeyedMutator } from "swr";
+import { CardContent } from '@/components/ui/card';
+import { dateConversion, getStatusColor } from '@/lib/utils';
+import { SystemData } from '@/services/systemService';
+import { Globe, HardDrive, Link, Router, Plus } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { KeyedMutator } from 'swr';
 
 interface ListProps {
   Systems: SystemData[] | undefined;
@@ -13,19 +13,19 @@ interface ListProps {
 
 const getImgByTypeConexao = (type: string) => {
   switch (type) {
-    case "api":
+    case 'api':
       return (
         <Globe className="w-5 h-5 text-neutral-600 dark:text-neutral-400" />
       );
-    case "snmp":
+    case 'snmp':
       return (
         <HardDrive className="w-5 h-5 text-neutral-600 dark:text-neutral-400" />
       );
-    case "ping":
+    case 'ping':
       return (
         <Router className="w-5 h-5 text-neutral-600 dark:text-neutral-400" />
       );
-    case "webhook":
+    case 'webhook':
       return (
         <Link className="w-5 h-5 text-neutral-600 dark:text-neutral-400" />
       );
@@ -79,7 +79,7 @@ export default function ListSystems({
                       Última verificação
                     </p>
                   </div>
-                  <Badge className={getStatusColor(system.status)}>
+                  <Badge className={getStatusColor(system.status.toLocaleUpperCase)}>
                     {system.status}
                   </Badge>
                 </div>
@@ -92,7 +92,7 @@ export default function ListSystems({
                 <a
                   href="#"
                   className="text-sm font-medium text-blue-600 hover:underline"
-                > 
+                >
                   Ver mais
                 </a>
               </div>

@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
-import { Button } from "@/components/ui/button";
+import * as React from 'react';
+import { Moon, Sun } from 'lucide-react';
+import { useTheme } from 'next-themes';
+import { Button } from '@/components/ui/button';
 
 export function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme();
@@ -14,13 +14,13 @@ export function ThemeToggle() {
   }, []);
 
   const toggleTheme = () => {
-    console.log("Tema atual:", theme, "Tema resolvido:", resolvedTheme);
-    if (resolvedTheme === "dark") {
-      setTheme("light");
-      console.log("Mudando para claro");
+    console.log('Tema atual:', theme, 'Tema resolvido:', resolvedTheme);
+    if (resolvedTheme === 'dark') {
+      setTheme('light');
+      console.log('Mudando para claro');
     } else {
-      setTheme("dark");
-      console.log("Mudando para escuro");
+      setTheme('dark');
+      console.log('Mudando para escuro');
     }
   };
 
@@ -37,7 +37,7 @@ export function ThemeToggle() {
     );
   }
 
-  const isDark = resolvedTheme === "light";
+  const isDark = resolvedTheme === 'light';
 
   return (
     <Button
@@ -45,7 +45,7 @@ export function ThemeToggle() {
       size="icon"
       onClick={toggleTheme}
       className="text-neutral-400 hover:text-orange-500 transition-colors"
-      title={isDark ? "Mudar para modo claro" : "Mudar para modo escuro"}
+      title={isDark ? 'Mudar para modo claro' : 'Mudar para modo escuro'}
     >
       {isDark ? (
         <Sun className="h-4 w-4 transition-all" />

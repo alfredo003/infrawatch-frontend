@@ -1,12 +1,22 @@
-import { Button } from "@/components/ui/button"
-import { DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select" 
-import { toast } from "@/hooks/use-toast"
-import { handleCreateSystem } from "@/services/systemService" 
-import { useEffect, useState } from "react"
-import { z } from "zod"
+import { Button } from '@/components/ui/button';
+import {
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { toast } from '@/hooks/use-toast';
+import { handleCreateSystem } from '@/services/systemService';
+import { useEffect, useState } from 'react';
+import { z } from 'zod';
 
 export interface TypeSystem {
   id: string;
@@ -19,38 +29,46 @@ interface RegisterModelProps {
   onSystemCreated?: () => void;
 }
 
-const ConnectionType = z.enum(["api", "snmp", "ping", "webhook"]);
-const Status = z.enum(["up", "maintenance", "down"]);
-const ipRegex = /^(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)){3}$/;
-const urlRegex = /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?$/;
+const ConnectionType = z.enum(['api', 'snmp', 'ping', 'webhook']);
+const Status = z.enum(['up', 'maintenance', 'down']);
+const ipRegex =
+  /^(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)){3}$/;
+const urlRegex =
+  /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?$/;
 
 const SystemSchema = z.object({
-  name: z.string().min(1, "Nome não pode ser vazio"),
-  id_type: z.string().min(1, "Tipo de sistema não pode ser vazio"),
-  target: z.string().min(1, "Alvo não pode ser vazio").refine(val => ipRegex.test(val) || urlRegex.test(val), {
-    message: "Alvo deve ser um IP ou URL válido",
-  }),
+  name: z.string().min(1, 'Nome não pode ser vazio'),
+  id_type: z.string().min(1, 'Tipo de sistema não pode ser vazio'),
+  target: z
+    .string()
+    .min(1, 'Alvo não pode ser vazio')
+    .refine((val) => ipRegex.test(val) || urlRegex.test(val), {
+      message: 'Alvo deve ser um IP ou URL válido',
+    }),
   connection_type: ConnectionType,
   status: Status,
-  criticality_level: z.string().min(1, "O nível crítico não pode ser vazio"),
-  sla_target: z.number().min(0, "SLA deve ser >= 0").max(100, "SLA deve ser <= 100"),
-  check_interval: z.number().refine(n => Number.isInteger(n) && n > 0, {
-    message: "Intervalo deve ser um número inteiro positivo (segundos)",
+  criticality_level: z.string().min(1, 'O nível crítico não pode ser vazio'),
+  sla_target: z
+    .number()
+    .min(0, 'SLA deve ser >= 0')
+    .max(100, 'SLA deve ser <= 100'),
+  check_interval: z.number().refine((n) => Number.isInteger(n) && n > 0, {
+    message: 'Intervalo deve ser um número inteiro positivo (segundos)',
   }),
   latitude: z.number().optional(),
   longitude: z.number().optional(),
 });
 
 const initialFormState = {
-  name: "",
-  id_type: "",
-  target: "",
-  connection_type: "ping",
-  status: "up",
-  criticality_level: "low",
+  name: '',
+  id_type: '',
+  target: '',
+  connection_type: 'ping',
+  status: 'up',
+  criticality_level: 'low',
   sla_target: 100,
   check_interval: 60,
-  updated_at: "",
+  updated_at: '',
   lat: undefined as number | undefined,
   lng: undefined as number | undefined,
 };
@@ -75,13 +93,16 @@ export default function RegisterSystem({
             lng: pos.coords.longitude,
           }));
         },
-        (err) => console.warn("Erro ao pegar localização:", err),
-        { enableHighAccuracy: true }
+        (err) => console.warn('Erro ao pegar localização:', err),
+        { enableHighAccuracy: true },
       );
     }
   }, []);
 
-  const handleChange = (field: keyof typeof initialFormState, value: string | number) => {
+  const handleChange = (
+    field: keyof typeof initialFormState,
+    value: string | number,
+  ) => {
     setNewSystemForm((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -89,7 +110,7 @@ export default function RegisterSystem({
     const validation = SystemSchema.safeParse(newSystemForm);
 
     if (!validation.success) {
-      setError(validation.error.errors.map((err) => err.message).join(", "));
+      setError(validation.error.errors.map((err) => err.message).join(', '));
       return;
     }
 
@@ -97,14 +118,14 @@ export default function RegisterSystem({
     try {
       await handleCreateSystem(newSystemForm, setIsLoading, setError);
       toast({
-        title: "Sucesso!",
-        description: "Sistema Registrado com sucesso",
+        title: 'Sucesso!',
+        description: 'Sistema Registrado com sucesso',
       });
       setNewSystemForm(initialFormState);
       setIsSystemCreateDialogOpen(false);
       onSystemCreated?.();
     } catch (err) {
-      setError("Falha ao cadastrar sistema");
+      setError('Falha ao cadastrar sistema');
     }
   };
 
@@ -116,12 +137,12 @@ export default function RegisterSystem({
         </DialogTitle>
       </DialogHeader>
       <hr className="my-4" />
-      
+
       {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
 
       {/* Campos hidden */}
-      <input type="hidden" name="lat" value={newSystemForm.lat ?? ""} />
-      <input type="hidden" name="lng" value={newSystemForm.lng ?? ""} />
+      <input type="hidden" name="lat" value={newSystemForm.lat ?? ''} />
+      <input type="hidden" name="lng" value={newSystemForm.lng ?? ''} />
 
       {/* Identificação */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -129,7 +150,7 @@ export default function RegisterSystem({
           <Label>Nome</Label>
           <Input
             value={newSystemForm.name}
-            onChange={(e) => handleChange("name", e.target.value)}
+            onChange={(e) => handleChange('name', e.target.value)}
             placeholder="Nome do recurso"
           />
         </div>
@@ -137,7 +158,7 @@ export default function RegisterSystem({
           <Label>Tipo de Sistema</Label>
           <Select
             value={newSystemForm.id_type}
-            onValueChange={(value) => handleChange("id_type", value)}
+            onValueChange={(value) => handleChange('id_type', value)}
           >
             <SelectTrigger>
               <SelectValue placeholder="Selecione o tipo de sistema" />
@@ -159,7 +180,7 @@ export default function RegisterSystem({
           <Label>Alvo</Label>
           <Input
             value={newSystemForm.target}
-            onChange={(e) => handleChange("target", e.target.value)}
+            onChange={(e) => handleChange('target', e.target.value)}
             placeholder="127.0.0.1 ou https://exemplo.com"
           />
         </div>
@@ -167,7 +188,7 @@ export default function RegisterSystem({
           <Label>Tipo de Conexão</Label>
           <Select
             value={newSystemForm.connection_type}
-            onValueChange={(value) => handleChange("connection_type", value)}
+            onValueChange={(value) => handleChange('connection_type', value)}
           >
             <SelectTrigger>
               <SelectValue placeholder="Selecione o tipo de conexão" />
@@ -184,7 +205,7 @@ export default function RegisterSystem({
           <Label>Status</Label>
           <Select
             value={newSystemForm.status}
-            onValueChange={(value) => handleChange("status", value)}
+            onValueChange={(value) => handleChange('status', value)}
           >
             <SelectTrigger>
               <SelectValue placeholder="Selecione o status" />
@@ -200,7 +221,7 @@ export default function RegisterSystem({
           <Label>Nível de Criticidade</Label>
           <Select
             value={newSystemForm.criticality_level}
-            onValueChange={(value) => handleChange("criticality_level", value)}
+            onValueChange={(value) => handleChange('criticality_level', value)}
           >
             <SelectTrigger>
               <SelectValue placeholder="Selecione o nível" />
@@ -218,7 +239,7 @@ export default function RegisterSystem({
           <Input
             type="number"
             value={newSystemForm.sla_target}
-            onChange={(e) => handleChange("sla_target", Number(e.target.value))}
+            onChange={(e) => handleChange('sla_target', Number(e.target.value))}
             placeholder="Ex: 99.9"
           />
         </div>
@@ -227,7 +248,9 @@ export default function RegisterSystem({
           <Input
             type="number"
             value={newSystemForm.check_interval}
-            onChange={(e) => handleChange("check_interval", Number(e.target.value))}
+            onChange={(e) =>
+              handleChange('check_interval', Number(e.target.value))
+            }
             placeholder="Ex: 60"
           />
         </div>
@@ -242,7 +265,7 @@ export default function RegisterSystem({
           Cancelar
         </Button>
         <Button onClick={handleSubmit} disabled={isLoading}>
-          {isLoading ? "Registrando..." : "Registrar Sistema"}
+          {isLoading ? 'Registrando...' : 'Registrar Sistema'}
         </Button>
       </div>
     </DialogContent>

@@ -1,8 +1,7 @@
-
 export function createEventSource<T>(
   url: string,
   onMessage: (data: T) => void,
-  onError?: (err: any) => void
+  onError?: (err: any) => void,
 ) {
   const eventSource = new EventSource(url);
 
@@ -11,12 +10,12 @@ export function createEventSource<T>(
       const data: T = JSON.parse(event.data);
       onMessage(data);
     } catch (err) {
-      console.error("Erro ao parsear SSE:", err);
+      console.error('Erro ao parsear SSE:', err);
     }
   };
 
   eventSource.onerror = (err) => {
-    console.error("Erro SSE:", err);
+    console.error('Erro SSE:', err);
     onError?.(err);
     eventSource.close();
   };
