@@ -180,9 +180,9 @@ export default function MonitoringPage() {
                     </div>
                   </div>
                   <Badge
-                    className={`${getStatusColor(server.metric?.status)} font-medium`}
+                    className={`${getStatusColor(server.metric?.status.toUpperCase())} font-medium`}
                   >
-                    {server.metric?.status === 'UP' ? 'UP'  : 'DOWN'}
+                    {server.metric?.status?.toUpperCase() === 'UP' ? 'UP'  : 'DOWN'}
                   </Badge>
                 </div>
               </CardHeader>

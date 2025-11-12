@@ -125,7 +125,7 @@ export default function Map({
             key={machine.id}
             position={[latOffset, lngOffset]}
             icon={
-              machineIcons[machine.typeName.toLowerCase()]?.[machine.status.toLowerCase()] ??
+              machineIcons[machine.typeName?.toLowerCase()]?.[machine.status?.toLowerCase()] ??
               machineIcons.pc.up
             }
           >

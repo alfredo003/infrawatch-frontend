@@ -251,14 +251,14 @@ export default function NetworkMonitoringLogin() {
                 Esqueceu a senha?
               </Link>
             </div>
-            {/*  <HCaptcha
+             <HCaptcha
               sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITEKEY!}
               onVerify={setToken}
               ref={captchaRef}
               languageOverride="pt"
             />
             
-             Submit Button */}
+             {/* Submit Button */}
             <button
               onClick={handleSubmit}
               disabled={isLoading}
